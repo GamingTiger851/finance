@@ -1,6 +1,6 @@
 const logger = require('../utils/logger');
 const { getRedis } = require('../config/redis');
-const User = require('../models/user');
+const User = require('../models/User');
 const cache = new Map();
 const circuits = new Map();
 const yahoo = process.env.MARKET_DATA_FALLBACK_URL || 'https://query1.finance.yahoo.com';
