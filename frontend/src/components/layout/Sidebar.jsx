@@ -1,17 +1,52 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
-export default function Sidebar({ currentPage, setCurrentPage }) {
+export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = false, onMobileClose }) {
     const { currentUser, userProfile } = useAuth();
     const displayName = userProfile?.fullName || currentUser || 'User';
     const firstInitial = displayName.charAt(0).toUpperCase();
 
+    useEffect(() => {
+        if (!isMobileOpen) return undefined;
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') onMobileClose?.();
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isMobileOpen, onMobileClose]);
+
     return (
-        <aside className="sidebar">
+        <>
+        {isMobileOpen && (
+            <button
+                type="button"
+                className="mobile-menu-backdrop"
+                aria-label="Close navigation menu"
+                onClick={onMobileClose}
+            />
+        )}
+        <aside
+            id="main-navigation"
+            className={`sidebar${isMobileOpen ? ' mobile-open' : ''}`}
+            aria-label="Main navigation"
+            aria-hidden={window.innerWidth <= 640 && !isMobileOpen}
+            inert={window.innerWidth <= 640 && !isMobileOpen}
+        >
+            <div className="mobile-menu-heading">
+                <button type="button" className="mobile-menu-close" onClick={onMobileClose}>
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                        <path d="m18 6-12 12M6 6l12 12" />
+                    </svg>
+                    <span>Close menu</span>
+                </button>
+            </div>
             {/* Brand Logo Header */}
             <div 
                 className="brand" 
-                onClick={() => setCurrentPage && setCurrentPage('dashboard')}
+                onClick={() => {
+                    setCurrentPage && setCurrentPage('dashboard');
+                    onMobileClose?.();
+                }}
                 title="FinTracker AI - HAWKS Intelligence"
                 style={{ 
                     padding: '6px 6px 16px', 
@@ -59,7 +94,13 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
             </div>
 
             {/* Categorized Nav Items */}
-            <nav className="sidebar-nav" style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}>
+            <nav
+                className="sidebar-nav"
+                style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}
+                onClick={(event) => {
+                    if (event.target.closest('.side-link')) onMobileClose?.();
+                }}
+            >
                 {/* Section 1: MAIN MENU */}
                 <div className="sidebar-section-label">MAIN MENU</div>
 
@@ -177,6 +218,20 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
                     <span className="label-text">Loan Eligibility</span>
                 </button>
 
+                {/* Portfolio Risk */}
+                <button
+                    className={`side-link ${currentPage === 'portfolio-risk' ? 'active' : ''}`}
+                    onClick={() => setCurrentPage('portfolio-risk')}
+                >
+                    <span className="side-icon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11z" />
+                            <path d="m9 12 2 2 4-4" />
+                        </svg>
+                    </span>
+                    <span className="label-text">Portfolio Risk</span>
+                </button>
+
 
                 {/* Section 3: INTELLIGENCE */}
                 <div className="sidebar-section-label" style={{ marginTop: '16px' }}>INTELLIGENCE</div>
@@ -212,7 +267,10 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
                 <button 
                     type="button" 
                     className="sidebar-user-dots-btn"
-                    onClick={() => setCurrentPage('settings')}
+                    onClick={() => {
+                        setCurrentPage('settings');
+                        onMobileClose?.();
+                    }}
                     title="Account Settings"
                 >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -223,5 +281,6 @@ export default function Sidebar({ currentPage, setCurrentPage }) {
                 </button>
             </div>
         </aside>
+        </>
     );
 }

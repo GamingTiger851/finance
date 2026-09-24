@@ -19,8 +19,10 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-async-errors": "^3.1.1",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.4.0",
     "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
     "ioredis": "^5.4.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.3",
@@ -28,6 +30,7 @@
     "pdfkit": "^0.15.0",
     "upstox-js-sdk": "^2.31.0",
     "winston": "^3.13.1",
+    "xss-clean": "^0.1.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {

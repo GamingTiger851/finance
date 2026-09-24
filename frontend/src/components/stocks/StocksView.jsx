@@ -331,11 +331,11 @@ export default function StocksView() {
     return (
         <div id="stocksPage" className="page-view">
             {/* Header with Title and Global Actions */}
-            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
-                <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div className="page-header stocks-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
+                <div className="stocks-page-heading">
+                    <div className="stocks-page-title-row" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{ fontSize: '24px' }}>📈</span>
-                        <h1 className="page-title" style={{ margin: 0 }}>Stocks &amp; Equities Universe (1,000 Stocks)</h1>
+                        <h1 className="page-title" style={{ margin: 0 }}>Stocks &amp; Equities</h1>
                     </div>
                     <p className="page-subtitle">
                         Complete 1,000-stock screener with live indices, market cap categories, valuation multiples, balance sheets, and bulk Excel export.
@@ -372,7 +372,7 @@ export default function StocksView() {
             </div>
 
             {/* Groww Style Live Market Indices Bar */}
-            <div style={{
+            <div className="stocks-market-indices" style={{
                 display: 'grid',
                 gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))',
                 gap: '12px',
@@ -423,7 +423,7 @@ export default function StocksView() {
             <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />
 
             {/* Groww Category Quick Tabs */}
-            <div style={{
+            <div className="stocks-category-tabs" style={{
                 display: 'flex',
                 gap: '8px',
                 overflowX: 'auto',
@@ -450,7 +450,7 @@ export default function StocksView() {
             </div>
 
             {/* Search, Sort, Sector, and Cap Toolbar */}
-            <div className="table-card" style={{
+            <div className="table-card stocks-filter-panel" style={{
                 padding: '16px 20px',
                 marginTop: '16px',
                 display: 'flex',
@@ -458,7 +458,7 @@ export default function StocksView() {
                 gap: '14px'
             }}>
                 {/* Top Row: Search & Sorting */}
-                <div style={{
+                <div className="stocks-filter-primary-row" style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -487,7 +487,7 @@ export default function StocksView() {
                         )}
                     </div>
 
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                    <div className="stocks-sort-controls" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                         <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>Sort By:</span>
                         <select
                             value={sortBy}
@@ -538,7 +538,7 @@ export default function StocksView() {
                 </div>
 
                 {/* Bottom Row: Cap and Sector Filters */}
-                <div style={{
+                <div className="stocks-filter-secondary-row" style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
@@ -547,7 +547,7 @@ export default function StocksView() {
                     borderTop: '1px solid var(--border)'
                 }}>
                     {/* Cap Category Filter */}
-                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    <div className="stocks-cap-filters" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>Cap:</span>
                         {['all', 'Large Cap', 'Mid Cap', 'Small Cap'].map(cap => (
                             <button
@@ -562,10 +562,10 @@ export default function StocksView() {
                         ))}
                     </div>
 
-                    <div style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
+                    <div className="stocks-filter-divider" style={{ width: '1px', height: '20px', background: 'var(--border)' }} />
 
                     {/* Sector Dropdown */}
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '220px' }}>
+                    <div className="stocks-sector-filter" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '220px' }}>
                         <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>Sector:</span>
                         <select
                             value={selectedSector}
@@ -676,11 +676,11 @@ export default function StocksView() {
 
             {/* View Mode: Grid Cards (Groww Style) */}
             {viewMode === 'grid' && displayedStocks.length > 0 && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '16px', marginTop: '14px' }}>
+                <div className="stocks-card-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(330px, 1fr))', gap: '16px', marginTop: '14px' }}>
                     {displayedStocks.map(stock => (
                         <div
                             key={stock.symbol}
-                            className="table-card"
+                            className="table-card stock-card"
                             style={{
                                 padding: '20px',
                                 display: 'flex',
@@ -691,8 +691,8 @@ export default function StocksView() {
                         >
                             <div>
                                 {/* Header: Icon, Symbol, Price */}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div className="stock-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                                    <div className="stock-card-identity" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         <div style={{
                                             width: '42px',
                                             height: '42px',
@@ -733,6 +733,7 @@ export default function StocksView() {
 
                                     {/* Mini Live Sparkline Chart */}
                                     {!stock.livePriceUnavailable && <div
+                                        className="stock-card-sparkline"
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => setChartModalStock(stock)}
                                         title="Click to expand interactive Live Chart"
@@ -748,7 +749,7 @@ export default function StocksView() {
                                     </div>}
 
                                     {/* Price and Day Change */}
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div className="stock-card-quote" style={{ textAlign: 'right' }}>
                                         <div style={{ fontSize: stock.livePriceUnavailable ? '12px' : '17px', fontWeight: '800', color: stock.livePriceUnavailable ? 'var(--text-muted)' : 'var(--text-primary)' }}>
                                             {stock.livePriceUnavailable ? 'Waiting for Upstox quote' : `₹${stock.price.toFixed(2)}`}
                                         </div>
@@ -759,7 +760,7 @@ export default function StocksView() {
                                 </div>
 
                                 {/* Sector & Cap Badge Strip */}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', fontSize: '11.5px', marginBottom: '14px' }}>
+                                <div className="stock-card-meta" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', fontSize: '11.5px', marginBottom: '14px' }}>
                                     <span style={{ color: 'var(--text-muted)' }}>{stock.sector}</span>
                                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                                         <span style={{
@@ -777,7 +778,7 @@ export default function StocksView() {
                                 </div>
 
                                 {/* Mini Fundamentals Grid */}
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center', padding: '8px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', marginBottom: '14px' }}>
+                                <div className="stock-card-metrics" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', textAlign: 'center', padding: '8px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)', marginBottom: '14px' }}>
                                     <div>
                                         <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>P/E RATIO</div>
                                         <div style={{ fontSize: '13px', fontWeight: '700', marginTop: '2px' }}>{stock.peRatio}</div>
@@ -794,7 +795,7 @@ export default function StocksView() {
                             </div>
 
                             {/* Actions with Live Chart */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '6px' }}>
+                            <div className="stock-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '6px' }}>
                                 <button
                                     type="button"
                                     className="btn btn-secondary btn-sm"
@@ -952,7 +953,7 @@ export default function StocksView() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-                <div style={{
+                <div className="stocks-pagination" style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -968,7 +969,7 @@ export default function StocksView() {
                         Showing page <strong>{currentPage}</strong> of <strong>{totalPages}</strong> ({totalStocks} total stocks)
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    <div className="stocks-pagination-controls" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                         {/* First Button */}
                         <button
                             type="button"
@@ -1001,7 +1002,7 @@ export default function StocksView() {
                                 <button
                                     key={`page-${p}`}
                                     type="button"
-                                    className={`btn btn-sm ${currentPage === p ? 'btn-primary' : 'btn-secondary'}`}
+                                    className={`stocks-page-number btn btn-sm ${currentPage === p ? 'btn-primary' : 'btn-secondary'}`}
                                     onClick={() => setCurrentPage(p)}
                                     style={{
                                         minWidth: '32px',

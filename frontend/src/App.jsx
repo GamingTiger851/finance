@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { FinanceProvider } from './context/FinanceContext';
 import Fireflies from './components/layout/Fireflies';
@@ -26,6 +26,17 @@ import ResetPasswordPage from './components/auth/ResetPasswordPage';
 function MainLayout() {
     const { isAuthenticated, authLoading } = useAuth();
     const [currentPage, setCurrentPage] = useState('dashboard');
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+        document.querySelector('.main-area')?.scrollTo(0, 0);
+    }, [currentPage]);
+
+    useEffect(() => {
+        document.body.classList.toggle('mobile-menu-open', isMobileMenuOpen);
+        return () => document.body.classList.remove('mobile-menu-open');
+    }, [isMobileMenuOpen]);
 
     if (authLoading) {
         return (
@@ -42,8 +53,17 @@ function MainLayout() {
     return (
         <div id="appWrap" className="app-layout">
             <div className="top-strip" />
-            <TopNavbar onNavigate={setCurrentPage} />
-            <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+            <TopNavbar
+                onNavigate={setCurrentPage}
+                onMenuToggle={() => setIsMobileMenuOpen(open => !open)}
+                isMobileMenuOpen={isMobileMenuOpen}
+            />
+            <Sidebar
+                currentPage={currentPage}
+                setCurrentPage={setCurrentPage}
+                isMobileOpen={isMobileMenuOpen}
+                onMobileClose={() => setIsMobileMenuOpen(false)}
+            />
             <main className="main-area">
                 {currentPage === 'dashboard' && <DashboardView onNavigate={setCurrentPage} />}
                 {currentPage === 'expenses' && <ExpensesView />}
@@ -53,7 +73,9 @@ function MainLayout() {
                 {currentPage === 'reports' && <ReportsView />}
                 {currentPage === 'goals' && <GoalsView />}
                 {(currentPage === 'stocks' || currentPage === 'markets') && <StocksView />}
-                {currentPage === 'advisor' && <AdvisorView />}
+                {(currentPage === 'advisor' || currentPage === 'portfolio-risk') && (
+                    <AdvisorView initialTab={currentPage === 'portfolio-risk' ? 'risk' : 'chatbot'} />
+                )}
                 {currentPage === 'calculators' && <CalculatorsView />}
                 {currentPage === 'loan-eligibility' && <LoanEligibilityView />}
                 {currentPage === 'settings' && <SettingsView />}

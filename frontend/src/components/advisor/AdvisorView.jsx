@@ -3,10 +3,10 @@ import AiChatbot from './AiChatbot';
 import { formatAmount } from '../../constants';
 import { useAuth } from '../../context/AuthContext';
 
-export default function AdvisorView() {
+export default function AdvisorView({ initialTab = 'chatbot' }) {
     const { userProfile } = useAuth();
     const currency = userProfile.currency || 'USD';
-    const [activeTab, setActiveTab] = useState('chatbot');
+    const [activeTab, setActiveTab] = useState(initialTab);
 
     // Investment inputs
     const [investIncome, setInvestIncome] = useState(6000);

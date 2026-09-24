@@ -80,7 +80,7 @@ export default function TransactionTable({ onOpenAddModal }) {
             <div className="txn-toolbar">
                 <div className="toolbar-left">
                     <div className="search-box">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <svg className="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                             <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
                             <path d="M16 16L21 21" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                         </svg>

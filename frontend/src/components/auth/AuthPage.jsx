@@ -151,8 +151,8 @@ export default function AuthPage() {
                             <div style={{ marginBottom: '16px' }} className="anim-stagger">
                                 <img src="/logo.png" alt="HAWKS Intelligence" style={{ width: '60px', height: '60px', borderRadius: '14px', objectFit: 'contain', background: '#090D16', padding: '4px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 16px rgba(0,0,0,0.4)' }} />
                             </div>
-                            <h1 className="login-card__hero anim-stagger">HELLO,<br />FRIEND!</h1>
-                            <p className="login-card__sub anim-stagger">Enter your personal details to start<br />your journey with us.</p>
+                            <h1 className="login-card__hero anim-stagger">“Know your money.<br />Shape your future.”</h1>
+                            <p className="login-card__sub anim-stagger">Track spending, plan ahead, and make confident decisions.</p>
                         </div>
                         <div className="login-card__right">
                             {showForgot ? (
@@ -302,8 +302,8 @@ export default function AuthPage() {
                             <div style={{ marginBottom: '16px' }}>
                                 <img src="/logo.png" alt="HAWKS Intelligence" style={{ width: '60px', height: '60px', borderRadius: '14px', objectFit: 'contain', background: '#090D16', padding: '4px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 16px rgba(0,0,0,0.4)' }} />
                             </div>
-                            <h1 className="login-card__hero">HELLO,<br />FRIEND!</h1>
-                            <p className="login-card__sub">Enter your personal details to start<br />your journey with us.</p>
+                            <h1 className="login-card__hero">“Know your money.<br />Shape your future.”</h1>
+                            <p className="login-card__sub">Track spending, plan ahead, and make confident decisions.</p>
                         </div>
                         <div className="login-card__right">
                             <h2 className="auth-title">Sign Up</h2>

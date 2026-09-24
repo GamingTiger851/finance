@@ -175,7 +175,7 @@ export default function GoalsView() {
                     <h1 className="page-title">Financial Goals &amp; Milestone Planner</h1>
                     <p className="page-subtitle">Formulate, track, and achieve life milestones with smart calculators and savings roadmaps.</p>
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div className="goals-header-actions" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                     <button
                         type="button"
                         className="btn btn-secondary"

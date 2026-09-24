@@ -25,5 +25,15 @@ async function shutdown(signal) {
 }
 process.once('SIGINT', () => shutdown('SIGINT'));
 process.once('SIGTERM', () => shutdown('SIGTERM'));
-if (require.main === module) start().catch(error => { logger.error(error); process.exit(1); });
+if (require.main === module) {
+  start().catch(error => { logger.error(error); process.exit(1); });
+} else {
+  // Serverless environment
+  try {
+    validateEnv();
+    connect().catch(err => logger.error('Serverless DB Connect Error:', err));
+  } catch (err) {
+    logger.error('Serverless Env Validation Error:', err);
+  }
+}
 module.exports = app;

@@ -3,6 +3,9 @@ const cors = require('cors');
 const helmet = require('helmet');
 const compression = require('compression');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
+const hpp = require('hpp');
 const routes = require('./routes');
 const { errorHandler, notFound } = require('./middleware/error');
 const app = express();
@@ -67,6 +70,11 @@ app.use(compression());
 // 4. Strict Payload Limits to prevent memory-exhaustion DoS
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+
+// 4.5 Data Sanitization
+app.use(mongoSanitize());
+app.use(xss());
+app.use(hpp());
 
 // 5. Global API Rate Limiter
 const globalLimiter = rateLimit({

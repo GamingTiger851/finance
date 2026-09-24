@@ -138,7 +138,7 @@ export default function RecurringTransactionsView() {
                 <div className="table-card" style={{ padding: '18px 20px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
                     <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Monthly Outflow Commitments</div>
                     <div style={{ fontSize: '22px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>₹{monthlyCommitment.toLocaleString('en-IN')}/mo</div>
-                    <div style={{ fontSize: '11.5px', color: '#60a5fa', marginTop: '4px' }}>Across {activeBills.length} active recurring items</div>
+                        <div style={{ fontSize: '11.5px', color: '#059669', marginTop: '4px' }}>Across {activeBills.length} active recurring items</div>
                 </div>
 
                 <div className="table-card" style={{ padding: '18px 20px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
@@ -151,7 +151,7 @@ export default function RecurringTransactionsView() {
 
                 <div className="table-card" style={{ padding: '18px 20px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
                     <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Active Subscriptions</div>
-                    <div style={{ fontSize: '22px', fontWeight: '800', color: '#ADFF41', marginTop: '4px' }}>{activeBills.length} / {recurringList.length}</div>
+                    <div style={{ fontSize: '22px', fontWeight: '800', color: '#059669', marginTop: '4px' }}>{activeBills.length} / {recurringList.length}</div>
                     <div style={{ fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '4px' }}>{recurringList.length - activeBills.length} paused</div>
                 </div>
             </div>
@@ -187,16 +187,16 @@ export default function RecurringTransactionsView() {
 
                                     return (
                                         <tr key={bill.id} style={{ opacity: bill.active ? 1 : 0.6 }}>
-                                            <td>
+                                            <td data-label="Bill">
                                                 <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{bill.name}</div>
                                                 {bill.autoPay && (
-                                                    <span style={{ fontSize: '10.5px', color: '#60a5fa', fontWeight: '600' }}>⚡ Auto-Debit Enabled</span>
+                                                    <span style={{ fontSize: '10.5px', color: '#059669', fontWeight: '600' }}>⚡ Auto-Debit Enabled</span>
                                                 )}
                                             </td>
-                                            <td style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{bill.category}</td>
-                                            <td style={{ fontWeight: '800', color: '#ef4444' }}>₹{Number(bill.amount).toLocaleString('en-IN')}</td>
-                                            <td style={{ fontSize: '12px' }}>{bill.frequency}</td>
-                                            <td>
+                                            <td data-label="Category" style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{bill.category}</td>
+                                            <td data-label="Amount" style={{ fontWeight: '800', color: '#ef4444' }}>₹{Number(bill.amount).toLocaleString('en-IN')}</td>
+                                            <td data-label="Cycle" style={{ fontSize: '12px' }}>{bill.frequency}</td>
+                                            <td data-label="Next due">
                                                 <div style={{ fontSize: '12.5px', fontWeight: '600' }}>{bill.nextDue}</div>
                                                 <span style={{
                                                     fontSize: '10.5px',
@@ -209,7 +209,7 @@ export default function RecurringTransactionsView() {
                                                     {isOverdue ? '⚠️ Overdue' : (isDueSoon ? `Due in ${diffDays}d` : `${diffDays} days away`)}
                                                 </span>
                                             </td>
-                                            <td>
+                                            <td data-label="Status">
                                                 <button
                                                     type="button"
                                                     onClick={() => handleToggleActive(bill.id)}
@@ -227,7 +227,7 @@ export default function RecurringTransactionsView() {
                                                     {bill.active ? '● Active' : '○ Paused'}
                                                 </button>
                                             </td>
-                                            <td>
+                                            <td data-label="Actions">
                                                 <div style={{ display: 'flex', gap: '6px' }}>
                                                     <button
                                                         type="button"

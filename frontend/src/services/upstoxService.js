@@ -101,17 +101,14 @@ export async function fetchLtp(instrumentKeys) {
 
 // Fetch Historical Candles
 export async function fetchCandles(instrumentKey, interval = '1d', fromDate = null, toDate = null) {
-    try {
-        const params = new URLSearchParams({ instrumentKey, interval });
-        if (fromDate) params.set('from_date', fromDate);
-        if (toDate) params.set('to_date', toDate);
-        
-        const result = await apiFetch(`/candles?${params.toString()}`);
-        if (result.status === 'success' && result.data) return result.data.candles;
-        return [];
-    } catch {
-        return [];
-    }
+    const params = new URLSearchParams({ instrumentKey, interval });
+    if (fromDate) params.set('from_date', fromDate);
+    if (toDate) params.set('to_date', toDate);
+
+    const result = await apiFetch(`/candles?${params.toString()}`);
+    if (!result.ok) throw new Error(result.error || 'Failed to fetch Upstox candles');
+    if (result.status === 'success' && Array.isArray(result.data?.candles)) return result.data.candles;
+    throw new Error(result.message || 'Upstox returned an invalid candle response');
 }
 
 import FULL_UPSTOX_MAP from '../data/upstoxInstrumentMap.json';

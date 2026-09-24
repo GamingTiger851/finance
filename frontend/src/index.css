@@ -1877,6 +1877,56 @@ hr.divider {
     margin-bottom: 16px;
 }
 
+/* Keep the expense search/filters and action buttons on one aligned row on desktop. */
+#expensesPage .txn-toolbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 14px;
+}
+
+#expensesPage .toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+}
+
+#expensesPage .toolbar-left .search-box {
+    flex: 1 1 260px;
+    min-width: 180px;
+}
+
+#expensesPage .toolbar-left .search-box > input {
+    padding-left: 40px !important;
+}
+
+#expensesPage .toolbar-left .filter-pills {
+    flex: 0 0 auto;
+}
+
+#expensesPage .toolbar-right {
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: nowrap !important;
+}
+
+#expensesPage .toolbar-right .btn {
+    min-height: 42px;
+    white-space: nowrap;
+}
+
+@media (max-width: 1000px) and (min-width: 641px) {
+    #expensesPage .txn-toolbar {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #expensesPage .toolbar-right {
+        justify-content: flex-start;
+    }
+}
+
 .search-box {
     flex: 1;
     position: relative;
@@ -2453,12 +2503,14 @@ select:focus {
 
 .login-card__hero {
     font-family: 'Space Grotesk', 'Inter', sans-serif;
-    font-size: clamp(30px, 3.8vw, 42px);
+    font-size: clamp(28px, 3vw, 36px);
     font-weight: 800;
     color: #ffffff;
     line-height: 1.05;
     letter-spacing: -0.02em;
     margin: 0 0 18px;
+    max-width: 100%;
+    text-wrap: balance;
 }
 
 .login-card__sub {
@@ -3557,6 +3609,11 @@ button {
     border-radius: 20px;
     cursor: pointer;
     transition: all 0.2s ease;
+}
+
+.ai-prompt-pill:focus-visible {
+    outline: 2px solid #059669;
+    outline-offset: 2px;
 }
 
 .ai-prompt-pill:hover {
@@ -5828,4 +5885,1689 @@ input[type="range"]::-moz-range-thumb {
     border-color: #111827 !important;
     font-weight: 700 !important;
     box-shadow: 0 4px 12px rgba(17, 24, 39, 0.12) !important;
+}
+
+/* Stocks screen: keep dense desktop controls readable and aligned on phones. */
+@media (max-width: 640px) {
+    .sidebar {
+        min-height: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+        height: calc(66px + env(safe-area-inset-bottom, 0px)) !important;
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+    }
+
+    .sidebar-nav {
+        justify-content: flex-start !important;
+        gap: 4px !important;
+        padding: 6px 8px !important;
+    }
+
+    .sidebar-section-label,
+    .sidebar-user-footer,
+    .sidebar-promo-card {
+        display: none !important;
+    }
+
+    .side-link {
+        flex: 0 0 62px !important;
+        min-width: 62px !important;
+        min-height: 48px !important;
+        padding: 4px 2px !important;
+        gap: 2px !important;
+    }
+
+    .side-link span.label-text {
+        font-size: 9px !important;
+        line-height: 1.1 !important;
+        white-space: nowrap;
+    }
+
+    .side-badge-green {
+        display: none !important;
+    }
+
+    .main-area {
+        width: 100% !important;
+        max-width: 100vw !important;
+        padding: 12px !important;
+        padding-bottom: calc(86px + env(safe-area-inset-bottom, 0px)) !important;
+        overflow-x: clip;
+    }
+
+    #stocksPage,
+    #stocksPage > * {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .stocks-page-header {
+        align-items: stretch !important;
+    }
+
+    .stocks-page-heading,
+    .stocks-page-title-row {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .stocks-page-title-row {
+        align-items: flex-start !important;
+    }
+
+    .stocks-page-title-row .page-title {
+        font-size: 20px !important;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    .stocks-page-heading .page-subtitle {
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    .stocks-page-header > div:last-child {
+        width: 100%;
+    }
+
+    .stocks-page-header > div:last-child .btn {
+        flex: 1 1 auto;
+        justify-content: center;
+        white-space: normal;
+    }
+
+    .stocks-market-indices {
+        display: flex !important;
+        overflow-x: auto;
+        max-width: 100%;
+        padding: 4px 1px 8px !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .stocks-market-indices > .table-card {
+        flex: 0 0 150px;
+        scroll-snap-align: start;
+        padding: 12px !important;
+    }
+
+    .stocks-featured-chart {
+        padding: 14px !important;
+    }
+
+    .stocks-featured-content {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 10px !important;
+    }
+
+    .stocks-featured-content > div:last-child {
+        min-width: 0;
+    }
+
+    .stocks-category-tabs {
+        max-width: 100%;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .stocks-category-tabs::-webkit-scrollbar,
+    .stocks-market-indices::-webkit-scrollbar {
+        display: none;
+    }
+
+    .stocks-filter-panel {
+        width: 100%;
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+
+    .stocks-filter-primary-row,
+    .stocks-sort-controls {
+        width: 100%;
+        min-width: 0;
+        align-items: stretch !important;
+        flex-direction: column;
+    }
+
+    .stocks-filter-primary-row .search-box,
+    .stocks-sort-controls select {
+        width: 100%;
+        max-width: none !important;
+        min-width: 0;
+    }
+
+    .stocks-sort-controls {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 8px !important;
+    }
+
+    .stocks-sort-controls > span {
+        grid-column: 1 / -1;
+    }
+
+    .stocks-filter-secondary-row {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr);
+        align-items: start !important;
+        gap: 10px !important;
+    }
+
+    .stocks-cap-filters {
+        display: grid !important;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        width: 100%;
+        gap: 5px !important;
+    }
+
+    .stocks-cap-filters > span {
+        grid-column: 1 / -1;
+    }
+
+    .stocks-cap-filters .pill {
+        min-width: 0;
+        justify-content: center;
+        padding: 7px 3px !important;
+        font-size: 10px !important;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+
+    .stocks-filter-divider {
+        display: none;
+    }
+
+    .stocks-sector-filter {
+        width: 100%;
+        min-width: 0 !important;
+    }
+
+    .stocks-sector-filter select {
+        max-width: none !important;
+        min-width: 0;
+    }
+
+    .stocks-filter-panel > .btn {
+        justify-self: start;
+    }
+
+    .stocks-card-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        width: 100%;
+    }
+
+    .stock-card {
+        width: 100%;
+        min-width: 0;
+        padding: 14px !important;
+    }
+
+    .stock-card-header {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center !important;
+        gap: 6px 8px;
+    }
+
+    .stock-card-identity {
+        min-width: 0;
+        gap: 8px !important;
+    }
+
+    .stock-card-identity > div:last-child {
+        min-width: 0;
+    }
+
+    .stock-card-identity > div:last-child > div:first-child {
+        flex-wrap: wrap;
+        gap: 4px !important;
+    }
+
+    .stock-card-identity > div:last-child > div:first-child > span:first-child {
+        font-size: 14px !important;
+    }
+
+    .stock-card-sparkline {
+        grid-column: 1;
+        grid-row: 2;
+        margin-left: 50px;
+        height: 24px;
+    }
+
+    .stock-card-sparkline svg {
+        max-width: 100%;
+    }
+
+    .stock-card-quote {
+        grid-column: 2;
+        grid-row: 1 / span 2;
+        max-width: 116px;
+        overflow-wrap: anywhere;
+    }
+
+    .stock-card-quote > div:first-child {
+        font-size: 15px !important;
+    }
+
+    .stock-card-quote > div:last-child {
+        font-size: 10px !important;
+        line-height: 1.25;
+    }
+
+    .stock-card-meta {
+        gap: 6px;
+        align-items: flex-start !important;
+        flex-wrap: wrap;
+    }
+
+    .stock-card-meta > span {
+        overflow-wrap: anywhere;
+    }
+
+    .stock-card-meta > div {
+        flex-wrap: wrap;
+    }
+
+    .stock-card-actions {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        gap: 5px !important;
+    }
+
+    .stock-card-actions .btn {
+        min-width: 0;
+        padding: 7px 2px !important;
+        font-size: 10px !important;
+        white-space: nowrap;
+    }
+
+    #stocksPage .table-responsive {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 380px) {
+    .main-area {
+        padding-left: 9px !important;
+        padding-right: 9px !important;
+    }
+
+    .stocks-filter-panel,
+    .stocks-featured-chart {
+        padding: 10px !important;
+    }
+
+    .stock-card {
+        padding: 11px !important;
+    }
+
+    .stock-card-quote {
+        max-width: 100px;
+    }
+}
+
+/* Dashboard layout inspired by the supplied phone/tablet reference. */
+@media (min-width: 961px) and (max-width: 1180px) {
+    .sidebar {
+        width: 190px;
+    }
+
+    .topbar {
+        left: 190px;
+    }
+
+    .main-area {
+        margin-left: 190px;
+        padding: 20px;
+    }
+
+    .dashboard-main-grid {
+        grid-template-columns: repeat(12, minmax(0, 1fr)) !important;
+        gap: 14px;
+    }
+
+    .dashboard-primary-column {
+        grid-column: span 8;
+    }
+
+    .dashboard-secondary-column {
+        grid-column: span 4;
+    }
+
+    .oripio-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .oripio-card {
+        min-width: 0;
+        padding: 17px;
+    }
+
+    .oripio-hero-amount,
+    .oripio-white-amount {
+        font-size: clamp(21px, 2.5vw, 28px);
+        overflow-wrap: anywhere;
+    }
+
+    .triple-chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px;
+    }
+
+    .triple-chart-grid > :last-child {
+        grid-column: 1 / -1;
+    }
+
+    .chart-panel-card {
+        min-width: 0;
+        padding: 15px;
+    }
+
+    .dashboard-right-rail,
+    .dashboard-primary-column {
+        min-width: 0;
+    }
+
+    .rail-card {
+        padding: 14px;
+    }
+
+    .ai-widget-input-row {
+        min-width: 0;
+    }
+}
+
+@media (min-width: 641px) and (max-width: 960px) {
+    .sidebar {
+        width: 72px;
+    }
+
+    .brand-name,
+    .brand-sub,
+    .side-link span.label-text {
+        display: none;
+    }
+
+    .brand {
+        justify-content: center;
+    }
+
+    .side-link {
+        justify-content: center;
+    }
+
+    .topbar {
+        left: 72px;
+    }
+
+    .main-area {
+        margin-left: 72px;
+        padding: 18px;
+    }
+
+    .dashboard-main-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 16px;
+    }
+
+    .dashboard-primary-column,
+    .dashboard-secondary-column {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .oripio-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .oripio-card {
+        min-width: 0;
+        padding: 18px;
+    }
+
+    .oripio-hero-amount,
+    .oripio-white-amount {
+        font-size: clamp(22px, 3.5vw, 30px);
+        overflow-wrap: anywhere;
+    }
+
+    .triple-chart-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 12px;
+    }
+
+    .triple-chart-grid > :last-child {
+        grid-column: 1 / -1;
+    }
+
+    .operational-two-col-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .dashboard-right-rail {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 640px) {
+    #dashboardPage {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-executive-header {
+        align-items: stretch;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .executive-greeting {
+        font-size: clamp(20px, 6vw, 25px);
+        line-height: 1.2;
+        flex-wrap: wrap;
+    }
+
+    .executive-subtitle {
+        font-size: 13px;
+        line-height: 1.45;
+    }
+
+    .dashboard-header-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px !important;
+    }
+
+    .dashboard-header-actions > * {
+        min-width: 0;
+        justify-content: center;
+        white-space: nowrap;
+    }
+
+    .dashboard-header-actions > :last-child {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-main-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 16px;
+    }
+
+    .dashboard-primary-column,
+    .dashboard-secondary-column,
+    .dashboard-right-rail {
+        width: 100%;
+        min-width: 0;
+    }
+
+    .dashboard-primary-column > div[style*="margin-top"] {
+        margin-top: 16px !important;
+    }
+
+    .oripio-kpi-grid,
+    .triple-chart-grid,
+    .operational-two-col-grid,
+    .dashboard-right-rail {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 12px;
+    }
+
+    .triple-chart-grid > :last-child {
+        grid-column: auto;
+    }
+
+    .oripio-card {
+        min-height: 155px;
+        padding: 18px;
+    }
+
+    .oripio-hero-amount,
+    .oripio-white-amount {
+        font-size: clamp(25px, 8vw, 32px);
+        overflow-wrap: anywhere;
+    }
+
+    .chart-panel-card,
+    .operational-card,
+    .rail-card {
+        min-width: 0;
+        padding: 15px;
+    }
+
+    .donut-chart-row {
+        min-width: 0;
+        gap: 10px;
+    }
+
+    .donut-canvas-wrap {
+        width: min(40vw, 120px);
+        height: min(40vw, 120px);
+    }
+
+    .donut-legend {
+        min-width: 0;
+    }
+
+    .chart-canvas-wrap {
+        height: 175px;
+    }
+
+    .market-indices-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .index-block {
+        min-width: 0;
+        padding: 10px;
+    }
+
+    .index-value {
+        font-size: clamp(14px, 4vw, 18px);
+    }
+
+    .ai-widget-pills {
+        gap: 7px;
+    }
+
+    .ai-widget-pill-btn {
+        min-height: 40px;
+        white-space: normal;
+        text-align: left;
+        line-height: 1.3;
+    }
+
+    .ai-widget-input-row {
+        min-width: 0;
+    }
+
+    .ai-widget-input {
+        min-width: 0;
+        width: 100%;
+    }
+}
+
+/* Mobile navigation drawer, replacing the cramped scrolling tab strip. */
+.mobile-menu-toggle,
+.mobile-menu-heading,
+.mobile-menu-backdrop {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    body.mobile-menu-open {
+        overflow: hidden !important;
+    }
+
+    .fintrack-topbar {
+        justify-content: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .mobile-menu-toggle {
+        display: inline-flex;
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: #334155;
+        background: transparent;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        cursor: pointer;
+    }
+
+    .topbar-brand {
+        flex: 0 0 auto;
+        gap: 0 !important;
+    }
+
+    .topbar-search-form {
+        min-width: 0;
+        flex: 1 1 auto;
+        margin: 0 4px !important;
+    }
+
+    .topbar-actions {
+        flex: 0 0 auto;
+    }
+
+    .mobile-menu-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 1050;
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border: 0;
+        background: rgba(8, 15, 33, 0.58);
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+
+    .sidebar,
+    .sidebar.mobile-open {
+        position: fixed !important;
+        inset: 0 auto 0 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        width: min(84vw, 330px) !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        min-height: 0 !important;
+        padding: max(18px, env(safe-area-inset-top)) 18px max(16px, env(safe-area-inset-bottom)) !important;
+        overflow: hidden !important;
+        background: #1c294b !important;
+        border: 0 !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.12) !important;
+        border-radius: 0 20px 20px 0 !important;
+        box-shadow: 20px 0 60px rgba(4, 10, 25, 0.32) !important;
+        z-index: 1100 !important;
+        transform: translateX(-110%) !important;
+        transition: transform 240ms ease !important;
+        pointer-events: none;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0) !important;
+        pointer-events: auto;
+    }
+
+    .mobile-menu-heading {
+        display: flex !important;
+        flex: 0 0 auto;
+        align-items: center;
+        min-height: 46px;
+        margin-bottom: 8px;
+    }
+
+    .mobile-menu-close {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        min-height: 42px;
+        padding: 0 8px;
+        color: #d8e1f3;
+        background: transparent;
+        border: 0;
+        font: inherit;
+        font-size: 13px;
+        cursor: pointer;
+    }
+
+    .sidebar .brand {
+        display: flex !important;
+        flex: 0 0 auto;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 10px !important;
+        padding: 10px 4px 18px !important;
+        margin: 0 0 10px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+    }
+
+    .sidebar .brand > div,
+    .sidebar .brand-name,
+    .sidebar .brand-sub {
+        display: block !important;
+    }
+
+    .sidebar .brand-name {
+        color: #ffffff !important;
+    }
+
+    .sidebar .brand-sub {
+        color: #b6c2dc !important;
+    }
+
+    .sidebar .sidebar-nav {
+        display: flex !important;
+        flex: 1 1 auto !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        justify-content: flex-start !important;
+        gap: 3px !important;
+        min-height: 0;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 4px 0 12px !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(214, 226, 249, 0.35) transparent;
+    }
+
+    .sidebar .sidebar-section-label {
+        display: block !important;
+        flex: 0 0 auto;
+        padding: 16px 12px 6px !important;
+        margin: 0 !important;
+        color: #a9b8d5 !important;
+        font-size: 10px !important;
+        letter-spacing: 0.09em;
+    }
+
+    .sidebar .side-link {
+        display: flex !important;
+        flex: 0 0 auto !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        width: 100%;
+        min-width: 0 !important;
+        height: auto !important;
+        max-height: none !important;
+        min-height: 46px !important;
+        padding: 10px 12px !important;
+        gap: 12px !important;
+        color: #edf2ff !important;
+        background: transparent !important;
+        border-radius: 10px !important;
+        text-align: left;
+    }
+
+    .sidebar .side-link:hover {
+        background: rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .sidebar .side-link.active {
+        color: #ffffff !important;
+        background: rgba(69, 112, 190, 0.42) !important;
+        box-shadow: inset 3px 0 #34d399 !important;
+    }
+
+    .sidebar .side-link.active .side-icon svg {
+        stroke: #ffffff !important;
+    }
+
+    .sidebar .side-link span.label-text {
+        display: block !important;
+        font-size: 14px !important;
+        line-height: 1.25;
+        white-space: normal;
+    }
+
+    .sidebar .side-icon {
+        color: #cbd7ed;
+    }
+
+    .sidebar .side-badge-green {
+        display: inline-flex !important;
+        margin-left: auto;
+    }
+
+    .sidebar .sidebar-user-footer {
+        display: flex !important;
+        flex: 0 0 auto;
+        margin-top: 8px !important;
+        padding: 14px 4px max(8px, env(safe-area-inset-bottom)) !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+    }
+
+    .sidebar .sidebar-user-name {
+        color: #ffffff !important;
+    }
+
+    .sidebar .sidebar-user-role,
+    .sidebar .sidebar-user-dots-btn {
+        color: #b6c2dc !important;
+    }
+
+    .main-area {
+        padding-bottom: max(24px, env(safe-area-inset-bottom)) !important;
+    }
+}
+
+/* Keep Expenses transactions readable on narrow screens. */
+@media (max-width: 640px) {
+    #expensesPage,
+    #expensesPage .table-section,
+    #expensesPage .table-card {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #expensesPage .table-section {
+        margin-top: 14px !important;
+    }
+
+    #expensesPage .table-card {
+        padding: 12px !important;
+        overflow: hidden;
+    }
+
+    #expensesPage .txn-toolbar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    #expensesPage .toolbar-left {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        min-width: 0;
+        gap: 10px;
+    }
+
+    #expensesPage .toolbar-left .search-box,
+    #expensesPage .toolbar-left .search-box input {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #expensesPage .filter-pills {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        width: 100%;
+        gap: 6px;
+    }
+
+    #expensesPage .filter-pills .pill {
+        min-width: 0;
+        justify-content: center;
+        padding: 8px 4px;
+    }
+
+    #expensesPage .toolbar-right {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        gap: 8px !important;
+    }
+
+    #expensesPage .toolbar-right .btn {
+        min-width: 0;
+        justify-content: center;
+        padding: 9px 8px !important;
+        white-space: normal;
+        line-height: 1.2;
+    }
+
+    #expensesPage .toolbar-right .btn-primary {
+        grid-column: 1 / -1;
+    }
+
+    #expensesPage .table-responsive {
+        width: 100%;
+        overflow: visible;
+    }
+
+    #expensesPage .table-responsive > table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #expensesPage .table-responsive thead {
+        display: none;
+    }
+
+    #expensesPage #transactionTableBody {
+        display: grid;
+        gap: 10px;
+        width: 100%;
+    }
+
+    #expensesPage #transactionTableBody tr:not(.empty-row) {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "description amount"
+            "date category"
+            "action action";
+        align-items: center;
+        gap: 8px 12px;
+        width: 100%;
+        min-width: 0;
+        padding: 12px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+    }
+
+    #expensesPage #transactionTableBody tr:not(.empty-row) > td {
+        display: block;
+        width: auto;
+        min-width: 0;
+        padding: 0;
+        border: 0;
+        font-size: 13px;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+
+    #expensesPage #transactionTableBody td[data-label="Description"] {
+        grid-area: description;
+        font-weight: 650;
+        color: var(--text);
+    }
+
+    #expensesPage #transactionTableBody td[data-label="Amount"] {
+        grid-area: amount;
+        justify-self: end;
+        color: var(--expense);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow-wrap: normal;
+    }
+
+    #expensesPage #transactionTableBody td[data-label="Date"] {
+        grid-area: date;
+        color: var(--text-muted);
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    #expensesPage #transactionTableBody td[data-label="Category"] {
+        grid-area: category;
+        justify-self: end;
+    }
+
+    #expensesPage #transactionTableBody td[data-label=""] {
+        grid-area: action;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 8px;
+        border-top: 1px solid var(--border);
+    }
+
+    #expensesPage #transactionTableBody td[data-label=""]::before {
+        display: none;
+    }
+
+    #expensesPage #transactionTableBody td[data-label="Description"]::before,
+    #expensesPage #transactionTableBody td[data-label="Amount"]::before,
+    #expensesPage #transactionTableBody td[data-label="Date"]::before,
+    #expensesPage #transactionTableBody td[data-label="Category"]::before {
+        display: block;
+        content: attr(data-label);
+        margin-bottom: 4px;
+        color: var(--text-muted);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+
+    #expensesPage #transactionTableBody tr:hover td {
+        background: transparent !important;
+    }
+
+    #expensesPage #transactionTableBody .category-pill {
+        display: inline-block;
+        max-width: min(42vw, 170px);
+        padding: 4px 8px;
+        overflow: hidden;
+        font-size: 10.5px;
+        text-overflow: ellipsis;
+        vertical-align: top;
+    }
+
+    #expensesPage #transactionTableBody tr.empty-row {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: 0;
+        background: transparent;
+    }
+
+    #expensesPage #transactionTableBody tr.empty-row td {
+        display: block;
+        width: 100%;
+        padding: 26px 12px;
+        text-align: center;
+    }
+}
+
+/* Phone layout fixes for recurring bills, markets, calculators, and AI chat. */
+@media (max-width: 640px) {
+    #recurringPage,
+    #calculatorsPage,
+    #advisorPage {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: clip;
+    }
+
+    #recurringPage .page-header {
+        align-items: stretch !important;
+    }
+
+    #recurringPage .page-header > div,
+    #recurringPage .page-header > div > div {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #recurringPage .page-title {
+        font-size: clamp(19px, 5vw, 23px) !important;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    #recurringPage .page-header > .btn {
+        align-self: stretch;
+        justify-content: center;
+    }
+
+    #recurringPage .table-card {
+        min-width: 0;
+        max-width: 100%;
+        padding: 12px !important;
+    }
+
+    #recurringPage .table-responsive {
+        overflow: visible;
+    }
+
+    #recurringPage .table-responsive > table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #recurringPage .table-responsive thead {
+        display: none;
+    }
+
+    #recurringPage .table-responsive tbody {
+        display: grid;
+        gap: 10px;
+    }
+
+    #recurringPage .table-responsive tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "bill amount"
+            "category cycle"
+            "due status"
+            "actions actions";
+        align-items: center;
+        gap: 10px 12px;
+        min-width: 0;
+        padding: 12px;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+    }
+
+    #recurringPage .table-responsive tbody tr > td {
+        display: block;
+        min-width: 0;
+        padding: 0 !important;
+        border: 0 !important;
+        font-size: 12px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    #recurringPage .table-responsive tbody tr > td::before {
+        display: block;
+        content: attr(data-label);
+        margin-bottom: 4px;
+        color: var(--text-muted);
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
+
+    #recurringPage .table-responsive td[data-label="Bill"] {
+        grid-area: bill;
+        font-size: 13px;
+    }
+
+    #recurringPage .table-responsive td[data-label="Category"] {
+        grid-area: category;
+        color: var(--text-muted) !important;
+    }
+
+    #recurringPage .table-responsive td[data-label="Amount"] {
+        grid-area: amount;
+        justify-self: end;
+        color: #dc2626 !important;
+        font-size: 14px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    #recurringPage .table-responsive td[data-label="Cycle"] {
+        grid-area: cycle;
+        justify-self: end;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    #recurringPage .table-responsive td[data-label="Next due"] {
+        grid-area: due;
+    }
+
+    #recurringPage .table-responsive td[data-label="Status"] {
+        grid-area: status;
+        justify-self: end;
+    }
+
+    #recurringPage .table-responsive td[data-label="Actions"] {
+        grid-area: actions;
+        display: flex;
+        justify-content: flex-end;
+        padding-top: 8px !important;
+        border-top: 1px solid var(--border) !important;
+    }
+
+    #recurringPage .table-responsive td[data-label="Actions"] > div {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    #recurringPage .table-responsive tbody tr:has(td[colspan]) {
+        display: block;
+        padding: 22px 12px;
+    }
+
+    #recurringPage .table-responsive tbody td[colspan]::before {
+        display: none;
+        content: none;
+    }
+
+    /* Use two full cards per row instead of cutting the third market index. */
+    #stocksPage .stocks-market-indices {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+        overflow: visible !important;
+        padding: 4px 0 8px !important;
+    }
+
+    #stocksPage .stocks-market-indices > .table-card {
+        min-width: 0;
+        width: 100%;
+        padding: 11px !important;
+        overflow-wrap: anywhere;
+    }
+
+    #stocksPage .stocks-page-header > div:last-child {
+        display: grid !important;
+        grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+        gap: 8px !important;
+    }
+
+    #stocksPage .stocks-page-header > div:last-child .btn {
+        min-width: 0;
+        padding: 9px 7px !important;
+        font-size: 11px !important;
+        line-height: 1.25;
+    }
+
+    #stocksPage .stocks-page-heading .page-subtitle > span {
+        display: inline-flex;
+        max-width: 100%;
+        margin: 8px 0 0 !important;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        vertical-align: top;
+    }
+
+    #stocksPage .stocks-featured-chart {
+        width: 100%;
+        min-width: 0;
+        overflow: hidden;
+        padding: 12px !important;
+    }
+
+    #stocksPage .stocks-featured-chart > div:first-child {
+        align-items: stretch !important;
+        flex-direction: column;
+    }
+
+    #stocksPage .stocks-featured-chart > div:first-child > div:last-child {
+        display: flex !important;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px !important;
+    }
+
+    #stocksPage .stocks-featured-content > div:first-child > div:nth-child(2) {
+        font-size: clamp(25px, 8vw, 32px) !important;
+        overflow-wrap: anywhere;
+    }
+
+    #stocksPage .stocks-featured-content > div:last-child,
+    #stocksPage .stocks-featured-content svg {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    /* Keep calculator tabs, cards, and slider readouts inside the viewport. */
+    #calculatorsPage .calc-type-switcher {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px !important;
+        margin-bottom: 16px !important;
+    }
+
+    #calculatorsPage .calc-type-switcher .pill {
+        min-width: 0;
+        min-height: 42px;
+        justify-content: center;
+        padding: 7px 5px !important;
+        font-size: 11px !important;
+        line-height: 1.25;
+        text-align: center;
+        white-space: normal;
+    }
+
+    #calculatorsPage .calculator-workspace-grid {
+        grid-template-columns: minmax(0, 1fr) !important;
+        gap: 14px !important;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #calculatorsPage .calculator-workspace-grid > * {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        padding: 17px !important;
+        box-sizing: border-box;
+    }
+
+    #calculatorsPage .calc-slider-group,
+    #calculatorsPage .calc-slider-group > div:first-child {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #calculatorsPage .calc-slider-group > div:first-child {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) minmax(72px, 42%);
+        align-items: start !important;
+        gap: 6px 8px;
+    }
+
+    #calculatorsPage .calc-slider-group > div:first-child label {
+        min-width: 0;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    #calculatorsPage .calc-slider-group > div:first-child span {
+        min-width: 0;
+        max-width: 100%;
+        justify-self: end;
+        font-size: clamp(13px, 4vw, 17px) !important;
+        text-align: right;
+        overflow-wrap: anywhere;
+    }
+
+    #calculatorsPage .calc-slider-group input[type="range"] {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    #calculatorsPage .calculator-workspace-grid h3 {
+        font-size: 17px !important;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    #calculatorsPage .calculator-workspace-grid [style*="font-size: 36px"] {
+        font-size: clamp(24px, 7vw, 32px) !important;
+        overflow-wrap: anywhere;
+    }
+
+    /* Stack AI assistant identity, status badges, and reset action. */
+    #advisorPage .ai-chatbot-card {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        height: min(680px, calc(100dvh - 220px));
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #advisorPage .ai-chat-header {
+        position: relative;
+        z-index: 1;
+        flex: 0 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 14px !important;
+    }
+
+    #advisorPage .ai-chat-brand {
+        align-items: flex-start;
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #advisorPage .ai-chat-brand > div:last-child {
+        flex: 1;
+        min-width: 0;
+    }
+
+    #advisorPage .ai-chat-brand > div:last-child > div:first-child {
+        display: flex !important;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 6px !important;
+    }
+
+    #advisorPage .ai-chat-brand h3 {
+        flex: 1 0 100%;
+        min-width: 0;
+        font-size: 16px !important;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+    }
+
+    #advisorPage .ai-chat-header > .btn {
+        align-self: stretch;
+        justify-content: center;
+        width: 100%;
+        background: #059669 !important;
+        border-color: #059669 !important;
+        color: #ffffff !important;
+    }
+
+    #advisorPage .ai-chat-body {
+        position: relative;
+        flex: 1 1 0;
+        min-height: 0;
+        min-width: 0;
+        padding: 14px !important;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+
+    #advisorPage .ai-quick-prompts {
+        flex: 0 0 auto;
+        padding: 10px 14px !important;
+    }
+
+    #advisorPage .prompts-list {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 7px;
+        max-height: 112px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 8px 2px 4px;
+        scrollbar-width: thin;
+    }
+
+    #advisorPage .ai-prompt-pill {
+        min-width: 0;
+        min-height: 36px;
+        padding: 7px 9px;
+        white-space: normal;
+        line-height: 1.25;
+        text-align: left;
+        overflow-wrap: anywhere;
+    }
+
+    #advisorPage .ai-chat-footer {
+        flex: 0 0 auto;
+    }
+}
+
+/* Bring the phone drawer into the same emerald palette as the FinTracker UI. */
+@media (max-width: 640px) {
+    .sidebar,
+    .sidebar.mobile-open {
+        background: linear-gradient(165deg, #047857 0%, #065f46 58%, #064e3b 100%) !important;
+        border-right-color: rgba(167, 243, 208, 0.28) !important;
+    }
+
+    .sidebar .brand-name span {
+        color: #a7f3d0 !important;
+    }
+
+    .sidebar .side-link.active {
+        background: rgba(167, 243, 208, 0.18) !important;
+        box-shadow: inset 3px 0 #a7f3d0 !important;
+    }
+
+    .sidebar .side-link:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .sidebar .sidebar-section-label {
+        color: #b7e4d2 !important;
+    }
+
+    .sidebar .mobile-menu-close,
+    .sidebar .side-link,
+    .sidebar .side-icon {
+        color: #f0fdf4 !important;
+    }
+
+    .sidebar .sidebar-user-footer {
+        border-top-color: rgba(167, 243, 208, 0.28) !important;
+    }
+
+    .topbar-search-input {
+        min-width: 0;
+        font-size: 12px !important;
+        text-overflow: ellipsis;
+    }
+}
+
+@media (max-width: 640px) {
+    /* The Actions label was participating in the button row and pushing the
+       Pay & Log and delete buttons out of alignment. */
+    #recurringPage .table-responsive td[data-label="Actions"]::before {
+        display: none !important;
+        content: none !important;
+    }
+
+    #recurringPage .table-responsive td[data-label="Actions"] > div {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 42px;
+        width: 100%;
+        gap: 8px !important;
+    }
+
+    #recurringPage .table-responsive td[data-label="Actions"] button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        min-height: 40px;
+        padding: 6px !important;
+        white-space: nowrap;
+    }
+
+    #recurringPage .table-responsive td[data-label="Actions"] button:last-child {
+        width: 42px;
+    }
+
+    /* Wrap pagination controls instead of letting them widen the Stocks page. */
+    #stocksPage .stocks-pagination {
+        align-items: stretch !important;
+        justify-content: center !important;
+        width: 100%;
+        min-width: 0;
+        padding: 10px !important;
+        gap: 8px !important;
+    }
+
+    #stocksPage .stocks-pagination > div:first-child {
+        width: 100%;
+        text-align: center;
+        font-size: 11px !important;
+        line-height: 1.35;
+    }
+
+    #stocksPage .stocks-pagination-controls {
+        display: flex !important;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        min-width: 0;
+        gap: 5px !important;
+    }
+
+    #stocksPage .stocks-pagination-controls > button:first-child,
+    #stocksPage .stocks-pagination-controls > button:last-child {
+        display: none !important;
+    }
+
+    #stocksPage .stocks-pagination-controls .btn {
+        min-width: 34px;
+        min-height: 38px;
+        padding: 6px 8px !important;
+        font-size: 11px !important;
+    }
+
+    #stocksPage .stocks-pagination-controls .stocks-page-number {
+        min-width: 34px !important;
+        padding-right: 7px !important;
+        padding-left: 7px !important;
+    }
+
+    /* Goal actions become a tidy two-column control group. */
+    #goalsPage .page-header {
+        align-items: stretch !important;
+    }
+
+    #goalsPage .page-header > div:first-child {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    #goalsPage .page-title {
+        font-size: clamp(19px, 5vw, 23px) !important;
+        line-height: 1.2;
+        overflow-wrap: anywhere;
+    }
+
+    #goalsPage .goals-header-actions {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        min-width: 0;
+        gap: 8px !important;
+    }
+
+    #goalsPage .goals-header-actions .btn {
+        width: 100%;
+        min-width: 0;
+        min-height: 48px;
+        justify-content: center;
+        padding: 8px 7px !important;
+        font-size: 11px !important;
+        line-height: 1.25;
+        text-align: center;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    #goalsPage .goals-header-actions .btn-primary {
+        grid-column: 1 / -1;
+    }
+
+    #goalsPage .goals-header-actions .btn-secondary:first-child {
+        color: #047857 !important;
+        border-color: #a7f3d0 !important;
+        background: #ecfdf5 !important;
+    }
+
+    #goalsPage .page-header > div:last-child {
+        width: 100%;
+    }
+
+    /* Render the year-by-year schedule as cards so every field stays visible. */
+    #calculatorsPage .yearly-growth-card {
+        width: 100%;
+        min-width: 0;
+        padding: 14px !important;
+        overflow: hidden;
+    }
+
+    #calculatorsPage .yearly-growth-card h3 {
+        margin-bottom: 12px !important;
+        font-size: 16px !important;
+        line-height: 1.3;
+        overflow-wrap: anywhere;
+    }
+
+    #calculatorsPage .yearly-growth-table-wrap {
+        width: 100%;
+        overflow: visible;
+    }
+
+    #calculatorsPage .yearly-growth-table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+    }
+
+    #calculatorsPage .yearly-growth-table thead {
+        display: none;
+    }
+
+    #calculatorsPage .yearly-growth-table tbody {
+        display: grid;
+        gap: 8px;
+        width: 100%;
+    }
+
+    #calculatorsPage .yearly-growth-table tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+        padding: 8px;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 10px;
+    }
+
+    #calculatorsPage .yearly-growth-table tbody td {
+        display: block;
+        min-width: 0;
+        padding: 6px !important;
+        border: 0 !important;
+        font-size: 12px;
+        line-height: 1.35;
+        overflow-wrap: anywhere;
+    }
+
+    #calculatorsPage .yearly-growth-table tbody td::before {
+        display: block;
+        content: attr(data-label);
+        margin-bottom: 4px;
+        color: #64748b;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        line-height: 1.2;
+        text-transform: uppercase;
+    }
 }

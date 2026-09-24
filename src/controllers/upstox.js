@@ -361,22 +361,56 @@ exports.getLtp = async (req, res) => {
 exports.getCandles = async (req, res) => {
     try {
         const user = await User.findById(req.user.sub);
-        const { instrumentKey, interval = '1d', to_date, from_date } = req.query;
+        if (!user || !user.upstoxAccessToken) {
+            return res.status(401).json({ error: 'Upstox is not connected. Reconnect it in Settings.' });
+        }
 
-        const url = from_date
-            ? `https://api.upstox.com/v2/historical-candle/${encodeURIComponent(instrumentKey)}/${interval}/${to_date}/${from_date}`
-            : `https://api.upstox.com/v2/historical-candle/intraday/${encodeURIComponent(instrumentKey)}/${interval}`;
+        const { instrumentKey, interval = 'day', to_date, from_date } = req.query;
+        if (typeof instrumentKey !== 'string' || !/^(NSE_EQ|BSE_EQ|NSE_INDEX|BSE_INDEX)\|[A-Za-z0-9 .:_-]+$/i.test(instrumentKey)) {
+            return res.status(400).json({ error: 'A valid Upstox instrumentKey is required.' });
+        }
 
-        const response = await fetch(url, {
+        // Upstox v3 replaces the deprecated v2 candle endpoints and represents
+        // the candle size as a unit plus a numeric interval.
+        const intervals = {
+            '1minute': { unit: 'minutes', value: '1' },
+            '30minute': { unit: 'minutes', value: '30' },
+            day: { unit: 'days', value: '1' },
+        };
+        const candleInterval = intervals[interval];
+        if (!candleInterval) {
+            return res.status(400).json({ error: 'Supported candle intervals are 1minute, 30minute, and day.' });
+        }
+
+        const validDate = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`));
+        const endDate = to_date || new Date().toISOString().slice(0, 10);
+        if (from_date && (!validDate(from_date) || !validDate(endDate) || from_date > endDate)) {
+            return res.status(400).json({ error: 'Candle dates must be valid YYYY-MM-DD dates with from_date on or before to_date.' });
+        }
+
+        const instrument = encodeURIComponent(instrumentKey);
+        const path = from_date
+            ? `/v3/historical-candle/${instrument}/${candleInterval.unit}/${candleInterval.value}/${endDate}/${from_date}`
+            : `/v3/historical-candle/intraday/${instrument}/${candleInterval.unit}/${candleInterval.value}`;
+        const response = await fetch(`https://api.upstox.com${path}`, {
             headers: {
                 'Accept': 'application/json',
-                ...(user && user.upstoxAccessToken ? { 'Authorization': `Bearer ${user.upstoxAccessToken}` } : {})
+                'Authorization': `Bearer ${user.upstoxAccessToken}`
             }
         });
 
-        const data = await response.json();
+        const data = await parseResponse(response);
+        if (!response.ok) {
+            const message = data.errors?.[0]?.message || data.message || 'Upstox could not return historical candles.';
+            if (response.status === 401) {
+                user.upstoxAccessToken = undefined;
+                await user.save();
+            }
+            return res.status(response.status).json({ error: message });
+        }
         res.status(response.status).json(data);
     } catch (err) {
+        console.error('Upstox candles error:', err.message);
         res.status(500).json({ error: 'Failed to fetch candles' });
     }
 };

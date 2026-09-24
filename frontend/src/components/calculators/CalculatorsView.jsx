@@ -233,7 +233,7 @@ export default function CalculatorsView({ defaultTab = 'sip' }) {
             </div>
 
             {/* Quick Switcher Tabs */}
-            <div className="filter-pills" style={{ margin: '0 0 24px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+            <div className="filter-pills calc-type-switcher" style={{ margin: '0 0 24px', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                 <button
                     className={`pill ${calcType === 'sip' ? 'active' : ''}`}
                     onClick={() => setCalcType('sip')}
@@ -276,7 +276,7 @@ export default function CalculatorsView({ defaultTab = 'sip' }) {
                 <LoanEligibilityView embedded={true} />
             ) : (
                 <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '24px', alignItems: 'start' }}>
+                    <div className="calculator-workspace-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(380px, 1fr))', gap: '24px', alignItems: 'start' }}>
 
                         {/* LEFT: Inputs & Sliders */}
                         <div className="oripio-card oripio-white-card" style={{ padding: '24px', minHeight: 'auto' }}>
@@ -1151,12 +1151,12 @@ export default function CalculatorsView({ defaultTab = 'sip' }) {
 
                     {/* Expandable Year-by-Year Growth Schedule */}
                     {showGrowthTable && (
-                        <div className="oripio-card oripio-white-card" style={{ marginTop: '24px', padding: '24px', minHeight: 'auto' }}>
+                        <div className="oripio-card oripio-white-card yearly-growth-card" style={{ marginTop: '24px', padding: '24px', minHeight: 'auto' }}>
                             <h3 style={{ margin: '0 0 16px', fontSize: '17px', fontWeight: '700', color: '#0F172A' }}>
                                 Yearly Compounding Breakdown
                             </h3>
-                            <div className="table-responsive">
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <div className="table-responsive yearly-growth-table-wrap">
+                                <table className="yearly-growth-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E8F0' }}>
                                             <th style={{ padding: '12px 16px', textAlign: 'left', color: '#475569', fontSize: '12px', fontWeight: '600' }}>Year</th>

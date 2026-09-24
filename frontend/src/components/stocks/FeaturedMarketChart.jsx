@@ -19,9 +19,8 @@ const TIMEFRAMES = {
 };
 
 function upstoxDate(date) {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    return `${day}-${month}-${date.getFullYear()}`;
+    // Upstox historical candle endpoints require YYYY-MM-DD.
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 }
 
 function candleValues(candles = []) {
@@ -36,6 +35,7 @@ export default function FeaturedMarketChart() {
     const [timeframe, setTimeframe] = useState('1D');
     const [quote, setQuote] = useState(null);
     const [candles, setCandles] = useState([]);
+    const [quoteSamples, setQuoteSamples] = useState([]);
     const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('Checking Upstox connection…');
@@ -68,6 +68,10 @@ export default function FeaturedMarketChart() {
         if (!connected) return undefined;
         let active = true;
         let inFlight = false;
+        setQuote(null);
+        setCandles([]);
+        setQuoteSamples([]);
+        setLastUpdated(null);
 
         const refresh = async () => {
             if (inFlight) return;
@@ -75,7 +79,7 @@ export default function FeaturedMarketChart() {
             setLoading(true);
             setError('Loading live Upstox data…');
             try {
-                const [quoteData, candleData] = await Promise.all([
+                const [quoteData, candleResult] = await Promise.all([
                     fetchQuotes([selectedItem.key]),
                     (async () => {
                         const range = TIMEFRAMES[timeframe];
@@ -84,7 +88,7 @@ export default function FeaturedMarketChart() {
                         const from = new Date(to);
                         from.setDate(from.getDate() - range.days);
                         return fetchCandles(selectedItem.key, range.interval, upstoxDate(from), upstoxDate(to));
-                    })(),
+                    })().catch(candleError => ({ error: candleError.message })),
                 ]);
                 if (!active) return;
 
@@ -110,9 +114,14 @@ export default function FeaturedMarketChart() {
                     high: Number(liveQuote?.ohlc?.high),
                     low: Number(liveQuote?.ohlc?.low),
                 });
+                const sample = { time: new Date().toISOString(), value: lastPrice, high: lastPrice, low: lastPrice };
+                setQuoteSamples(previous => [...previous, sample].slice(-120));
+                const candleData = Array.isArray(candleResult) ? candleResult : [];
                 setCandles(candleValues(candleData));
                 setLastUpdated(new Date());
-                setError(candleData?.length ? '' : 'Live quote received · chart candles are unavailable');
+                setError(candleResult?.error
+                    ? `Live quote received · chart candles unavailable: ${candleResult.error}`
+                    : candleData.length ? '' : 'Live quote graph · collecting real Upstox quote samples (updates every 15 sec)');
             } catch (err) {
                 if (active) {
                     setQuote(null);
@@ -135,17 +144,21 @@ export default function FeaturedMarketChart() {
     }, [connected, selectedItem, timeframe]);
 
     const chart = useMemo(() => {
-        if (!candles.length) return null;
-        const values = candles.map(candle => candle.value);
-        const low = Math.min(...candles.map(candle => Number.isFinite(candle.low) ? candle.low : candle.value));
-        const high = Math.max(...candles.map(candle => Number.isFinite(candle.high) ? candle.high : candle.value));
+        const source = candles.length ? candles : quoteSamples;
+        if (!source.length) return null;
+        const values = source.map(candle => candle.value);
+        const dataLow = Math.min(...source.map(candle => Number.isFinite(candle.low) ? candle.low : candle.value));
+        const dataHigh = Math.max(...source.map(candle => Number.isFinite(candle.high) ? candle.high : candle.value));
+        const flatPadding = dataHigh === dataLow ? Math.max(Math.abs(dataLow) * 0.001, 0.01) : 0;
+        const low = dataLow - flatPadding;
+        const high = dataHigh + flatPadding;
         const width = 600;
         const height = 150;
         const padX = 10;
         const padY = 15;
         const span = high - low || 1;
-        const points = candles.map((candle, index) => {
-            const x = padX + (index / Math.max(1, candles.length - 1)) * (width - 2 * padX);
+        const points = source.map((candle, index) => {
+            const x = padX + (index / Math.max(1, source.length - 1)) * (width - 2 * padX);
             const y = padY + (height - 2 * padY) - ((candle.value - low) / span) * (height - 2 * padY);
             return { x, y, candle };
         });
@@ -153,11 +166,13 @@ export default function FeaturedMarketChart() {
             low,
             high,
             points: points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' '),
-            area: `${points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ')} ${width - padX},${height - padY} ${padX},${height - padY}`,
+            area: source.length > 1 ? `${points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ')} ${width - padX},${height - padY} ${padX},${height - padY}` : '',
             lastPoint: points.at(-1),
             values,
+            sampleMode: candles.length === 0,
+            count: source.length,
         };
-    }, [candles]);
+    }, [candles, quoteSamples]);
 
     const isUp = quote?.change != null && quote.change >= 0;
     const color = quote?.change == null ? '#64748b' : isUp ? '#10b981' : '#ef4444';
@@ -165,7 +180,7 @@ export default function FeaturedMarketChart() {
     const formatPrice = value => Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     return (
-        <div className="table-card" style={{ padding: '18px 22px', marginTop: '16px', borderRadius: '14px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
+        <div className="table-card stocks-featured-chart" style={{ padding: '18px 22px', marginTop: '16px', borderRadius: '14px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
                 <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '2px' }}>
                     {FEATURED_ITEMS.map(item => (
@@ -190,7 +205,7 @@ export default function FeaturedMarketChart() {
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 1fr) 2fr', gap: '20px', alignItems: 'center' }}>
+            <div className="stocks-featured-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 1fr) 2fr', gap: '20px', alignItems: 'center' }}>
                 <div>
                     <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600 }}>{selectedItem.name} {selectedItem.symbol ? `(${selectedItem.symbol})` : 'Index'}</div>
                     {quote ? <>
@@ -209,21 +224,22 @@ export default function FeaturedMarketChart() {
 
                 <div style={{ width: '100%', position: 'relative' }}>
                     {chart ? <>
-                        <svg viewBox="0 0 600 150" style={{ width: '100%', height: '140px', overflow: 'visible', display: 'block' }} aria-label={`${selectedItem.name} price chart based on Upstox candles`}>
+                        <svg viewBox="0 0 600 150" style={{ width: '100%', height: '140px', overflow: 'visible', display: 'block' }} aria-label={`${selectedItem.name} live price chart from Upstox`}>
                             <defs><linearGradient id={gradId} x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor={color} stopOpacity="0.28" /><stop offset="100%" stopColor={color} stopOpacity="0" /></linearGradient></defs>
                             <line x1="10" y1="15" x2="590" y2="15" stroke="var(--border)" strokeDasharray="3 3" />
                             <line x1="10" y1="75" x2="590" y2="75" stroke="var(--border)" strokeDasharray="3 3" />
                             <line x1="10" y1="135" x2="590" y2="135" stroke="var(--border)" strokeDasharray="3 3" />
-                            <polygon points={chart.area} fill={`url(#${gradId})`} />
+                            {chart.area && <polygon points={chart.area} fill={`url(#${gradId})`} />}
+                            {chart.sampleMode && chart.count === 1 && <line x1="10" y1={chart.lastPoint.y} x2="590" y2={chart.lastPoint.y} stroke={color} strokeWidth="2" strokeDasharray="5 5" opacity="0.55" />}
                             <polyline fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={chart.points} />
                             {chart.lastPoint && <circle cx={chart.lastPoint.x} cy={chart.lastPoint.y} r="4" fill={color} stroke="var(--card-bg)" strokeWidth="1.5" />}
                         </svg>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px', fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
                             <span>{chart.lastPoint?.candle.time ? new Date(chart.lastPoint.candle.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
-                            <span>{timeframe} · {candles.length} Upstox candles</span>
+                            <span>{chart.sampleMode ? `Live quote samples · ${chart.count}` : `${timeframe} · ${chart.count} Upstox candles`}</span>
                             <span>{lastUpdated ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
                         </div>
-                    </> : <div style={{ height: '140px', display: 'grid', placeItems: 'center', color: 'var(--text-muted)', border: '1px dashed var(--border)', borderRadius: '8px', fontSize: '13px' }}>{connected ? 'No historical candles available for this range' : 'Connect Upstox to view verified prices and chart'}</div>}
+                    </> : <div style={{ height: '140px', display: 'grid', placeItems: 'center', color: 'var(--text-muted)', border: '1px dashed var(--border)', borderRadius: '8px', fontSize: '13px' }}>{!connected ? 'Connect Upstox to view verified prices and chart' : loading ? 'Loading live market graph…' : 'Waiting for a live Upstox quote…'}</div>}
                 </div>
             </div>
         </div>

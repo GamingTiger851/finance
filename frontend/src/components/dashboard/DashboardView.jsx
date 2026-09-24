@@ -40,7 +40,7 @@ export default function DashboardView({ onNavigate }) {
                         Here's your financial overview for this month.
                     </p>
                 </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                <div className="dashboard-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                     <button
                         type="button"
                         onClick={() => showConfirm(

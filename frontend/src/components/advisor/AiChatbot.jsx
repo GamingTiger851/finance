@@ -6,10 +6,17 @@ import { getAuthHeaders } from '../../services/authToken';
 
 const QUICK_PROMPTS = [
     'How can I reduce my expenses?',
-    'Explain SIP in simple terms',
-    'Which stocks are halal?',
-    'How much loan can I get?',
-    'Analyze my current spending habits'
+    'Analyze my monthly spending by category',
+    'How much did I save this month?',
+    'Create a simple monthly budget for me',
+    'How can I build an emergency fund?',
+    'Which recurring bills could I review?',
+    'How much should I save each month?',
+    'Explain SIP investing in simple terms',
+    'What should I know before taking a loan?',
+    'How can I reach my savings goal faster?',
+    'What is the difference between income and cash flow?',
+    'Explain investment risk and diversification'
 ];
 
 export default function AiChatbot() {
@@ -29,7 +36,7 @@ export default function AiChatbot() {
     const [inputValue, setInputValue] = useState('');
     const [isTyping, setIsTyping] = useState(false);
     const [geminiConfigured, setGeminiConfigured] = useState(false);
-    const messagesEndRef = useRef(null);
+    const chatBodyRef = useRef(null);
 
     useEffect(() => {
         let active = true;
@@ -41,10 +48,21 @@ export default function AiChatbot() {
     }, []);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        const body = chatBodyRef.current;
+        if (body) body.scrollTo({ top: body.scrollHeight, behavior: 'smooth' });
     };
 
     useEffect(() => {
+        const body = chatBodyRef.current;
+        if (!body) return;
+
+        // Keep the one-message welcome/reset state pinned to the top. Calling
+        // scrollIntoView here used to scroll the page as well as the chat pane,
+        // leaving the greeting tucked underneath the header.
+        if (messages.length <= 1 && !isTyping) {
+            body.scrollTop = 0;
+            return;
+        }
         scrollToBottom();
     }, [messages, isTyping]);
 
@@ -52,11 +70,19 @@ export default function AiChatbot() {
     const generateAiResponse = async (query, history = []) => {
         const lower = query.toLowerCase().trim();
         const totals = calculateTotals();
-        const savingsRate = totals.income > 0 ? ((totals.balance / totals.income) * 100).toFixed(1) : '0';
+        const now = new Date();
+        const monthTransactions = transactions.filter(transaction => {
+            const date = new Date(transaction.date);
+            return !Number.isNaN(date.getTime()) && date.getFullYear() === now.getFullYear() && date.getMonth() === now.getMonth();
+        });
+        const monthIncome = monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + Number(t.amount || 0), 0);
+        const monthExpenses = monthTransactions.filter(t => t.type === 'expense').reduce((sum, t) => sum + Number(t.amount || 0), 0);
+        const monthBalance = monthIncome - monthExpenses;
+        const savingsRate = monthIncome > 0 ? ((monthBalance / monthIncome) * 100).toFixed(1) : '0';
 
         // Compute category breakdown from actual transactions
         const categoryMap = {};
-        transactions.filter(t => t.type === 'expense').forEach(t => {
+        monthTransactions.filter(t => t.type === 'expense').forEach(t => {
             categoryMap[t.category] = (categoryMap[t.category] || 0) + t.amount;
         });
         const topCategories = Object.entries(categoryMap)
@@ -76,6 +102,10 @@ export default function AiChatbot() {
                         expenses: totals.expense,
                         balance: totals.balance,
                         savingsRate: Number(savingsRate),
+                        period: now.toLocaleString(undefined, { month: 'long', year: 'numeric' }),
+                        periodIncome: monthIncome,
+                        periodExpenses: monthExpenses,
+                        periodBalance: monthBalance,
                         topCategories: topCategories.map(([name, amount]) => ({ name, amount })),
                     },
                 }),
@@ -103,40 +133,30 @@ export default function AiChatbot() {
         }
 
         if (lower.includes('sip') || lower.includes('systematic investment')) {
-            return `**SIP (Systematic Investment Plan)** is one of the most effective ways to build long-term wealth! 📈\n\n` +
+            return `**SIP (Systematic Investment Plan)** means investing a fixed amount at regular intervals, often monthly. 📈\n\n` +
                 `• **What it is**: Instead of investing a large lump sum at once, you invest a fixed amount regularly (e.g., $100 or ₹2,000 every month).\n` +
-                `• **Rupee/Dollar Cost Averaging**: When markets fall, your fixed amount buys more units. When markets rise, your portfolio appreciates.\n` +
-                `• **Compounding Power**: An investment of $200/month at a 12% expected annual return grows to over **$20,000 in 5 years** and **$60,000 in 10 years**!\n\n` +
-                `👉 *Tip: Head to our **Investment Planner** tab right here to calculate your optimal allocation across equities and funds.*`;
+                `• Your regular contribution buys more units when prices are lower and fewer when they are higher; this does not prevent investment losses.\n` +
+                `• Returns are uncertain and are not guaranteed. The outcome depends on contribution, fees, investment choice, and market performance. Use the Investment Planner to compare assumptions, not as a promise of results.`;
         }
 
         if (lower.includes('halal') || lower.includes('shariah') || lower.includes('islamic')) {
-            return `**Halal Stock & Investment Guidelines** 🕌\n\n` +
-                `To qualify as Shariah-compliant under **AAOIFI** and **MSCI Islamic** standards, a company must pass two essential screens:\n\n` +
-                `1. **Business Activity Screen**: The company must NOT operate in restricted sectors (conventional banking/interest, alcohol, gambling, adult entertainment, tobacco, defense).\n` +
-                `2. **Financial Ratio Screen**:\n` +
-                `   • Total Debt / Market Cap: **< 30%** (or 33.3% for MSCI)\n` +
-                `   • Interest-Bearing Cash & Securities: **< 30%**\n` +
-                `   • Non-Permissible Revenue: **< 5%**\n\n` +
-                `🔍 *Tip: You can use our interactive **Halal Screen** tab on the left sidebar to audit any stock symbol with detailed purification calculations!*`;
+            return `Shariah-compliant investing usually screens both a company's business activities and financial ratios, but the exact rules and thresholds vary by standard and may change.\n\n` +
+                `I can't verify a stock's current status without up-to-date company data and the screening standard you follow. Check a current Shariah screening service or qualified scholar, and review any purification guidance before investing.`;
         }
 
         if (lower.includes('loan') || lower.includes('borrow') || lower.includes('credit')) {
-            const maxPayment = totals.income > 0 ? totals.income * 0.4 : 2000;
             return `**Loan Eligibility Assessment for ${userName}** 💳\n\n` +
-                `Based on your recorded monthly income of **${formatAmount(totals.income, currency)}**:\n\n` +
-                `• **40% Debt-to-Income (DTI) Guideline**: Financial institutions generally recommend that your total monthly loan EMIs do not exceed **${formatAmount(maxPayment, currency)}**.\n` +
-                `• **Credit Score Requirements**: A score of **720+** secures the best interest rates, while 650–719 is considered fair.\n` +
-                `• **Key Factors**: Stable employment tenure (2+ years), manageable credit utilization (< 30%), and collateral value.\n\n` +
-                `👉 *Test exact amounts and collateral coverage using the **Loan Assessment** tab above!*`;
+                `I can't estimate an approval amount from the transaction totals alone. Lenders also consider your country, verified monthly income, existing debt payments, credit history, loan term, and interest rate.\n\n` +
+                `Share your monthly take-home income, current monthly debt payments, requested term, and expected rate, and I can calculate an illustrative payment. A lender makes the actual approval decision.`;
         }
 
-        if (lower.includes('analyze') || lower.includes('budget') || lower.includes('habit') || lower.includes('financial status')) {
+        if (lower.includes('analyze') || lower.includes('budget') || lower.includes('habit') || lower.includes('financial status') || lower.includes('this month') || lower.includes('monthly spending') || lower.includes('how much did i save')) {
             return `📊 **Your Financial Snapshot**:\n\n` +
-                `• **Total Balance**: ${formatAmount(totals.balance, currency)}\n` +
-                `• **Total Inflow (Income)**: ${formatAmount(totals.income, currency)}\n` +
-                `• **Total Outflow (Expense)**: ${formatAmount(totals.expense, currency)}\n` +
-                `• **Net Savings Rate**: **${savingsRate}%**\n\n` +
+                `• **${now.toLocaleString(undefined, { month: 'long', year: 'numeric' })} income recorded**: ${formatAmount(monthIncome, currency)}\n` +
+                `• **Expenses recorded**: ${formatAmount(monthExpenses, currency)}\n` +
+                `• **Net for the month**: ${formatAmount(monthBalance, currency)}\n` +
+                (topCategories.length ? `• **Top expense categories this month**: ${topCategories.map(([cat, amt]) => `${cat} (${formatAmount(amt, currency)})`).join(', ')}\n` : '') +
+                `• **Savings rate**: ${monthIncome > 0 ? `${savingsRate}%` : 'not available because no income is recorded for this month'}\n\n` +
                 (Number(savingsRate) >= 20
                     ? `🌟 *Outstanding job! Your savings rate is above the recommended 20% baseline.*`
                     : `⚠️ *Consider trimming discretionary expenses to push your savings rate to at least 20%.*`);
@@ -271,7 +291,7 @@ export default function AiChatbot() {
             </div>
 
             {/* Messages Body */}
-            <div className="ai-chat-body">
+            <div className="ai-chat-body" ref={chatBodyRef}>
                 {messages.map((msg) => (
                     <div key={msg.id} className={`ai-chat-msg ${msg.sender}`}>
                         {msg.sender === 'bot' && (
@@ -326,7 +346,6 @@ export default function AiChatbot() {
                         </div>
                     </div>
                 )}
-                <div ref={messagesEndRef} />
             </div>
 
             {/* Quick Prompts Bar */}
