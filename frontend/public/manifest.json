@@ -1,0 +1,27 @@
+{
+  "id": "/",
+  "short_name": "FinTracker AI",
+  "name": "FinTracker AI — Smart Wealth & Investment",
+  "description": "Professional wealth, expense management, stocks exploration and financial planning application.",
+  "icons": [
+    {
+      "src": "/pwa-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "start_url": "/",
+  "scope": "/",
+  "background_color": "#04100d",
+  "theme_color": "#04100d",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "categories": ["finance", "productivity", "utilities"]
+}

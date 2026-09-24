@@ -1,0 +1,20 @@
+node_modules/
+.env
+coverage/
+*.log
+
+# Test files with API keys
+test-speed.js
+test-gemini.js
+find-flash.js
+
+# Frontend build checks
+frontend/.dashboard-reset-check/
+frontend/.upstox-stock-check/
+frontend/.theme-removal-check/
+frontend/.transaction-glow-check/
+.codex-build-check/
+frontend/.theme-build-check/
+list-gen-models.js
+.*-check/
+list-models.js
