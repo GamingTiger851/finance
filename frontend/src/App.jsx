@@ -38,6 +38,24 @@ function MainLayout() {
         return () => document.body.classList.remove('mobile-menu-open');
     }, [isMobileMenuOpen]);
 
+    const handleGlobalSearch = (query) => {
+        const q = query.toLowerCase().trim();
+        if (q.includes('dashboard') || q.includes('home')) setCurrentPage('dashboard');
+        else if (q.includes('expense') || q.includes('transaction')) setCurrentPage('expenses');
+        else if (q.includes('budget') || q.includes('plan')) setCurrentPage('budget');
+        else if (q.includes('analytic') || q.includes('chart')) setCurrentPage('analytics');
+        else if (q.includes('recurring') || q.includes('subscription')) setCurrentPage('recurring');
+        else if (q.includes('report') || q.includes('summary')) setCurrentPage('reports');
+        else if (q.includes('goal') || q.includes('target')) setCurrentPage('goals');
+        else if (q.includes('stock') || q.includes('market') || q.includes('invest')) setCurrentPage('stocks');
+        else if (q.includes('advisor') || q.includes('ai') || q.includes('chat')) setCurrentPage('advisor');
+        else if (q.includes('calculator') || q.includes('calc') || q.includes('sip')) setCurrentPage('calculators');
+        else if (q.includes('loan') || q.includes('emi') || q.includes('borrow')) setCurrentPage('loan-eligibility');
+        else if (q.includes('setting') || q.includes('profile')) setCurrentPage('settings');
+        else if (q.includes('admin') || q.includes('manage')) setCurrentPage('admin');
+        // If no match, we just let the toast show that it was searched.
+    };
+
     if (authLoading) {
         return (
             <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#080808', color: '#fff' }}>
@@ -57,6 +75,7 @@ function MainLayout() {
                 onNavigate={setCurrentPage}
                 onMenuToggle={() => setIsMobileMenuOpen(open => !open)}
                 isMobileMenuOpen={isMobileMenuOpen}
+                onSearch={handleGlobalSearch}
             />
             <Sidebar
                 currentPage={currentPage}
