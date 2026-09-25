@@ -71,6 +71,7 @@ function toYfSymbol(symbol, exchange = 'NSE') {
         .replace('&', '')
         .replace('-BE', '')
         .replace('-EQ', '');
+    if (cleaned.startsWith('^')) return cleaned;
     return exchange === 'BSE' ? `${cleaned}.BO` : `${cleaned}.NS`;
 }
 
