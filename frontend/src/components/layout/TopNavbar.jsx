@@ -83,15 +83,23 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
             {/* Center Global Search */}
             <form className="topbar-search-form" onSubmit={handleSearchSubmit}>
                 <div className="topbar-search-input-wrap">
-                    <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8" />
-                        <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
+                    <button type="submit" className="search-icon-btn" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}>
+                        <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                    </button>
                     <input
                         type="text"
-                        placeholder="Search anything..."
+                        placeholder="Search anything (press Enter)..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
+                        onChange={(e) => {
+                            setSearchQuery(e.target.value);
+                            // Also trigger search live if it matches exactly
+                            if (onSearch && e.target.value.length > 3) {
+                                onSearch(e.target.value);
+                            }
+                        }}
                         className="topbar-search-input"
                     />
                 </div>
