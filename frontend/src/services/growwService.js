@@ -93,10 +93,11 @@ export async function fetchLtpBatch(symbols) {
 // fetchCandles(symbol, { exchange, interval, from, to })
 // Returns historical OHLCV candle data
 // ─────────────────────────────────────────────────────────────────────────────
-export async function fetchCandles(symbol, { exchange = 'NSE', interval = '1d', from, to } = {}) {
+export async function fetchCandles(symbol, { exchange = 'NSE', interval = '1d', from, to, range } = {}) {
     const params = new URLSearchParams({ exchange, interval });
     if (from) params.set('from', from);
     if (to)   params.set('to', to);
+    if (range) params.set('range', range);
     try {
         const result = await apiFetch(`/candles/${encodeURIComponent(symbol)}?${params}`);
         if (result.success) return result.data;

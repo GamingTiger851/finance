@@ -12,14 +12,36 @@ const FEATURED_ITEMS = [
 ];
 
 const TIMEFRAMES = {
-    '1D': { interval: '5m', days: 1 },
-    '1W': { interval: '30m', days: 7 },
-    '1M': { interval: '1d', days: 30 },
-    '1Y': { interval: '1d', days: 365 },
+    '1D': { interval: '5m', range: '1d' },
+    '1W': { interval: '30m', range: '5d' },
+    '1M': { interval: '1d', range: '1mo' },
+    '1Y': { interval: '1d', range: '1y' },
 };
 
-function formatDate(date) {
-    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+function normalizeCandles(result) {
+    // The API may return { candles: [...] }, or a candle directly as an
+    // array [timestamp, open, high, low, close, volume].
+    const rows = Array.isArray(result) ? result : result?.candles;
+    if (!Array.isArray(rows)) return [];
+
+    return rows.map(candle => {
+        const timestamp = Array.isArray(candle)
+            ? candle[0]
+            : candle.timestamp ?? candle.date ?? candle.time ?? candle.t;
+        const close = Array.isArray(candle)
+            ? candle[4]
+            : candle.close ?? candle.value ?? candle.c;
+        const high = Array.isArray(candle) ? candle[2] : candle.high ?? candle.h;
+        const low = Array.isArray(candle) ? candle[3] : candle.low ?? candle.l;
+        const numericTime = Number(timestamp);
+
+        return {
+            time: Number.isFinite(numericTime) ? numericTime : timestamp,
+            c: Number(close),
+            h: Number(high),
+            l: Number(low),
+        };
+    }).filter(candle => Number.isFinite(candle.c));
 }
 
 export default function FeaturedMarketChart() {
@@ -46,16 +68,12 @@ export default function FeaturedMarketChart() {
             setError('Loading live market data…');
             try {
                 const range = TIMEFRAMES[timeframe];
-                const toDate = new Date();
-                const fromDate = new Date();
-                fromDate.setDate(fromDate.getDate() - range.days);
 
                 const [liveQuote, candleResult] = await Promise.all([
                     fetchQuote(selectedItem.symbol),
                     fetchCandles(selectedItem.symbol, { 
                         interval: range.interval, 
-                        from: range.days > 0 ? formatDate(fromDate) : undefined,
-                        to: range.days > 0 ? formatDate(toDate) : undefined 
+                        range: range.range,
                     }).catch(() => null)
                 ]);
 
@@ -77,17 +95,9 @@ export default function FeaturedMarketChart() {
                     low: liveQuote.low,
                 });
 
-                if (Array.isArray(candleResult)) {
-                    const parsedCandles = candleResult.map(c => ({
-                        time: c.timestamp || c.date || c.time || c.t,
-                        value: Number(c.close || c.value || c.c),
-                        high: Number(c.high || c.h),
-                        low: Number(c.low || c.l)
-                    })).filter(c => Number.isFinite(c.value));
-                    setCandles(parsedCandles);
-                } else {
-                    setCandles([]);
-                }
+                const parsedCandles = normalizeCandles(candleResult);
+                setCandles(parsedCandles);
+                if (!parsedCandles.length) setError('No chart history returned for this instrument.');
                 
                 setLastUpdated(new Date());
                 setError('');
@@ -122,11 +132,20 @@ export default function FeaturedMarketChart() {
         const maxVal = dataHigh + padding;
         const range = maxVal - minVal;
 
-        const points = candles.map((candle, i) => {
-            const x = (i / (candles.length - 1)) * 100;
+        const coordinates = candles.map((candle, i) => {
+            const x = candles.length === 1 ? 50 : (i / (candles.length - 1)) * 100;
             const y = 100 - ((candle.c - minVal) / range) * 100;
-            return `${x},${y}`;
-        }).join(' ');
+            return [x, y];
+        });
+        const points = coordinates.map(([x, y]) => `${x},${y}`).join(' ');
+        const linePath = coordinates.length < 3
+            ? `M ${coordinates.map(point => point.join(' ')).join(' L ')}`
+            : coordinates.slice(1).reduce((path, point, index) => {
+                const previous = coordinates[index];
+                const midpointX = (previous[0] + point[0]) / 2;
+                const midpointY = (previous[1] + point[1]) / 2;
+                return `${path} Q ${previous[0]} ${previous[1]} ${midpointX} ${midpointY}`;
+            }, `M ${coordinates[0][0]} ${coordinates[0][1]}`) + ` L ${coordinates.at(-1)[0]} ${coordinates.at(-1)[1]}`;
 
         const fillPoints = `0,100 ${points} 100,100`;
         const isUp = quote ? quote.change >= 0 : values[values.length - 1] >= values[0];
@@ -138,12 +157,12 @@ export default function FeaturedMarketChart() {
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                 <defs>
                     <linearGradient id={`gradient-${safeId}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+                        <stop offset="0%" stopColor={color} stopOpacity="0.12" />
                         <stop offset="100%" stopColor={color} stopOpacity="0.0" />
                     </linearGradient>
                 </defs>
                 <polygon points={fillPoints} fill={`url(#gradient-${safeId})`} />
-                <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+                <path d={linePath} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
             </svg>
         );
     }, [candles, quote, selectedId]);
@@ -212,7 +231,7 @@ export default function FeaturedMarketChart() {
                 </div>
             </div>
 
-            <div style={{ position: 'relative', height: '280px', padding: '0 0' }}>
+            <div style={{ position: 'relative', height: '280px', padding: '0 20px' }}>
                 {loading && !candles.length && (
                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.02)', zIndex: 10 }}>
                         <div style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '500' }}>Loading chart data…</div>
@@ -225,7 +244,7 @@ export default function FeaturedMarketChart() {
                         </div>
                     </div>
                 )}
-                <div style={{ width: '100%', height: '100%', padding: '20px 0 0 0' }}>
+                <div style={{ width: '100%', height: '100%', padding: '16px 0 12px' }}>
                     {chart}
                 </div>
             </div>

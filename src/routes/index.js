@@ -48,6 +48,12 @@ router.post('/ai/chat', aiChatBody, aiCtrl.chat);
 // Admin Routes
 router.get('/admin/stats', requireAdmin, adminCtrl.getStats);
 router.get('/admin/users', requireAdmin, adminCtrl.getUsers);
+router.patch('/admin/users/:id/role', requireAdmin, adminCtrl.updateUserRole);
+router.delete('/admin/users/:id', requireAdmin, adminCtrl.deleteUser);
+router.get('/admin/settings', requireAdmin, adminCtrl.getSettings);
+router.patch('/admin/settings', requireAdmin, adminCtrl.updateSettings);
+router.get('/admin/logs', requireAdmin, adminCtrl.getAuditLogs);
+router.post('/admin/clear-cache', requireAdmin, adminCtrl.clearCache);
 
 // Upstox Routes
 router.post('/upstox/connect', upstoxCtrl.connect);
