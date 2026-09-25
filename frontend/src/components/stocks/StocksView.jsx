@@ -457,8 +457,8 @@ export default function StocksView() {
                     flexWrap: 'wrap',
                     gap: '12px'
                 }}>
-                    <div className="search-box" style={{ width: '100%', maxWidth: '380px' }}>
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <div className="search-box stocks-search-box" style={{ width: '100%', maxWidth: '380px' }}>
+                        <svg className="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <circle cx="11" cy="11" r="7" />
                             <path d="M16 16L21 21" strokeLinecap="round" />
                         </svg>
