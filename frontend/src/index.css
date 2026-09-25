@@ -56,35 +56,35 @@
     --ink: var(--accent);
 }
 
-/* Clean White Neo-Bank Base Theme - Universal across all environments */
+/* Financial Stability Theme - Universal across all environments */
 :root,
 [data-theme],
 body,
 body.dark {
-    --paper: #F8FAFC !important;
+    --paper: #F4F6F9 !important;
     --card-bg: #FFFFFF !important;
     --card-border: #E2E8F0 !important;
     --border: #E2E8F0 !important;
-    --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05) !important;
+    --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08) !important;
 
-    --text: #0F172A !important;
-    --text-muted: #64748B !important;
+    --text: #333333 !important;
+    --text-muted: #666666 !important;
 
-    --chrome-bg: #FFFFFF !important;
-    --chrome-bg-soft: #F8FAFC !important;
-    --chrome-text: #0F172A !important;
-    --chrome-text-dim: #64748B !important;
-    --chrome-active-bg: #111827 !important;
+    --chrome-bg: #0A3C6E !important;
+    --chrome-bg-soft: rgba(255, 255, 255, 0.05) !important;
+    --chrome-text: #FFFFFF !important;
+    --chrome-text-dim: rgba(255, 255, 255, 0.7) !important;
+    --chrome-active-bg: #1783C1 !important;
     --chrome-active-text: #FFFFFF !important;
-    --chrome-border: #E2E8F0 !important;
+    --chrome-border: #0A3C6E !important;
 
-    --accent: #059669 !important;
-    --accent-hover: #047857 !important;
-    --accent-bright: #10b981 !important;
-    --accent-dark: #064e3b !important;
-    --accent-bg: rgba(5, 150, 105, 0.12) !important;
-    --accent-gradient: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-    --accent-glow: rgba(5, 150, 105, 0.25) !important;
+    --accent: #1783C1 !important;
+    --accent-hover: #126A9C !important;
+    --accent-bright: #3BA4DD !important;
+    --accent-dark: #0F5882 !important;
+    --accent-bg: rgba(23, 131, 193, 0.12) !important;
+    --accent-gradient: linear-gradient(135deg, #1783C1 0%, #126A9C 100%) !important;
+    --accent-glow: rgba(23, 131, 193, 0.25) !important;
 
     --income: #059669 !important;
     --income-bg: rgba(5, 150, 105, 0.12) !important;
@@ -98,7 +98,7 @@ body.dark {
     --brass-bright: var(--accent-bright);
     --brass-bg: var(--accent-bg);
     --vault: var(--chrome-bg);
-    --ink: var(--accent);
+    --ink: var(--chrome-bg);
 }
 
 * {
