@@ -339,13 +339,13 @@ export default function StocksView() {
                     </div>
                     <p className="page-subtitle">
                         Complete 1,000-stock screener with live indices, market cap categories, valuation multiples, balance sheets, and bulk Excel export.
-                        {useUpstox ? (
+                        {apiLive ? (
                             <span style={{ marginLeft: '12px', fontSize: '11px', fontWeight: 'bold', color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
-                                🟢 Upstox connected{lastUpdated ? ` · prices updated ${lastUpdated.toLocaleTimeString()}` : ' · verifying prices'}
+                                🟢 Live Data{lastUpdated ? ` · prices updated ${lastUpdated.toLocaleTimeString()}` : ' · verifying prices'}
                             </span>
                         ) : (
                             <span style={{ marginLeft: '12px', fontSize: '11px', fontWeight: 'bold', color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.2)' }}>
-                                🟡 Sample prices · connect Upstox for live prices
+                                🟡 Fetching live prices...
                             </span>
                         )}
                     </p>
@@ -420,7 +420,7 @@ export default function StocksView() {
             </div>
 
             {/* Featured Live Equities & Benchmark Graph */}
-            <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />
+            {useUpstox && <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />}
 
             {/* Groww Category Quick Tabs */}
             <div className="stocks-category-tabs" style={{
