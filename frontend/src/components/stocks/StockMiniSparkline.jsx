@@ -70,6 +70,8 @@ export default function StockMiniSparkline({
 
     const lastPoint = points[points.length - 1] || { x: width - 4, y: height / 2 };
 
+    const safeId = symbol.replace(/[^a-zA-Z0-9-]/g, '-');
+
     return (
         <div style={{ width: `${width}px`, height: `${height}px`, position: 'relative', display: 'inline-block' }}>
             <svg
@@ -79,7 +81,7 @@ export default function StockMiniSparkline({
                 style={{ overflow: 'visible', display: 'block' }}
             >
                 <defs>
-                    <linearGradient id={`grad-${symbol}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <linearGradient id={`grad-${safeId}`} x1="0%" y1="0%" x2="0%" y2="100%">
                         <stop offset="0%" stopColor={strokeColor} stopOpacity="0.25" />
                         <stop offset="100%" stopColor={strokeColor} stopOpacity="0.0" />
                     </linearGradient>
@@ -88,7 +90,7 @@ export default function StockMiniSparkline({
                 {/* Area Gradient */}
                 <polygon
                     points={polyPoints}
-                    fill={`url(#grad-${symbol})`}
+                    fill={`url(#grad-${safeId})`}
                 />
 
                 {/* Main Curve Line */}
