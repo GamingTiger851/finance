@@ -61,7 +61,7 @@ export default function FeaturedMarketChart() {
 
                 if (!active) return;
 
-                if (!liveQuote || !liveQuote.price) {
+                if (!liveQuote || !liveQuote.ltp) {
                     setQuote(null);
                     setCandles([]);
                     setLastUpdated(null);
@@ -70,19 +70,19 @@ export default function FeaturedMarketChart() {
                 }
 
                 setQuote({
-                    price: liveQuote.price,
+                    price: liveQuote.ltp,
                     change: liveQuote.change,
-                    changePercent: liveQuote.changePercent,
-                    high: liveQuote.dayHigh,
-                    low: liveQuote.dayLow,
+                    changePercent: liveQuote.changePct,
+                    high: liveQuote.high,
+                    low: liveQuote.low,
                 });
 
                 if (Array.isArray(candleResult)) {
                     const parsedCandles = candleResult.map(c => ({
-                        time: c.timestamp || c.date || c.time,
-                        value: Number(c.close || c.value),
-                        high: Number(c.high),
-                        low: Number(c.low)
+                        time: c.timestamp || c.date || c.time || c.t,
+                        value: Number(c.close || c.value || c.c),
+                        high: Number(c.high || c.h),
+                        low: Number(c.low || c.l)
                     })).filter(c => Number.isFinite(c.value));
                     setCandles(parsedCandles);
                 } else {
