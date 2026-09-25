@@ -10,10 +10,12 @@ const BASE = '/api/live';
 
 // ── Auth header helper ────────────────────────────────────────────────────────
 function authHeader() {
-    const token = localStorage.getItem('fintrack_session')
-        ? JSON.parse(localStorage.getItem('fintrack_session')).accessToken
-        : null;
-    return token ? { Authorization: `Bearer ${token}` } : {};
+    try {
+        const token = localStorage.getItem('fintrack_jwt_access');
+        return token ? { Authorization: `Bearer ${token}` } : {};
+    } catch (err) {
+        return {};
+    }
 }
 
 async function apiFetch(path, options = {}) {
