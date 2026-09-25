@@ -13,18 +13,11 @@
       }
     }
   ],
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/health",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+  "routes": [
+    { "src": "/api/(.*)", "dest": "/server.js" },
+    { "src": "/health", "dest": "/server.js" },
+    { "src": "/(.*)", "dest": "/frontend/dist/$1" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/frontend/dist/index.html" }
   ]
 }
