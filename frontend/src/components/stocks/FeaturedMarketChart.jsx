@@ -114,9 +114,9 @@ export default function FeaturedMarketChart() {
 
     const chart = useMemo(() => {
         if (!candles.length) return null;
-        const values = candles.map(candle => candle.value);
-        const dataLow = Math.min(...candles.map(candle => Number.isFinite(candle.low) ? candle.low : candle.value));
-        const dataHigh = Math.max(...candles.map(candle => Number.isFinite(candle.high) ? candle.high : candle.value));
+        const values = candles.map(candle => candle.c);
+        const dataLow = Math.min(...candles.map(candle => Number.isFinite(candle.l) ? candle.l : candle.c));
+        const dataHigh = Math.max(...candles.map(candle => Number.isFinite(candle.h) ? candle.h : candle.c));
         const padding = (dataHigh - dataLow) * 0.05 || 1;
         const minVal = dataLow - padding;
         const maxVal = dataHigh + padding;
@@ -124,7 +124,7 @@ export default function FeaturedMarketChart() {
 
         const points = candles.map((candle, i) => {
             const x = (i / (candles.length - 1)) * 100;
-            const y = 100 - ((candle.value - minVal) / range) * 100;
+            const y = 100 - ((candle.c - minVal) / range) * 100;
             return `${x},${y}`;
         }).join(' ');
 
@@ -132,15 +132,17 @@ export default function FeaturedMarketChart() {
         const isUp = quote ? quote.change >= 0 : values[values.length - 1] >= values[0];
         const color = isUp ? '#10b981' : '#ef4444';
 
+        const safeId = selectedId.replace(/[^a-zA-Z0-9-]/g, '-');
+
         return (
             <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
                 <defs>
-                    <linearGradient id={`gradient-${selectedId}`} x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient id={`gradient-${safeId}`} x1="0" y1="0" x2="0" y2="1">
                         <stop offset="0%" stopColor={color} stopOpacity="0.25" />
                         <stop offset="100%" stopColor={color} stopOpacity="0.0" />
                     </linearGradient>
                 </defs>
-                <polygon points={fillPoints} fill={`url(#gradient-${selectedId})`} />
+                <polygon points={fillPoints} fill={`url(#gradient-${safeId})`} />
                 <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
             </svg>
         );
