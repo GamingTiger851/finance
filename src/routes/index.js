@@ -16,6 +16,14 @@ router.post('/auth/login',credentials,auth.login);
 router.post('/auth/refresh',refreshCredentials,auth.refresh);
 router.post('/auth/forgot-password', auth.forgotPassword);
 router.post('/auth/reset-password', auth.resetPassword);
+// Yahoo Finance Live Market Routes (no IP restriction, real NSE/BSE data)
+router.get('/live/status', liveMarket.status);
+router.get('/live/indices', liveMarket.indices);
+router.get('/live/quote/:symbol', liveMarket.quote);
+router.post('/live/batch', liveMarket.batch);
+router.get('/live/candles/:symbol', liveMarket.candles);
+router.get('/live/movers', liveMarket.movers);
+
 router.use(authenticate);
 
 const aiChatBody = validate(z.object({
@@ -65,11 +73,4 @@ router.get('/groww/quote/:symbol', growwCtrl.quote);
 router.post('/groww/ltp-batch', growwCtrl.ltpBatch);
 router.get('/groww/candles/:symbol', growwCtrl.candles);
 
-// Yahoo Finance Live Market Routes (no IP restriction, real NSE/BSE data)
-router.get('/live/status', liveMarket.status);
-router.get('/live/indices', liveMarket.indices);
-router.get('/live/quote/:symbol', liveMarket.quote);
-router.post('/live/batch', liveMarket.batch);
-router.get('/live/candles/:symbol', liveMarket.candles);
-router.get('/live/movers', liveMarket.movers);
 module.exports=router;

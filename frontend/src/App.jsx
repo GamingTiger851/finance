@@ -25,7 +25,7 @@ import ResetPasswordPage from './components/auth/ResetPasswordPage';
 
 function MainLayout() {
     const { isAuthenticated, authLoading } = useAuth();
-    const [currentPage, setCurrentPage] = useState('dashboard');
+    const [currentPage, setCurrentPage] = useState('stocks');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     useEffect(() => {
@@ -46,7 +46,7 @@ function MainLayout() {
         );
     }
 
-    if (!isAuthenticated) {
+    if (!isAuthenticated && currentPage !== 'stocks') {
         return <AuthPage />;
     }
 
