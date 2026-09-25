@@ -405,15 +405,7 @@ export default function StocksView() {
                                     borderRadius: '4px', padding: '1px 5px'
                                 }}>● LIVE</span>
                             )}
-                            <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>
-                                {display.name}
-                            </div>
-                            <div style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>
-                                {display.value}
-                            </div>
-                            <div style={{ fontSize: '12px', fontWeight: '700', color: display.isUp ? '#10b981' : '#ef4444', marginTop: '2px' }}>
-                                {display.change} ({display.percent})
-                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}><div><div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>{display.name}</div><div style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>{display.value}</div><div style={{ fontSize: '12px', fontWeight: '700', color: display.isUp ? '#10b981' : '#ef4444', marginTop: '2px' }}>{display.change} ({display.percent})</div></div><div><StockMiniSparkline symbol={display.name} price={parseFloat(display.value?.replace(/,/g, '')) || 100} isUp={display.isUp} width={70} height={30} /></div></div>
                         </div>
                     );
                 })}
@@ -1138,3 +1130,4 @@ export default function StocksView() {
         </div>
     );
 }
+
