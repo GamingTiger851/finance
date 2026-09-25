@@ -1,33 +1,25 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { checkUpstoxStatus, fetchCandles, fetchQuotes, getInstrumentKey, getQuoteForInstrument } from '../../services/upstoxService';
+import { fetchQuote, fetchCandles } from '../../services/growwService';
 
 const FEATURED_ITEMS = [
-    { id: 'NIFTY50', name: 'NIFTY 50', type: 'index', key: 'NSE_INDEX|Nifty 50' },
-    { id: 'SENSEX', name: 'SENSEX', type: 'index', key: 'BSE_INDEX|SENSEX' },
-    { id: 'BANKNIFTY', name: 'BANK NIFTY', type: 'index', key: 'NSE_INDEX|Nifty Bank' },
-    { id: 'NIFTY IT', name: 'NIFTY IT', type: 'index', key: 'NSE_INDEX|Nifty IT' },
-    { id: 'RELIANCE', name: 'Reliance Ind.', type: 'stock', symbol: 'RELIANCE', key: getInstrumentKey('RELIANCE') },
-    { id: 'TCS', name: 'Tata Consultancy', type: 'stock', symbol: 'TCS', key: getInstrumentKey('TCS') },
-    { id: 'HDFCBANK', name: 'HDFC Bank', type: 'stock', symbol: 'HDFCBANK', key: getInstrumentKey('HDFCBANK') },
+    { id: 'NIFTY50', name: 'NIFTY 50', type: 'index', symbol: '^NSEI' },
+    { id: 'SENSEX', name: 'SENSEX', type: 'index', symbol: '^BSESN' },
+    { id: 'BANKNIFTY', name: 'BANK NIFTY', type: 'index', symbol: '^NSEBANK' },
+    { id: 'NIFTY IT', name: 'NIFTY IT', type: 'index', symbol: '^CNXIT' },
+    { id: 'RELIANCE', name: 'Reliance Ind.', type: 'stock', symbol: 'RELIANCE.NS' },
+    { id: 'TCS', name: 'Tata Consultancy', type: 'stock', symbol: 'TCS.NS' },
+    { id: 'HDFCBANK', name: 'HDFC Bank', type: 'stock', symbol: 'HDFCBANK.NS' },
 ];
 
 const TIMEFRAMES = {
-    '1D': { interval: '1minute', days: 0 },
-    '1W': { interval: '30minute', days: 7 },
-    '1M': { interval: 'day', days: 30 },
-    '1Y': { interval: 'day', days: 365 },
+    '1D': { interval: '5m', days: 1 },
+    '1W': { interval: '30m', days: 7 },
+    '1M': { interval: '1d', days: 30 },
+    '1Y': { interval: '1d', days: 365 },
 };
 
-function upstoxDate(date) {
-    // Upstox historical candle endpoints require YYYY-MM-DD.
+function formatDate(date) {
     return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-}
-
-function candleValues(candles = []) {
-    return candles
-        .filter(candle => Array.isArray(candle) && Number.isFinite(Number(candle[4])))
-        .map(candle => ({ time: candle[0], value: Number(candle[4]), high: Number(candle[2]), low: Number(candle[3]) }))
-        .sort((a, b) => new Date(a.time) - new Date(b.time));
 }
 
 export default function FeaturedMarketChart() {
@@ -35,99 +27,76 @@ export default function FeaturedMarketChart() {
     const [timeframe, setTimeframe] = useState('1D');
     const [quote, setQuote] = useState(null);
     const [candles, setCandles] = useState([]);
-    const [quoteSamples, setQuoteSamples] = useState([]);
-    const [connected, setConnected] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('Checking Upstox connection…');
+    const [error, setError] = useState('Loading live market data…');
     const [lastUpdated, setLastUpdated] = useState(null);
     const selectedItem = FEATURED_ITEMS.find(item => item.id === selectedId) || FEATURED_ITEMS[0];
 
     useEffect(() => {
         let active = true;
-        checkUpstoxStatus()
-            .then(result => {
-                if (!active) return;
-                const isConnected = Boolean(result.connected);
-                setConnected(isConnected);
-                if (!isConnected) {
-                    setError(result.reason === 'expired' ? 'Upstox session expired · reconnect in Settings' : 'Connect Upstox in Settings for live market data');
-                    setLoading(false);
-                }
-            })
-            .catch(() => {
-                if (active) {
-                    setConnected(false);
-                    setError('Unable to verify Upstox connection');
-                    setLoading(false);
-                }
-            });
-        return () => { active = false; };
-    }, []);
-
-    useEffect(() => {
-        if (!connected) return undefined;
-        let active = true;
         let inFlight = false;
         setQuote(null);
         setCandles([]);
-        setQuoteSamples([]);
         setLastUpdated(null);
 
         const refresh = async () => {
             if (inFlight) return;
             inFlight = true;
             setLoading(true);
-            setError('Loading live Upstox data…');
+            setError('Loading live market data…');
             try {
-                const [quoteData, candleResult] = await Promise.all([
-                    fetchQuotes([selectedItem.key]),
-                    (async () => {
-                        const range = TIMEFRAMES[timeframe];
-                        if (!range.days) return fetchCandles(selectedItem.key, range.interval);
-                        const to = new Date();
-                        const from = new Date(to);
-                        from.setDate(from.getDate() - range.days);
-                        return fetchCandles(selectedItem.key, range.interval, upstoxDate(from), upstoxDate(to));
-                    })().catch(candleError => ({ error: candleError.message })),
+                const range = TIMEFRAMES[timeframe];
+                const toDate = new Date();
+                const fromDate = new Date();
+                fromDate.setDate(fromDate.getDate() - range.days);
+
+                const [liveQuote, candleResult] = await Promise.all([
+                    fetchQuote(selectedItem.symbol),
+                    fetchCandles(selectedItem.symbol, { 
+                        interval: range.interval, 
+                        from: range.days > 0 ? formatDate(fromDate) : undefined,
+                        to: range.days > 0 ? formatDate(toDate) : undefined 
+                    }).catch(() => null)
                 ]);
+
                 if (!active) return;
 
-                const liveQuote = getQuoteForInstrument(quoteData, selectedItem.key);
-                const lastPrice = Number(liveQuote?.last_price);
-                if (!Number.isFinite(lastPrice) || lastPrice <= 0) {
+                if (!liveQuote || !liveQuote.price) {
                     setQuote(null);
                     setCandles([]);
                     setLastUpdated(null);
-                    setError('Upstox did not return a current quote for this instrument');
+                    setError('Unable to fetch live quote for this instrument.');
                     return;
                 }
 
-                const close = Number(liveQuote?.ohlc?.close ?? liveQuote?.cp);
-                const change = Number.isFinite(close) && close > 0 ? lastPrice - close : Number(liveQuote?.net_change);
-                const changePercent = Number.isFinite(change) && Number.isFinite(close) && close > 0
-                    ? (change / close) * 100
-                    : null;
                 setQuote({
-                    price: lastPrice,
-                    change: Number.isFinite(change) ? change : null,
-                    changePercent,
-                    high: Number(liveQuote?.ohlc?.high),
-                    low: Number(liveQuote?.ohlc?.low),
+                    price: liveQuote.price,
+                    change: liveQuote.change,
+                    changePercent: liveQuote.changePercent,
+                    high: liveQuote.dayHigh,
+                    low: liveQuote.dayLow,
                 });
-                const sample = { time: new Date().toISOString(), value: lastPrice, high: lastPrice, low: lastPrice };
-                setQuoteSamples(previous => [...previous, sample].slice(-120));
-                const candleData = Array.isArray(candleResult) ? candleResult : [];
-                setCandles(candleValues(candleData));
+
+                if (Array.isArray(candleResult)) {
+                    const parsedCandles = candleResult.map(c => ({
+                        time: c.timestamp || c.date || c.time,
+                        value: Number(c.close || c.value),
+                        high: Number(c.high),
+                        low: Number(c.low)
+                    })).filter(c => Number.isFinite(c.value));
+                    setCandles(parsedCandles);
+                } else {
+                    setCandles([]);
+                }
+                
                 setLastUpdated(new Date());
-                setError(candleResult?.error
-                    ? `Live quote received · chart candles unavailable: ${candleResult.error}`
-                    : candleData.length ? '' : 'Live quote graph · collecting real Upstox quote samples (updates every 15 sec)');
+                setError('');
             } catch (err) {
                 if (active) {
                     setQuote(null);
                     setCandles([]);
                     setLastUpdated(null);
-                    setError(`Upstox market data error: ${err.message}`);
+                    setError(`Market data error: ${err.message}`);
                 }
             } finally {
                 inFlight = false;
@@ -136,110 +105,154 @@ export default function FeaturedMarketChart() {
         };
 
         refresh();
-        const timer = setInterval(refresh, 15000);
+        const timer = setInterval(refresh, 30000); // 30s refresh
         return () => {
             active = false;
             clearInterval(timer);
         };
-    }, [connected, selectedItem, timeframe]);
+    }, [selectedItem, timeframe]);
 
     const chart = useMemo(() => {
-        const source = candles.length ? candles : quoteSamples;
-        if (!source.length) return null;
-        const values = source.map(candle => candle.value);
-        const dataLow = Math.min(...source.map(candle => Number.isFinite(candle.low) ? candle.low : candle.value));
-        const dataHigh = Math.max(...source.map(candle => Number.isFinite(candle.high) ? candle.high : candle.value));
-        const flatPadding = dataHigh === dataLow ? Math.max(Math.abs(dataLow) * 0.001, 0.01) : 0;
-        const low = dataLow - flatPadding;
-        const high = dataHigh + flatPadding;
-        const width = 600;
-        const height = 150;
-        const padX = 10;
-        const padY = 15;
-        const span = high - low || 1;
-        const points = source.map((candle, index) => {
-            const x = padX + (index / Math.max(1, source.length - 1)) * (width - 2 * padX);
-            const y = padY + (height - 2 * padY) - ((candle.value - low) / span) * (height - 2 * padY);
-            return { x, y, candle };
-        });
-        return {
-            low,
-            high,
-            points: points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' '),
-            area: source.length > 1 ? `${points.map(point => `${point.x.toFixed(1)},${point.y.toFixed(1)}`).join(' ')} ${width - padX},${height - padY} ${padX},${height - padY}` : '',
-            lastPoint: points.at(-1),
-            values,
-            sampleMode: candles.length === 0,
-            count: source.length,
-        };
-    }, [candles, quoteSamples]);
+        if (!candles.length) return null;
+        const values = candles.map(candle => candle.value);
+        const dataLow = Math.min(...candles.map(candle => Number.isFinite(candle.low) ? candle.low : candle.value));
+        const dataHigh = Math.max(...candles.map(candle => Number.isFinite(candle.high) ? candle.high : candle.value));
+        const padding = (dataHigh - dataLow) * 0.05 || 1;
+        const minVal = dataLow - padding;
+        const maxVal = dataHigh + padding;
+        const range = maxVal - minVal;
 
-    const isUp = quote?.change != null && quote.change >= 0;
-    const color = quote?.change == null ? '#64748b' : isUp ? '#10b981' : '#ef4444';
-    const gradId = `featuredGrad-${selectedItem.id.replace(/[^a-z0-9]/gi, '')}`;
-    const formatPrice = value => Number(value).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        const points = candles.map((candle, i) => {
+            const x = (i / (candles.length - 1)) * 100;
+            const y = 100 - ((candle.value - minVal) / range) * 100;
+            return `${x},${y}`;
+        }).join(' ');
+
+        const fillPoints = `0,100 ${points} 100,100`;
+        const isUp = quote ? quote.change >= 0 : values[values.length - 1] >= values[0];
+        const color = isUp ? '#10b981' : '#ef4444';
+
+        return (
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
+                <defs>
+                    <linearGradient id={`gradient-${selectedId}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+                        <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+                    </linearGradient>
+                </defs>
+                <polygon points={fillPoints} fill={`url(#gradient-${selectedId})`} />
+                <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+            </svg>
+        );
+    }, [candles, quote, selectedId]);
+
+    const handleWheel = (e) => {
+        const container = e.currentTarget;
+        container.scrollLeft += e.deltaY;
+        e.preventDefault();
+    };
 
     return (
-        <div className="table-card stocks-featured-chart" style={{ padding: '18px 22px', marginTop: '16px', borderRadius: '14px', background: 'var(--card-bg)', border: '1px solid var(--border)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '14px' }}>
-                <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '2px' }}>
-                    {FEATURED_ITEMS.map(item => (
-                        <button key={item.id} type="button" onClick={() => setSelectedId(item.id)} style={{
-                            background: selectedItem.id === item.id ? 'var(--accent-bg)' : 'var(--chrome-bg-soft)',
-                            color: selectedItem.id === item.id ? 'var(--accent)' : 'var(--text-muted)',
-                            border: `1px solid ${selectedItem.id === item.id ? 'var(--accent)' : 'var(--border)'}`,
-                            padding: '6px 14px', borderRadius: '20px', fontSize: '12px', fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap',
-                        }}>{item.name}</button>
-                    ))}
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 700, color: connected && quote ? '#059669' : 'var(--text-muted)', background: connected && quote ? 'var(--income-bg)' : 'var(--chrome-bg-soft)', padding: '3px 8px', borderRadius: '12px' }}>
-                        <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: connected && quote ? '#10b981' : '#94a3b8' }} />
-                        {connected && quote ? 'UPSTOX DATA' : 'NO LIVE DATA'}
-                    </div>
-                    <div style={{ display: 'flex', background: 'var(--chrome-bg-soft)', borderRadius: '6px', padding: '2px' }}>
-                        {Object.keys(TIMEFRAMES).map(tf => (
-                            <button key={tf} type="button" onClick={() => setTimeframe(tf)} style={{ background: timeframe === tf ? 'var(--card-bg)' : 'transparent', color: 'var(--text)', border: 'none', padding: '3px 8px', fontSize: '11px', fontWeight: 700, borderRadius: '4px', cursor: 'pointer' }}>{tf}</button>
+        <div className="table-card" style={{ marginTop: '20px', overflow: 'hidden' }}>
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
+                <div style={{ padding: '20px', flex: 1 }}>
+                    <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }} onWheel={handleWheel}>
+                        {FEATURED_ITEMS.map(item => (
+                            <button
+                                key={item.id}
+                                onClick={() => setSelectedId(item.id)}
+                                style={{
+                                    background: selectedId === item.id ? 'var(--bg-secondary)' : 'transparent',
+                                    border: 'none',
+                                    padding: '6px 12px',
+                                    borderRadius: '6px',
+                                    color: selectedId === item.id ? 'var(--text-primary)' : 'var(--text-secondary)',
+                                    fontWeight: selectedId === item.id ? '600' : '400',
+                                    cursor: 'pointer',
+                                    whiteSpace: 'nowrap',
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                {item.name}
+                            </button>
                         ))}
+                    </div>
+
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '16px' }}>
+                        <div>
+                            <h2 style={{ margin: '0 0 4px 0', fontSize: '24px', fontWeight: '700' }}>{selectedItem.name}</h2>
+                            <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{selectedItem.type === 'index' ? 'Market Index' : 'Featured Equity'} · {selectedItem.symbol}</div>
+                        </div>
+                        <div style={{ textAlign: 'right' }}>
+                            {quote ? (
+                                <>
+                                    <div style={{ fontSize: '28px', fontWeight: '800', fontFamily: 'monospace', letterSpacing: '-0.5px' }}>
+                                        ₹{quote.price.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '15px',
+                                        fontWeight: '600',
+                                        color: quote.change >= 0 ? '#10b981' : '#ef4444',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'flex-end',
+                                        gap: '4px'
+                                    }}>
+                                        {quote.change >= 0 ? '▲' : '▼'}
+                                        {Math.abs(quote.change).toFixed(2)} ({Math.abs(quote.changePercent).toFixed(2)}%)
+                                    </div>
+                                </>
+                            ) : (
+                                <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--text-muted)' }}>--</div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="stocks-featured-content" style={{ display: 'grid', gridTemplateColumns: 'minmax(220px, 1fr) 2fr', gap: '20px', alignItems: 'center' }}>
-                <div>
-                    <div style={{ fontSize: '13px', color: 'var(--text-muted)', fontWeight: 600 }}>{selectedItem.name} {selectedItem.symbol ? `(${selectedItem.symbol})` : 'Index'}</div>
-                    {quote ? <>
-                        <div style={{ fontSize: '32px', fontWeight: 900, color: 'var(--text)', marginTop: '4px', letterSpacing: '-0.02em' }}>{selectedItem.type === 'index' ? formatPrice(quote.price) : `₹${formatPrice(quote.price)}`}</div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', fontSize: '13px', fontWeight: 700, color }}>
-                            <span>{quote.change == null ? 'Change unavailable' : `${isUp ? '▲ +' : '▼ '}${formatPrice(Math.abs(quote.change))}${quote.changePercent == null ? '' : ` (${isUp ? '+' : ''}${quote.changePercent.toFixed(2)}%)`}`}</span>
-                            <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 500 }}>Today</span>
+            <div style={{ position: 'relative', height: '280px', padding: '0 0' }}>
+                {loading && !candles.length && (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.02)', zIndex: 10 }}>
+                        <div style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '500' }}>Loading chart data…</div>
+                    </div>
+                )}
+                {error && !candles.length && !loading && (
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.02)', zIndex: 10 }}>
+                        <div style={{ color: '#ef4444', fontSize: '14px', fontWeight: '500', background: 'rgba(239, 68, 68, 0.1)', padding: '8px 16px', borderRadius: '8px' }}>
+                            {error}
                         </div>
-                        <div style={{ marginTop: '16px', display: 'flex', gap: '14px', fontSize: '11.5px', color: 'var(--text-muted)' }}>
-                            <div>Low: <strong style={{ color: Number.isFinite(quote.low) ? '#ef4444' : 'var(--text-muted)' }}>{Number.isFinite(quote.low) ? `${selectedItem.type === 'stock' ? '₹' : ''}${formatPrice(quote.low)}` : 'Unavailable'}</strong></div>
-                            <div>High: <strong style={{ color: Number.isFinite(quote.high) ? '#059669' : 'var(--text-muted)' }}>{Number.isFinite(quote.high) ? `${selectedItem.type === 'stock' ? '₹' : ''}${formatPrice(quote.high)}` : 'Unavailable'}</strong></div>
-                        </div>
-                    </> : <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--text-muted)', marginTop: '10px' }}>{loading ? 'Loading live quote…' : 'Live quote unavailable'}</div>}
-                    <div role="status" style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '8px' }}>{error || (lastUpdated ? `Updated ${lastUpdated.toLocaleTimeString()}` : '')}</div>
+                    </div>
+                )}
+                <div style={{ width: '100%', height: '100%', padding: '20px 0 0 0' }}>
+                    {chart}
                 </div>
+            </div>
 
-                <div style={{ width: '100%', position: 'relative' }}>
-                    {chart ? <>
-                        <svg viewBox="0 0 600 150" style={{ width: '100%', height: '140px', overflow: 'visible', display: 'block' }} aria-label={`${selectedItem.name} live price chart from Upstox`}>
-                            <defs><linearGradient id={gradId} x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stopColor={color} stopOpacity="0.28" /><stop offset="100%" stopColor={color} stopOpacity="0" /></linearGradient></defs>
-                            <line x1="10" y1="15" x2="590" y2="15" stroke="var(--border)" strokeDasharray="3 3" />
-                            <line x1="10" y1="75" x2="590" y2="75" stroke="var(--border)" strokeDasharray="3 3" />
-                            <line x1="10" y1="135" x2="590" y2="135" stroke="var(--border)" strokeDasharray="3 3" />
-                            {chart.area && <polygon points={chart.area} fill={`url(#${gradId})`} />}
-                            {chart.sampleMode && chart.count === 1 && <line x1="10" y1={chart.lastPoint.y} x2="590" y2={chart.lastPoint.y} stroke={color} strokeWidth="2" strokeDasharray="5 5" opacity="0.55" />}
-                            <polyline fill="none" stroke={color} strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" points={chart.points} />
-                            {chart.lastPoint && <circle cx={chart.lastPoint.x} cy={chart.lastPoint.y} r="4" fill={color} stroke="var(--card-bg)" strokeWidth="1.5" />}
-                        </svg>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0 8px', fontSize: '10px', color: 'var(--text-muted)', marginTop: '4px' }}>
-                            <span>{chart.lastPoint?.candle.time ? new Date(chart.lastPoint.candle.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
-                            <span>{chart.sampleMode ? `Live quote samples · ${chart.count}` : `${timeframe} · ${chart.count} Upstox candles`}</span>
-                            <span>{lastUpdated ? lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</span>
-                        </div>
-                    </> : <div style={{ height: '140px', display: 'grid', placeItems: 'center', color: 'var(--text-muted)', border: '1px dashed var(--border)', borderRadius: '8px', fontSize: '13px' }}>{!connected ? 'Connect Upstox to view verified prices and chart' : loading ? 'Loading live market graph…' : 'Waiting for a live Upstox quote…'}</div>}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                    {Object.keys(TIMEFRAMES).map(tf => (
+                        <button
+                            key={tf}
+                            onClick={() => setTimeframe(tf)}
+                            style={{
+                                background: timeframe === tf ? 'var(--text-primary)' : 'transparent',
+                                color: timeframe === tf ? 'var(--bg-primary)' : 'var(--text-secondary)',
+                                border: '1px solid',
+                                borderColor: timeframe === tf ? 'var(--text-primary)' : 'var(--border)',
+                                borderRadius: '4px',
+                                padding: '4px 12px',
+                                fontSize: '12px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            {tf}
+                        </button>
+                    ))}
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                    {lastUpdated ? `Live data • Last updated ${lastUpdated.toLocaleTimeString()}` : 'Connecting to data feed…'}
                 </div>
             </div>
         </div>

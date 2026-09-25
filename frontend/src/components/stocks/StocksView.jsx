@@ -412,7 +412,7 @@ export default function StocksView() {
             </div>
 
             {/* Featured Live Equities & Benchmark Graph */}
-            {useUpstox && <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />}
+            <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />
 
             {/* Groww Category Quick Tabs */}
             <div className="stocks-category-tabs" style={{
