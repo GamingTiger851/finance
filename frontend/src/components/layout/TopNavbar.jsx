@@ -20,6 +20,32 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
         }
     };
 
+    const SEARCHABLE_PAGES = [
+        { id: 'dashboard', label: 'Dashboard' },
+        { id: 'expenses', label: 'Expenses' },
+        { id: 'recurring', label: 'Recurring Bills' },
+        { id: 'stocks', label: 'Stocks' },
+        { id: 'goals', label: 'Goals' },
+        { id: 'calculators', label: 'Calculators' },
+        { id: 'loan-eligibility', label: 'Loan Eligibility' },
+        { id: 'portfolio-risk', label: 'Portfolio Risk' },
+        { id: 'advisor', label: 'AI Assistant' },
+        { id: 'admin', label: 'Super Admin' },
+        { id: 'settings', label: 'Settings' }
+    ];
+
+    const [isSearchFocused, setIsSearchFocused] = useState(false);
+    
+    const suggestions = searchQuery.trim() ? SEARCHABLE_PAGES.filter(p => 
+        p.label.toLowerCase().includes(searchQuery.toLowerCase())
+    ) : [];
+
+    const handleSuggestionClick = (pageId) => {
+        setSearchQuery('');
+        setIsSearchFocused(false);
+        if (onNavigate) onNavigate(pageId);
+    };
+
     return (
         <header className="fintrack-topbar">
             <button
@@ -81,7 +107,7 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
             </div>
 
             {/* Center Global Search */}
-            <form className="topbar-search-form" onSubmit={handleSearchSubmit}>
+            <form className="topbar-search-form" onSubmit={handleSearchSubmit} style={{ position: 'relative' }}>
                 <div className="topbar-search-input-wrap">
                     <button type="submit" className="search-icon-btn" style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'flex', alignItems: 'center', color: 'var(--text-muted)' }}>
                         <svg className="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -93,6 +119,8 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                         type="text"
                         placeholder="Search anything (press Enter)..."
                         value={searchQuery}
+                        onFocus={() => setIsSearchFocused(true)}
+                        onBlur={() => setIsSearchFocused(false)}
                         onChange={(e) => {
                             setSearchQuery(e.target.value);
                             // Also trigger search live if it matches exactly
@@ -103,6 +131,53 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                         className="topbar-search-input"
                     />
                 </div>
+                {/* Autocomplete Dropdown */}
+                {isSearchFocused && searchQuery.trim() && suggestions.length > 0 && (
+                    <div className="search-suggestions-dropdown" style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: 0,
+                        right: 0,
+                        marginTop: '8px',
+                        background: '#0a0f1d',
+                        border: '1px solid #1f2937',
+                        borderRadius: '12px',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
+                        zIndex: 100,
+                        overflow: 'hidden'
+                    }}>
+                        {suggestions.map((item) => (
+                            <div 
+                                key={item.id}
+                                className="search-suggestion-item"
+                                style={{
+                                    padding: '12px 16px',
+                                    cursor: 'pointer',
+                                    color: '#e2e8f0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '12px',
+                                    borderBottom: '1px solid #1f2937',
+                                    fontSize: '14px',
+                                    transition: 'background 0.2s'
+                                }}
+                                onMouseDown={(e) => {
+                                    // Use onMouseDown instead of onClick to prevent onBlur from closing the dropdown first
+                                    e.preventDefault();
+                                    handleSuggestionClick(item.id);
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.background = '#1f2937'}
+                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                            >
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: 0.6 }}>
+                                    <circle cx="11" cy="11" r="8" />
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                                </svg>
+                                {item.label}
+                            </div>
+                        ))}
+                    </div>
+                )}
             </form>
 
             {/* Right Actions: Notifications & User Profile */}
