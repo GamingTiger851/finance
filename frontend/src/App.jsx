@@ -46,7 +46,7 @@ function MainLayout() {
         );
     }
 
-    if (!isAuthenticated && currentPage !== 'stocks') {
+    if (!isAuthenticated) {
         return <AuthPage />;
     }
 
