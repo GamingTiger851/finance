@@ -103,12 +103,32 @@ export default function StockMiniSparkline({
                     points={polyPoints.split(' ').slice(0, points.length).join(' ')}
                 />
 
+                {/* Animated Data Pulse */}
+                <polyline
+                    fill="none"
+                    stroke="#ffffff"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    points={polyPoints.split(' ').slice(0, points.length).join(' ')}
+                    pathLength="100"
+                    strokeDasharray="15 100"
+                    style={{
+                        animation: `sparkline-pulse 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite`
+                    }}
+                    filter="drop-shadow(0px 0px 3px rgba(255,255,255,0.8))"
+                />
+
                 {/* End Pulse Dot */}
                 <circle
                     cx={lastPoint.x}
                     cy={lastPoint.y}
-                    r="2.5"
+                    r="3"
                     fill={strokeColor}
+                    style={{
+                        transformOrigin: `${lastPoint.x}px ${lastPoint.y}px`,
+                        animation: `sparkline-glow 2s infinite alternate`
+                    }}
                 />
             </svg>
         </div>

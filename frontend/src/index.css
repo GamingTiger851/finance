@@ -228,6 +228,86 @@
     color: var(--text-secondary);
 }
 
+#stocksPage .stock-card-actions .btn-trade-link,
+#stocksPage .table-responsive .btn-trade-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 38px;
+    padding: 7px 8px;
+    border: 1px solid transparent;
+    border-radius: var(--control-radius);
+    font-size: var(--type-xs);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+#stocksPage .btn-trade-buy {
+    color: #047857;
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.24) !important;
+}
+
+#stocksPage .btn-trade-buy:hover {
+    background: rgba(16, 185, 129, 0.18);
+}
+
+#stocksPage .btn-trade-sell {
+    color: #b91c1c;
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+#stocksPage .btn-trade-sell:hover {
+    background: rgba(239, 68, 68, 0.14);
+}
+
+/* Keep the stock identity, quote, and sparkline in separate, predictable tracks. */
+#stocksPage .stock-card-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(90px, auto) !important;
+    grid-template-areas: "identity quote" "sparkline quote";
+    align-items: center !important;
+    gap: 6px 8px !important;
+}
+
+#stocksPage .stock-card-identity {
+    grid-area: identity;
+    min-width: 0;
+    gap: 8px !important;
+}
+
+#stocksPage .stock-card-identity > div:last-child {
+    min-width: 0;
+}
+
+#stocksPage .stock-card-identity > div:last-child > div:first-child {
+    flex-wrap: wrap;
+    gap: 4px !important;
+}
+
+#stocksPage .stock-card-sparkline {
+    grid-area: sparkline;
+    width: min(92px, calc(100% - 50px)) !important;
+    height: 24px;
+    margin-left: 50px;
+}
+
+#stocksPage .stock-card-sparkline > div,
+#stocksPage .stock-card-sparkline svg {
+    max-width: 100%;
+}
+
+#stocksPage .stock-card-quote {
+    grid-area: quote;
+    min-width: 0;
+    max-width: 130px;
+    overflow-wrap: anywhere;
+}
+
 #stocksPage .stocks-sort-controls select,
 #stocksPage .stocks-sector-filter select,
 #stocksPage .stocks-search-box input {
@@ -6441,7 +6521,7 @@ input[type="range"]::-moz-range-thumb {
     }
 
     .stock-card-actions {
-        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
         gap: 5px !important;
     }
 
@@ -7934,4 +8014,16 @@ input[type="range"]::-moz-range-thumb {
     .ai-widget-pills {
         gap: 10px;
     }
+}
+
+@keyframes sparkline-pulse {
+    0% { stroke-dashoffset: 115; opacity: 0; }
+    10% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { stroke-dashoffset: -15; opacity: 0; }
+}
+
+@keyframes sparkline-glow {
+    0%, 100% { filter: drop-shadow(0 0 2px var(--accent-bright)); }
+    50% { filter: drop-shadow(0 0 6px var(--accent-bright)); }
 }

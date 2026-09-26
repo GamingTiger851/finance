@@ -15,6 +15,8 @@ const FEATURED_INDEX_IDS = {
     'NIFTY MID 50': 'NIFTY MID 50',
 };
 
+const UPSTOX_PRO_WEB_URL = 'https://pro.upstox.com/';
+
 export default function StocksView() {
     const { showToast } = useFinance();
     const [searchQuery, setSearchQuery] = useState('');
@@ -766,6 +768,26 @@ export default function StocksView() {
                                 >
                                     👁️ Info
                                 </button>
+                                <a
+                                    className="btn btn-trade-link btn-trade-buy"
+                                    href={UPSTOX_PRO_WEB_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`Buy ${stock.symbol} on Upstox Pro Web`}
+                                    title={`Open official Upstox Pro Web to buy ${stock.symbol}`}
+                                >
+                                    Buy · Upstox
+                                </a>
+                                <a
+                                    className="btn btn-trade-link btn-trade-sell"
+                                    href={UPSTOX_PRO_WEB_URL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label={`Sell ${stock.symbol} on Upstox Pro Web`}
+                                    title={`Open official Upstox Pro Web to sell ${stock.symbol}`}
+                                >
+                                    Sell · Upstox
+                                </a>
                             </div>
                         </div>
                     ))}
@@ -870,6 +892,26 @@ export default function StocksView() {
                                                 >
                                                     View
                                                 </button>
+                                                <a
+                                                    className="btn btn-trade-link btn-trade-buy"
+                                                    href={UPSTOX_PRO_WEB_URL}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    aria-label={`Buy ${stock.symbol} on Upstox Pro Web`}
+                                                    title={`Open official Upstox Pro Web to buy ${stock.symbol}`}
+                                                >
+                                                    Buy
+                                                </a>
+                                                <a
+                                                    className="btn btn-trade-link btn-trade-sell"
+                                                    href={UPSTOX_PRO_WEB_URL}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    aria-label={`Sell ${stock.symbol} on Upstox Pro Web`}
+                                                    title={`Open official Upstox Pro Web to sell ${stock.symbol}`}
+                                                >
+                                                    Sell
+                                                </a>
                                             </div>
                                         </td>
                                     </tr>

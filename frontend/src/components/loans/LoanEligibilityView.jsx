@@ -302,7 +302,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <span style={{ fontSize: '24px' }}>💳</span>
                                 <h1 className="page-title" style={{ margin: 0, fontSize: '26px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.02em' }}>
-                                    Loan Eligibility &amp; EMI Calculator
+                                    Loan &amp; EMI Calculator
                                 </h1>
                             </div>
                             <p className="page-subtitle" style={{ marginTop: '6px', color: '#64748B', fontSize: '14px' }}>
