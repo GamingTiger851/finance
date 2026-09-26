@@ -4125,6 +4125,133 @@ button {
     gap: 16px;
 }
 
+.topbar-live-info {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 12px;
+    margin: 0 14px 0 4px;
+    color: #334155;
+}
+
+.topbar-weather {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 5px 8px;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.topbar-weather:hover {
+    background: #f1f5f9;
+}
+
+.topbar-weather-icon {
+    font-size: 19px;
+    line-height: 1;
+}
+
+.topbar-weather-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    line-height: 1.2;
+}
+
+.topbar-weather-copy strong,
+.topbar-india-time strong {
+    color: #0f172a;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.topbar-weather-copy span,
+.topbar-india-time-label,
+.topbar-timezone {
+    color: #64748b;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.topbar-info-divider {
+    width: 1px;
+    height: 30px;
+    background: #e2e8f0;
+}
+
+.topbar-india-time {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    column-gap: 5px;
+    line-height: 1.2;
+}
+
+.topbar-india-time-label {
+    grid-column: 1 / -1;
+}
+
+.topbar-timezone {
+    color: #059669;
+}
+
+.topbar-time-compact {
+    display: none;
+}
+
+@media (max-width: 1100px) {
+    .topbar-live-info {
+        gap: 7px;
+        margin-right: 6px;
+    }
+
+    .topbar-weather-copy span {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .topbar-live-info {
+        gap: 5px;
+        margin: 0;
+    }
+
+    .topbar-weather {
+        gap: 3px;
+        padding: 4px;
+    }
+
+    .topbar-weather-icon {
+        font-size: 16px;
+    }
+
+    .topbar-weather-copy strong,
+    .topbar-india-time strong {
+        font-size: 10px;
+    }
+
+    .topbar-info-divider,
+    .topbar-weather-copy span,
+    .topbar-india-time-label,
+    .topbar-timezone,
+    .topbar-time-full {
+        display: none;
+    }
+
+    .topbar-time-compact {
+        display: block;
+    }
+}
+
 .topbar-icon-btn {
     background: transparent;
     border: none;
@@ -8127,4 +8254,56 @@ input[type="range"]::-moz-range-thumb {
     font-weight: 700;
     line-height: 1.35;
     white-space: normal;
+}
+
+/* FinTracker motion theme: restrained emerald feedback across the app. */
+:root {
+    --motion-ease: cubic-bezier(0.2, 0.75, 0.25, 1);
+    --motion-fast: 180ms;
+    --motion-medium: 360ms;
+}
+
+#appWrap .page {
+    animation: page-in var(--motion-medium) var(--motion-ease) both;
+}
+
+#appWrap .main-area .table-card,
+#appWrap .main-area .stat-card,
+#appWrap .main-area .oripio-hero-card {
+    transition:
+        transform var(--motion-fast) var(--motion-ease),
+        box-shadow var(--motion-fast) var(--motion-ease),
+        border-color var(--motion-fast) var(--motion-ease);
+}
+
+#appWrap .main-area .table-card:hover,
+#appWrap .main-area .stat-card:hover,
+#appWrap .main-area .oripio-hero-card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 9%, transparent);
+}
+
+#appWrap .side-link {
+    transition:
+        color var(--motion-fast) var(--motion-ease),
+        background-color var(--motion-fast) var(--motion-ease),
+        transform var(--motion-fast) var(--motion-ease);
+}
+
+#appWrap .side-link:hover {
+    transform: translateX(2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    #appWrap .page,
+    #appWrap .main-area .table-card,
+    #appWrap .main-area .stat-card,
+    #appWrap .main-area .oripio-hero-card,
+    #appWrap .side-link {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        scroll-behavior: auto !important;
+    }
 }

@@ -40,59 +40,6 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                     <span>Close menu</span>
                 </button>
             </div>
-            {/* Brand Logo Header */}
-            <div 
-                className="brand" 
-                onClick={() => {
-                    setCurrentPage && setCurrentPage('dashboard');
-                    onMobileClose?.();
-                }}
-                title="FinTracker AI - HAWKS Intelligence"
-                style={{ 
-                    padding: '6px 6px 16px', 
-                    marginBottom: '14px', 
-                    borderBottom: '1px solid var(--chrome-border)',
-                    cursor: 'pointer'
-                }}
-            >
-                <span 
-                    className="brand-icon" 
-                    style={{ 
-                        width: '40px', 
-                        height: '40px', 
-                        borderRadius: '10px', 
-                        background: '#090D16', 
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
-                        border: '1px solid #E2E8F0',
-                        overflow: 'hidden',
-                        flexShrink: 0,
-                        padding: '2px'
-                    }}
-                >
-                    <img 
-                        src="/logo.png" 
-                        alt="HAWKS Intelligence" 
-                        style={{ 
-                            width: '100%', 
-                            height: '100%', 
-                            objectFit: 'contain',
-                            display: 'block'
-                        }} 
-                    />
-                </span>
-                <div>
-                    <div className="brand-name" style={{ color: 'var(--text)', fontWeight: 800, fontSize: '16.5px', letterSpacing: '-0.02em' }}>
-                        FinTracker<span style={{ color: '#059669' }}>AI</span>
-                    </div>
-                    <div className="brand-sub" style={{ color: 'var(--text-muted)', fontSize: '11px', fontWeight: 600, letterSpacing: '0.01em' }}>
-                        HAWKS Intelligence
-                    </div>
-                </div>
-            </div>
-
             {/* Categorized Nav Items */}
             <nav
                 className="sidebar-nav"

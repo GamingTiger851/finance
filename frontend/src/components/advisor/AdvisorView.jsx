@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import AiChatbot from './AiChatbot';
-import { formatAmount } from '../../constants';
-import { useAuth } from '../../context/AuthContext';
 
 export default function AdvisorView({ initialTab = 'chatbot' }) {
-    const { userProfile } = useAuth();
-    const currency = userProfile.currency || 'USD';
     const [activeTab, setActiveTab] = useState(initialTab);
 
     // Investment inputs
@@ -16,16 +12,6 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
     const [investGoal, setInvestGoal] = useState('growth');
     const [investTolerance, setInvestTolerance] = useState('moderate');
     const [investResult, setInvestResult] = useState(null);
-
-    // Loan inputs
-    const [loanAmount, setLoanAmount] = useState(25000);
-    const [loanIncome, setLoanIncome] = useState(5500);
-    const [loanDebt, setLoanDebt] = useState(800);
-    const [loanScore, setLoanScore] = useState(740);
-    const [loanEmployment, setLoanEmployment] = useState(4);
-    const [loanCollateral, setLoanCollateral] = useState(30000);
-    const [loanTerm, setLoanTerm] = useState(5);
-    const [loanResult, setLoanResult] = useState(null);
 
     // Risk inputs
     const [riskStocks, setRiskStocks] = useState(50);
@@ -59,30 +45,6 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
         });
     };
 
-    const runLoanAssessment = () => {
-        const dti = loanIncome > 0 ? loanDebt / loanIncome : 1;
-        const estimatedPayment = loanAmount > 0 ? (loanAmount / (loanTerm * 12)) * 1.12 : 0;
-        const postLoanDti = loanIncome > 0 ? (loanDebt + estimatedPayment) / loanIncome : 1;
-        const factors = [
-            loanScore >= 720,
-            postLoanDti <= 0.4,
-            loanEmployment >= 2,
-            loanAmount > 0 && loanCollateral >= loanAmount
-        ];
-        const passed = factors.filter(Boolean).length;
-        const decision = passed === 4 ? 'Eligible' : passed >= 2 ? 'Conditional Approval' : 'Not Eligible';
-
-        setLoanResult({
-            decision,
-            explanation: `Projected DTI ${(postLoanDti * 100).toFixed(1)}%, credit score ${loanScore}, employment tenure ${loanEmployment} yrs, collateral coverage ${(loanAmount ? (loanCollateral / loanAmount) * 100 : 0).toFixed(0)}%.`,
-            metrics: [
-                { label: 'Debt-to-Income', value: `${(postLoanDti * 100).toFixed(1)}%`, exp: `Projected payment: ${formatAmount(estimatedPayment, currency)}. Target <= 40%.` },
-                { label: 'Credit Tier', value: `${loanScore} · ${loanScore >= 720 ? 'Strong' : loanScore >= 620 ? 'Review' : 'Weak'}`, exp: 'Bureau credit verification required.' },
-                { label: 'Affordability', value: `${passed}/4 passed`, exp: 'Score, DTI, tenure, and collateral weighted.' }
-            ]
-        });
-    };
-
     const runRiskAssessment = () => {
         const total = riskStocks + riskBonds + riskFunds + riskAlts;
         const volatility = total ? (riskStocks * 0.22 + riskBonds * 0.06 + riskFunds * 0.16 + riskAlts * 0.12) / total * 100 : 0;
@@ -109,17 +71,6 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
         setInvestTolerance('moderate');
         setInvestGoal('growth');
         setInvestResult(null);
-    };
-
-    const resetLoan = () => {
-        setLoanAmount(25000);
-        setLoanIncome(5500);
-        setLoanDebt(800);
-        setLoanScore(740);
-        setLoanEmployment(4);
-        setLoanCollateral(30000);
-        setLoanTerm(5);
-        setLoanResult(null);
     };
 
     const resetRisk = () => {
@@ -153,12 +104,6 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
                     onClick={() => setActiveTab('investment')}
                 >
                     📈 Investment Plan
-                </button>
-                <button
-                    className={`pill ${activeTab === 'loan' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('loan')}
-                >
-                    💳 Loan Eligibility
                 </button>
                 <button
                     className={`pill ${activeTab === 'risk' ? 'active' : ''}`}
@@ -275,116 +220,6 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
                                     <div key={m.label}>
                                         <span>{m.label}</span>
                                         <strong className="check-pass">{m.value}</strong>
-                                        <small>{m.exp}</small>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-            {/* TAB 3: Loan Affordability */}
-            {activeTab === 'loan' && (
-                <div className="oripio-card oripio-white-card" style={{ padding: '28px', minHeight: 'auto', maxWidth: '1000px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                        <div>
-                            <h3 style={{ margin: '0 0 6px', fontSize: '18px', fontWeight: '700', color: '#0F172A' }}>Automated Underwriting &amp; DTI Screen</h3>
-                            <p style={{ color: '#64748B', fontSize: '13px', margin: 0, lineHeight: '1.5' }}>
-                                Evaluates eligibility against debt burden, credit tier, and collateral coverage.
-                            </p>
-                        </div>
-                        <button
-                            type="button"
-                            onClick={resetLoan}
-                            title="Reset to default inputs"
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                padding: '6px 14px',
-                                fontSize: '12px',
-                                fontWeight: '600',
-                                color: '#475569',
-                                background: '#F1F5F9',
-                                border: '1px solid #CBD5E1',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                transition: 'all 0.15s ease'
-                            }}
-                        >
-                            ↺ Reset Inputs
-                        </button>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px' }}>
-                        <div className="form-group">
-                            <label>Loan Amount Requested</label>
-                            <input type="number" value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label>Gross Monthly Income</label>
-                            <input type="number" value={loanIncome} onChange={(e) => setLoanIncome(Number(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label>Existing Monthly Debt</label>
-                            <input type="number" value={loanDebt} onChange={(e) => setLoanDebt(Number(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label>Credit Score</label>
-                            <input type="number" value={loanScore} onChange={(e) => setLoanScore(Number(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label>Employment Tenure (Years)</label>
-                            <input type="number" value={loanEmployment} onChange={(e) => setLoanEmployment(Number(e.target.value))} />
-                        </div>
-                        <div className="form-group">
-                            <label>Collateral Valuation</label>
-                            <input type="number" value={loanCollateral} onChange={(e) => setLoanCollateral(Number(e.target.value))} />
-                        </div>
-                    </div>
-
-                    <div style={{ display: 'flex', gap: '12px', marginTop: '20px', alignItems: 'center' }}>
-                        <button className="btn btn-primary" onClick={runLoanAssessment}>
-                            Evaluate Loan Eligibility
-                        </button>
-                        <button
-                            type="button"
-                            onClick={resetLoan}
-                            style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '6px',
-                                padding: '10px 18px',
-                                fontSize: '13px',
-                                fontWeight: '600',
-                                color: '#475569',
-                                background: '#F8FAFC',
-                                border: '1px solid #CBD5E1',
-                                borderRadius: '8px',
-                                cursor: 'pointer',
-                                transition: 'all 0.15s ease'
-                            }}
-                        >
-                            ↺ Reset
-                        </button>
-                    </div>
-
-                    {loanResult && (
-                        <div className={`halal-result ${loanResult.decision === 'Eligible' ? 'pass' : loanResult.decision === 'Conditional Approval' ? 'review' : 'fail'}`} style={{ marginTop: '24px' }}>
-                            <div className="halal-result-heading">
-                                <div>
-                                    <span>Decision Outcome</span>
-                                    <h2>{loanResult.decision}</h2>
-                                </div>
-                                <strong>{loanResult.decision === 'Eligible' ? '✓' : loanResult.decision === 'Conditional Approval' ? '!' : '✕'}</strong>
-                            </div>
-                            <p>{loanResult.explanation}</p>
-                            <div className="halal-check-list">
-                                {loanResult.metrics.map(m => (
-                                    <div key={m.label}>
-                                        <span>{m.label}</span>
-                                        <strong>{m.value}</strong>
                                         <small>{m.exp}</small>
                                     </div>
                                 ))}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useFinance } from '../../context/FinanceContext';
+import WeatherClock from './WeatherClock';
 
 export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobileMenuOpen = false }) {
     const { currentUser, userProfile, userRole, logout } = useAuth();
@@ -179,6 +180,8 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                     </div>
                 )}
             </form>
+
+            <WeatherClock showToast={showToast} />
 
             {/* Right Actions: Notifications & User Profile */}
             <div className="topbar-actions">
