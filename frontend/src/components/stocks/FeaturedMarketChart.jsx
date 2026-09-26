@@ -260,9 +260,10 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
                             type="button"
                             onClick={() => setTimeframe(tf)}
                             aria-pressed={timeframe === tf}
+                            aria-label={`Show ${tf === '1D' ? '1 day' : tf === '1W' ? '1 week' : tf === '1M' ? '1 month' : '1 year'} of chart data`}
                             style={{
                                 background: timeframe === tf ? 'var(--text-primary)' : 'transparent',
-                                color: timeframe === tf ? 'var(--bg-primary)' : 'var(--text-secondary)',
+                                color: timeframe === tf ? '#fff' : 'var(--text-secondary)',
                                 border: '1px solid',
                                 borderColor: timeframe === tf ? 'var(--text-primary)' : 'var(--border)',
                                 borderRadius: 'var(--control-radius)',
