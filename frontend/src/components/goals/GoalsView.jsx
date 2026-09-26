@@ -250,14 +250,14 @@ export default function GoalsView() {
                                 }}
                             >
                                 <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ fontSize: '20px' }}>{tpl.icon}</span>
-                                            <span style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text-primary)' }}>{tpl.title}</span>
-                                        </div>
-                                        <span style={{ fontSize: '10px', fontWeight: '700', padding: '3px 8px', borderRadius: '20px', background: `${tpl.color}22`, color: tpl.color }}>
+                                    <div className="goal-blueprint-header">
+                                        <span className="goal-blueprint-icon" aria-hidden="true">{tpl.icon}</span>
+                                        <div className="goal-blueprint-heading">
+                                            <span className="goal-blueprint-title">{tpl.title}</span>
+                                            <span className="goal-blueprint-tag" style={{ background: `${tpl.color}18`, color: tpl.color }}>
                                             {tpl.tag}
-                                        </span>
+                                            </span>
+                                        </div>
                                     </div>
                                     <p style={{ fontSize: '12px', color: 'var(--text-muted)', lineHeight: '1.45', margin: '0 0 12px 0' }}>
                                         {tpl.description}
