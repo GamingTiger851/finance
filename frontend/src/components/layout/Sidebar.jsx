@@ -123,6 +123,19 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                     <span className="label-text">Stocks</span>
                 </button>
 
+                {/* Bonds */}
+                <button
+                    className={`side-link ${currentPage === 'bonds' ? 'active' : ''}`}
+                    onClick={() => setCurrentPage('bonds')}
+                >
+                    <span className="side-icon" aria-hidden="true">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6M9 10h.01M15 10h.01" />
+                        </svg>
+                    </span>
+                    <span className="label-text">Bond Market</span>
+                </button>
+
                 {/* Goals */}
                 <button
                     className={`side-link ${currentPage === 'goals' ? 'active' : ''}`}

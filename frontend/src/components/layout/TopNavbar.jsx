@@ -26,6 +26,7 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
         { id: 'expenses', label: 'Expenses' },
         { id: 'recurring', label: 'Recurring Bills' },
         { id: 'stocks', label: 'Stocks' },
+        { id: 'bonds', label: 'Bond Market' },
         { id: 'goals', label: 'Goals' },
         { id: 'calculators', label: 'Calculators' },
         { id: 'loan-eligibility', label: 'Loan Eligibility' },

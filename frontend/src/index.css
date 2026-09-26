@@ -386,6 +386,128 @@
     }
 }
 
+/* Government bond market view */
+.bond-market-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.bond-market-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.bond-market-open {
+    white-space: nowrap;
+    text-decoration: none;
+}
+
+.bond-market-source {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 18px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: var(--surface, #fff);
+    color: var(--text-primary);
+}
+
+.bond-market-source-dot {
+    flex: 0 0 auto;
+    width: 9px;
+    height: 9px;
+    margin-top: 5px;
+    border-radius: 50%;
+    background: #059669;
+    box-shadow: 0 0 0 4px rgba(5, 150, 105, 0.12);
+}
+
+.bond-market-source p {
+    margin: 4px 0 0;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.bond-market-unavailable {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+    min-height: 300px;
+    padding: clamp(24px, 5vw, 56px);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--surface, #fff);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.bond-market-unavailable-icon {
+    display: grid;
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    place-items: center;
+    border-radius: 12px;
+    background: rgba(5, 150, 105, 0.1);
+    color: #059669;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.bond-market-unavailable h2 {
+    margin: 0 0 8px;
+    color: var(--text-primary);
+    font-size: 20px;
+}
+
+.bond-market-unavailable p {
+    max-width: 680px;
+    margin: 0 0 20px;
+    color: var(--text-muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.bond-market-segments {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.bond-market-segments span {
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+@media (max-width: 640px) {
+    .bond-market-header {
+        flex-direction: column;
+    }
+
+    .bond-market-open {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .bond-market-unavailable {
+        min-height: 0;
+        padding: 22px 18px;
+    }
+
+    .bond-market-open {
+        white-space: normal;
+    }
+}
+
 /* Clean White Neo-Bank Base Theme - Universal across all environments */
 :root,
 [data-theme],
