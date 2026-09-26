@@ -54,6 +54,61 @@ function safeArticle(article) {
   }
 }
 
+function decodeXml(value) {
+  return value
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, '$1')
+    .replace(/&#x([\da-f]+);/gi, (_match, code) => String.fromCodePoint(parseInt(code, 16)))
+    .replace(/&#(\d+);/g, (_match, code) => String.fromCodePoint(Number(code)))
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .trim();
+}
+
+function readXmlTag(xml, tag) {
+  const match = xml.match(new RegExp(`<${tag}(?:\\s[^>]*)?>([\\s\\S]*?)<\\/${tag}>`, 'i'));
+  return match ? decodeXml(match[1]) : '';
+}
+
+async function fetchGoogleNewsRss() {
+  const url = new URL('https://news.google.com/rss/search');
+  url.search = new URLSearchParams({
+    q: 'Indian stock market',
+    hl: 'en-IN',
+    gl: 'IN',
+    ceid: 'IN:en',
+  }).toString();
+
+  const response = await fetch(url, {
+    headers: { Accept: 'application/rss+xml, application/xml, text/xml' },
+    signal: AbortSignal.timeout(8000),
+  });
+  if (!response.ok) throw new Error(`News RSS request failed (http_${response.status})`);
+
+  const xml = await response.text();
+  const items = [...xml.matchAll(/<item(?:\s[^>]*)?>([\s\S]*?)<\/item>/gi)].map(match => match[1]);
+  const articles = items.map(item => {
+    const link = readXmlTag(item, 'link');
+    return safeArticle({
+      uuid: readXmlTag(item, 'guid') || link,
+      title: readXmlTag(item, 'title'),
+      url: link,
+      source: readXmlTag(item, 'source') || 'Google News',
+      published_at: readXmlTag(item, 'pubDate'),
+    });
+  }).filter(Boolean).slice(0, 3);
+
+  if (articles.length === 0) throw new Error('News RSS feed returned no usable articles');
+  return {
+    configured: true,
+    provider: 'Google News RSS',
+    articles,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 async function fetchMarketauxNews() {
   const token = process.env.MARKETAUX_API_TOKEN;
   if (!token) return { configured: false, articles: [], updatedAt: null };
@@ -79,7 +134,18 @@ async function fetchMarketauxNews() {
   const articles = Array.isArray(payload?.data)
     ? payload.data.map(safeArticle).filter(Boolean).slice(0, 3)
     : [];
-  return { configured: true, articles, updatedAt: new Date().toISOString() };
+  return { configured: true, provider: 'Marketaux', articles, updatedAt: new Date().toISOString() };
+}
+
+async function fetchNews() {
+  if (process.env.MARKETAUX_API_TOKEN) {
+    try {
+      return await fetchMarketauxNews();
+    } catch (error) {
+      logger.warn(`Marketaux unavailable; trying RSS fallback (${error.message})`);
+    }
+  }
+  return fetchGoogleNewsRss();
 }
 
 exports.getNews = async (_req, res) => {
@@ -90,14 +156,9 @@ exports.getNews = async (_req, res) => {
     return res.json({ success: true, ...cached, cached: true });
   }
 
-  if (!process.env.MARKETAUX_API_TOKEN) {
-    res.set('Cache-Control', 'no-store');
-    return res.json({ success: true, configured: false, articles: [], updatedAt: null });
-  }
-
   try {
     if (!refreshInFlight) {
-      refreshInFlight = fetchMarketauxNews()
+      refreshInFlight = fetchNews()
         .then(async data => {
           if (data.configured) await writeCache(data);
           return data;
