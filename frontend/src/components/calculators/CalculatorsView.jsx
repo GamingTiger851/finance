@@ -238,37 +238,37 @@ export default function CalculatorsView({ defaultTab = 'sip' }) {
                     className={`pill ${calcType === 'sip' ? 'active' : ''}`}
                     onClick={() => setCalcType('sip')}
                 >
-                    📊 SIP Calculator
+                    SIP Calculator
                 </button>
                 <button
                     className={`pill ${calcType === 'swp' ? 'active' : ''}`}
                     onClick={() => setCalcType('swp')}
                 >
-                    💸 SWP Calculator
+                    SWP Calculator
                 </button>
                 <button
                     className={`pill ${calcType === 'fd' ? 'active' : ''}`}
                     onClick={() => setCalcType('fd')}
                 >
-                    🏦 FD Calculator
+                    FD Calculator
                 </button>
                 <button
                     className={`pill ${calcType === 'rd' ? 'active' : ''}`}
                     onClick={() => setCalcType('rd')}
                 >
-                    🔄 RD Calculator
+                    RD Calculator
                 </button>
                 <button
                     className={`pill ${calcType === 'mf' ? 'active' : ''}`}
                     onClick={() => setCalcType('mf')}
                 >
-                    📈 Mutual Fund (Lumpsum)
+                    Mutual Fund (Lumpsum)
                 </button>
                 <button
                     className={`pill ${calcType === 'loan' ? 'active' : ''}`}
                     onClick={() => setCalcType('loan')}
                 >
-                    💳 Loan Eligibility &amp; EMI
+                    Loan Eligibility &amp; EMI
                 </button>
             </div>
 

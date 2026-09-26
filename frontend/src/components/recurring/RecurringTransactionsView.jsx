@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Repeat2 } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 
 const DEFAULT_RECURRING = [];
@@ -111,7 +112,7 @@ export default function RecurringTransactionsView() {
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>🔄</span>
+                        <Repeat2 size={22} strokeWidth={1.8} aria-hidden="true" />
                         <h1 className="page-title" style={{ margin: 0 }}>Recurring Transactions &amp; Subscriptions</h1>
                     </div>
                     <p className="page-subtitle">
@@ -190,7 +191,7 @@ export default function RecurringTransactionsView() {
                                             <td data-label="Bill">
                                                 <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{bill.name}</div>
                                                 {bill.autoPay && (
-                                                    <span style={{ fontSize: '10.5px', color: '#059669', fontWeight: '600' }}>⚡ Auto-Debit Enabled</span>
+                                                    <span style={{ fontSize: '10.5px', color: '#059669', fontWeight: '600' }}> Auto-Debit Enabled</span>
                                                 )}
                                             </td>
                                             <td data-label="Category" style={{ fontSize: '12.5px', color: 'var(--text-muted)' }}>{bill.category}</td>
@@ -206,7 +207,7 @@ export default function RecurringTransactionsView() {
                                                     background: isOverdue ? 'rgba(239, 68, 68, 0.15)' : (isDueSoon ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255,255,255,0.06)'),
                                                     color: isOverdue ? '#ef4444' : (isDueSoon ? '#f59e0b' : 'var(--text-muted)')
                                                 }}>
-                                                    {isOverdue ? '⚠️ Overdue' : (isDueSoon ? `Due in ${diffDays}d` : `${diffDays} days away`)}
+                                                    {isOverdue ? ' Overdue' : (isDueSoon ? `Due in ${diffDays}d` : `${diffDays} days away`)}
                                                 </span>
                                             </td>
                                             <td data-label="Status">
@@ -236,7 +237,7 @@ export default function RecurringTransactionsView() {
                                                         style={{ fontSize: '11px', padding: '4px 8px', fontWeight: '700' }}
                                                         title="Log this bill to your current month's expenses ledger"
                                                     >
-                                                        💳 Pay &amp; Log
+                                                         Pay &amp; Log
                                                     </button>
                                                     <button
                                                         type="button"

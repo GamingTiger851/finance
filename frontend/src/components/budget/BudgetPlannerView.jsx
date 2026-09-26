@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { WalletCards } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 
 const DEFAULT_BUDGETS = {
@@ -103,7 +104,7 @@ export default function BudgetPlannerView() {
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>🎯</span>
+                        <WalletCards size={22} strokeWidth={1.8} aria-hidden="true" />
                         <h1 className="page-title" style={{ margin: 0 }}>Monthly Budget Planner</h1>
                     </div>
                     <p className="page-subtitle">
@@ -117,7 +118,7 @@ export default function BudgetPlannerView() {
                         onClick={handleApply503020}
                         style={{ fontSize: '13px' }}
                     >
-                        ⚖️ 50/30/20 Rule
+                        50/30/20 Rule
                     </button>
                     <button
                         type="button"
@@ -128,7 +129,7 @@ export default function BudgetPlannerView() {
                         }}
                         style={{ fontWeight: '700' }}
                     >
-                        {isEditing ? '✕ Cancel Editing' : '✏️ Set Budgets'}
+                        {isEditing ? '✕ Cancel Editing' : 'Set Budgets'}
                     </button>
                 </div>
             </div>
@@ -160,7 +161,7 @@ export default function BudgetPlannerView() {
                         {totalRemaining >= 0 ? `₹${totalRemaining.toLocaleString('en-IN')}` : `-₹${Math.abs(totalRemaining).toLocaleString('en-IN')}`}
                     </div>
                     <div style={{ fontSize: '11.5px', color: totalRemaining >= 0 ? '#10b981' : '#ef4444', marginTop: '4px' }}>
-                        {totalRemaining >= 0 ? '✓ Within safety threshold' : '⚠️ Over budget'}
+                        {totalRemaining >= 0 ? '✓ Within safety threshold' : 'Over budget'}
                     </div>
                 </div>
 
@@ -192,7 +193,7 @@ export default function BudgetPlannerView() {
             {/* Category Budget Editing Form Modal / Inline */}
             {isEditing && (
                 <div className="table-card" style={{ padding: '22px', marginTop: '16px', border: '1px solid var(--accent)' }}>
-                    <h3 style={{ margin: '0 0 14px 0', fontSize: '16px' }}>✏️ Adjust Monthly Category Caps (INR)</h3>
+                    <h3 style={{ margin: '0 0 14px 0', fontSize: '16px' }}>Adjust Monthly Category Caps (INR)</h3>
                     <form onSubmit={handleSaveBudgets}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px' }}>
                             {Object.keys(budgets).map(cat => (
@@ -246,7 +247,7 @@ export default function BudgetPlannerView() {
                                     background: isExceeded ? 'rgba(239, 68, 68, 0.15)' : (isWarning ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)'),
                                     color: isExceeded ? '#ef4444' : (isWarning ? '#f59e0b' : '#10b981')
                                 }}>
-                                    {isExceeded ? '🚨 Over Limit' : (isWarning ? '⚠️ 80% Spent' : '✓ On Track')}
+                                    {isExceeded ? 'Over Limit' : (isWarning ? '80% Spent' : '✓ On Track')}
                                 </span>
                             </div>
 

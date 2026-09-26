@@ -65,14 +65,14 @@ export default function StocksView() {
 
     const tabs = [
         { id: 'all', label: 'All 1,000 Equities' },
-        { id: 'popular', label: '🔥 Most Bought' },
-        { id: 'gainers', label: '🚀 Top Gainers' },
-        { id: 'losers', label: '🔻 Top Losers' },
-        { id: 'largecap', label: '🏢 Large Cap Titans' },
-        { id: 'midcap', label: '⚡ High-Growth Midcaps' },
-        { id: 'smallcap', label: '🌱 Emerging Smallcaps' },
-        { id: 'high52', label: '🎯 Near 52W High' },
-        { id: 'halal', label: '🕌 Shariah Screened' }
+        { id: 'popular', label: ' Most Bought' },
+        { id: 'gainers', label: ' Top Gainers' },
+        { id: 'losers', label: ' Top Losers' },
+        { id: 'largecap', label: ' Large Cap Titans' },
+        { id: 'midcap', label: ' High-Growth Midcaps' },
+        { id: 'smallcap', label: ' Emerging Smallcaps' },
+        { id: 'high52', label: ' Near 52W High' },
+        { id: 'halal', label: ' Shariah Screened' }
     ];
 
     // Reset to page 1 whenever search, tab, sector, cap or sort changes
@@ -300,7 +300,7 @@ export default function StocksView() {
                         onClick={() => setViewMode(viewMode === 'grid' ? 'table' : 'grid')}
                         style={{ fontSize: '13px' }}
                     >
-                        {viewMode === 'grid' ? '📋 Table View' : '🗂️ Card View'}
+                        {viewMode === 'grid' ? ' Table View' : ' Card View'}
                     </button>
                 </div>
             </div>
@@ -564,7 +564,7 @@ export default function StocksView() {
                     )}
                     {!apiLive && (
                         <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-muted)' }} title="Register your server IP on groww.in/trade-api/api-keys to enable live prices">
-                            ⚠ Static prices
+                             Static prices
                         </span>
                     )}
                     {totalStocks > 0 && totalStocks < 1000 && (
@@ -573,7 +573,7 @@ export default function StocksView() {
                             onClick={() => handleDownloadStocksExport(false)}
                             style={{ background: 'none', border: 'none', color: '#60a5fa', cursor: 'pointer', fontSize: '12.5px', textDecoration: 'underline', padding: 0 }}
                         >
-                            📥 Export Filtered ({totalStocks}) to Excel
+                             Export Filtered ({totalStocks}) to Excel
                         </button>
                     )}
                     <span>Page <strong>{currentPage}</strong> of <strong>{totalPages}</strong></span>
@@ -583,7 +583,6 @@ export default function StocksView() {
             {/* Empty Search State */}
             {displayedStocks.length === 0 && (
                 <div className="table-card" style={{ textAlign: 'center', padding: '48px 24px', marginTop: '20px' }}>
-                    <div style={{ fontSize: '42px', marginBottom: '12px' }}>🔍</div>
                     <h3 style={{ margin: '0 0 8px 0', fontSize: '18px' }}>No matching stocks found</h3>
                     <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: '0 0 16px 0' }}>
                         No companies matched your filter criteria among the 1,000 equities universe.
@@ -645,7 +644,7 @@ export default function StocksView() {
                                                 </span>
                                                 {stock.isHalal && (
                                                     <span style={{ fontSize: '10px', padding: '1px 6px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', fontWeight: '700' }} title="AAOIFI Shariah Compliant">
-                                                        🕌 Halal
+                                                         Halal
                                                     </span>
                                                 )}
                                         {stock.livePrice && (
@@ -732,7 +731,7 @@ export default function StocksView() {
                                     style={{ fontSize: '12px', padding: '8px 6px', justifyContent: 'center', fontWeight: '700' }}
                                     title="Open Interactive Live Chart"
                                 >
-                                    📈 Live Chart
+                                     Live Chart
                                 </button>
                                 <button
                                     type="button"
@@ -740,7 +739,7 @@ export default function StocksView() {
                                     onClick={() => setDetailStock(stock)}
                                     style={{ fontSize: '11px', padding: '7px 4px', justifyContent: 'center' }}
                                 >
-                                    👁️ Info
+                                     Info
                                 </button>
                                 <a
                                     className="btn btn-trade-link btn-trade-buy"
@@ -863,8 +862,8 @@ export default function StocksView() {
                                                     title="Open Interactive Live Chart"
                                                     aria-label={`Open chart for ${stock.symbol}`}
                                                 >
-                                                    <span className="stock-action-desktop">📈 Chart</span>
-                                                    <span className="stock-action-mobile" aria-hidden="true">📈</span>
+                                                    <span className="stock-action-desktop"> Chart</span>
+                                                    <span className="stock-action-mobile" aria-hidden="true">Chart</span>
                                                 </button>
                                                 <button
                                                     type="button"
@@ -1050,7 +1049,7 @@ export default function StocksView() {
                                     setChartModalStock(s);
                                 }}
                             >
-                                📈 Open Live Chart
+                                 Open Live Chart
                             </button>
                             <button type="button" className="btn btn-secondary" onClick={() => setDetailStock(null)}>
                                 Close

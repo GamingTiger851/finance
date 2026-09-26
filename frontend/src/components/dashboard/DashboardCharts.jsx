@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useMemo } from 'react';
+import { ChartNoAxesColumn } from 'lucide-react';
 import Chart from 'chart.js/auto';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
@@ -349,7 +350,7 @@ export default function DashboardCharts() {
                                 ))
                             ) : (
                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '16px 0', textAlign: 'center', color: 'var(--text-muted)' }}>
-                                    <span style={{ fontSize: '20px', marginBottom: '4px' }}>📊</span>
+                                    <ChartNoAxesColumn size={20} strokeWidth={1.8} aria-hidden="true" />
                                     <span style={{ fontSize: '11.5px', fontWeight: '600', color: 'var(--text)' }}>No Expenses</span>
                                     <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>Cleared to 0%</span>
                                 </div>

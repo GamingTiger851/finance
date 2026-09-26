@@ -30,7 +30,7 @@ export default function AiChatbot() {
             id: 'init-1',
             sender: 'bot',
             time: 'Just now',
-            text: `Hello ${userName}! 👋 I'm your AI Financial Assistant. Ask me anything about budgeting, investing, loans, or financial planning.`
+            text: `Hello ${userName}! I'm your AI Financial Assistant. Ask me anything about budgeting, investing, loans, or financial planning.`
         }
     ]);
     const [inputValue, setInputValue] = useState('');
@@ -125,7 +125,7 @@ export default function AiChatbot() {
 
             return `Here is a personalized expense reduction strategy for you, **${userName}**:\n\n` +
                 catSummary +
-                `💡 **Actionable Recommendations**:\n` +
+                `**Actionable Recommendations**:\n` +
                 `1. **Apply the 50/30/20 Rule**: Aim for 50% Needs, 30% Wants, and 20% Savings. Right now your savings rate is **${savingsRate}%**.\n` +
                 `2. **Audit Subscriptions**: Cancel streaming or app services not used in the past 30 days.\n` +
                 `3. **Micro-Expense Buffer**: Set a weekly discretionary cash cap for dining out and impulse shopping.\n` +
@@ -133,7 +133,7 @@ export default function AiChatbot() {
         }
 
         if (lower.includes('sip') || lower.includes('systematic investment')) {
-            return `**SIP (Systematic Investment Plan)** means investing a fixed amount at regular intervals, often monthly. 📈\n\n` +
+            return `**SIP (Systematic Investment Plan)** means investing a fixed amount at regular intervals, often monthly.\n\n` +
                 `• **What it is**: Instead of investing a large lump sum at once, you invest a fixed amount regularly (e.g., $100 or ₹2,000 every month).\n` +
                 `• Your regular contribution buys more units when prices are lower and fewer when they are higher; this does not prevent investment losses.\n` +
                 `• Returns are uncertain and are not guaranteed. The outcome depends on contribution, fees, investment choice, and market performance. Use the Investment Planner to compare assumptions, not as a promise of results.`;
@@ -145,21 +145,21 @@ export default function AiChatbot() {
         }
 
         if (lower.includes('loan') || lower.includes('borrow') || lower.includes('credit')) {
-            return `**Loan Eligibility Assessment for ${userName}** 💳\n\n` +
+            return `**Loan Eligibility Assessment for ${userName}**\n\n` +
                 `I can't estimate an approval amount from the transaction totals alone. Lenders also consider your country, verified monthly income, existing debt payments, credit history, loan term, and interest rate.\n\n` +
                 `Share your monthly take-home income, current monthly debt payments, requested term, and expected rate, and I can calculate an illustrative payment. A lender makes the actual approval decision.`;
         }
 
         if (lower.includes('analyze') || lower.includes('budget') || lower.includes('habit') || lower.includes('financial status') || lower.includes('this month') || lower.includes('monthly spending') || lower.includes('how much did i save')) {
-            return `📊 **Your Financial Snapshot**:\n\n` +
+            return `**Your Financial Snapshot**:\n\n` +
                 `• **${now.toLocaleString(undefined, { month: 'long', year: 'numeric' })} income recorded**: ${formatAmount(monthIncome, currency)}\n` +
                 `• **Expenses recorded**: ${formatAmount(monthExpenses, currency)}\n` +
                 `• **Net for the month**: ${formatAmount(monthBalance, currency)}\n` +
                 (topCategories.length ? `• **Top expense categories this month**: ${topCategories.map(([cat, amt]) => `${cat} (${formatAmount(amt, currency)})`).join(', ')}\n` : '') +
                 `• **Savings rate**: ${monthIncome > 0 ? `${savingsRate}%` : 'not available because no income is recorded for this month'}\n\n` +
                 (Number(savingsRate) >= 20
-                    ? `🌟 *Outstanding job! Your savings rate is above the recommended 20% baseline.*`
-                    : `⚠️ *Consider trimming discretionary expenses to push your savings rate to at least 20%.*`);
+                    ? `*Your savings rate is above the recommended 20% baseline.*`
+                    : `*Consider trimming discretionary expenses to move your savings rate toward 20%.*`);
         }
 
         // General smart finance fallback

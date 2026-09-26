@@ -1,4 +1,5 @@
 import React from 'react';
+import { ArrowDownToLine, BusFront, HeartPulse, ShoppingBag, Tag, Utensils, Wallet } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
 import { formatAmount } from '../../constants';
@@ -17,11 +18,11 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
             name: t.description || t.title || 'Expense',
             category: t.category,
             amount: t.amount,
-            icon: t.category?.includes('Food') ? '🍔' :
-                  t.category?.includes('Shopping') ? '📦' :
-                  t.category?.includes('Transport') || t.category?.includes('Auto') || t.category?.includes('Petrol') ? '🚗' :
-                  t.category?.includes('Bill') || t.category?.includes('Utilities') || t.category?.includes('Recharge') ? '⚡' :
-                  t.category?.includes('Health') ? '💊' : '🏷️',
+            icon: t.category?.includes('Food') ? Utensils :
+                  t.category?.includes('Shopping') ? ShoppingBag :
+                  t.category?.includes('Transport') || t.category?.includes('Auto') || t.category?.includes('Petrol') ? BusFront :
+                  t.category?.includes('Bill') || t.category?.includes('Utilities') || t.category?.includes('Recharge') ? Wallet :
+                  t.category?.includes('Health') ? HeartPulse : Tag,
             bg: 'var(--paper)',
             color: 'var(--accent)'
         }));
@@ -83,7 +84,7 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                                 title="Download expenses as Excel spreadsheet (.csv)"
                                 style={{ display: 'flex', alignItems: 'center', gap: '4px' }}
                             >
-                                <span>📊</span> Excel
+                                <ArrowDownToLine size={14} aria-hidden="true" /> Excel
                             </button>
                             <button
                                 type="button"
@@ -102,7 +103,7 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                                     transition: 'all 0.2s'
                                 }}
                             >
-                                🗑️ Clear All
+                                 Clear All
                             </button>
                             <button
                                 type="button"
@@ -145,8 +146,8 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                                     </td>
                                     <td>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span className="brand-emoji-chip" style={{ background: item.bg }}>
-                                                {item.icon}
+                                            <span className="brand-emoji-chip" style={{ background: item.bg, color: item.color }}>
+                                                <item.icon size={16} strokeWidth={1.8} aria-hidden="true" />
                                             </span>
                                             <span style={{ fontWeight: '600', color: 'var(--text)', fontSize: '13.5px' }}>
                                                 {item.name}
@@ -167,7 +168,6 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                     </table>
                 ) : (
                     <div style={{ padding: '36px 16px', textAlign: 'center', background: '#F8FAFC', borderRadius: '12px', border: '1px solid #E2E8F0' }}>
-                        <div style={{ fontSize: '32px', marginBottom: '8px' }}>🧾</div>
                         <div style={{ fontSize: '14px', fontWeight: '700', color: 'var(--text)', marginBottom: '4px' }}>
                             All Expenses Cleared
                         </div>

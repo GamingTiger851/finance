@@ -1,4 +1,5 @@
 import React, { useState, useMemo, useEffect, useCallback } from 'react';
+import { FileSpreadsheet, Landmark } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { checkUpstoxStatus, fetchQuotes, getInstrumentKey, getQuoteForInstrument } from '../../services/upstoxService';
 
@@ -919,7 +920,7 @@ export default function HalalStocksView() {
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <span style={{ fontSize: '20px' }}>🕌</span>
+                        <Landmark size={20} strokeWidth={1.8} aria-hidden="true" />
                         <h1 className="page-title" style={{ margin: 0 }}>Halal Stocks &amp; Company Balance Sheets</h1>
                     </div>
                     <p className="page-subtitle">
@@ -939,7 +940,7 @@ export default function HalalStocksView() {
                         onClick={handleDownloadAllStocks}
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '700' }}
                     >
-                        <span>📥</span> Download Full Registry (Excel)
+                        <FileSpreadsheet size={16} aria-hidden="true" /> Download Full Registry (Excel)
                     </button>
                 </div>
             </div>
@@ -1102,7 +1103,7 @@ export default function HalalStocksView() {
                                 onClick={() => setPreviewStock(stock)}
                                 style={{ fontSize: '12px', padding: '8px 10px', justifyContent: 'center' }}
                             >
-                                👁️ View Sheet
+                                 View Sheet
                             </button>
                             <button
                                 type="button"
@@ -1110,7 +1111,7 @@ export default function HalalStocksView() {
                                 onClick={() => handleDownloadBalanceSheet(stock)}
                                 style={{ fontSize: '12px', padding: '8px 12px', justifyContent: 'center', fontWeight: '700' }}
                             >
-                                📥 Download Sheet
+                                 Download Sheet
                             </button>
                         </div>
                     </div>
@@ -1248,7 +1249,7 @@ export default function HalalStocksView() {
                                     setPreviewStock(null);
                                 }}
                             >
-                                📥 Download Excel Balance Sheet
+                                 Download Excel Balance Sheet
                             </button>
                         </div>
                     </div>

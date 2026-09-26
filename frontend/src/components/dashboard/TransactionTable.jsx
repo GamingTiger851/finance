@@ -130,7 +130,7 @@ export default function TransactionTable({ onOpenAddModal }) {
                             fontWeight: '600'
                         }}
                     >
-                        <span>📊</span> Download Excel
+                        Download Excel
                     </button>
                     {filteredTransactions.length > 0 && (
                         <button
@@ -152,7 +152,7 @@ export default function TransactionTable({ onOpenAddModal }) {
                                 borderRadius: '8px'
                             }}
                         >
-                            🗑️ Clear {currentFilter === 'expense' ? 'Expenses' : 'All'}
+                             Clear {currentFilter === 'expense' ? 'Expenses' : 'All'}
                         </button>
                     )}
                     <button className="btn btn-primary" onClick={onOpenAddModal}>

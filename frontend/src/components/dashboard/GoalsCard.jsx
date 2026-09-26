@@ -1,4 +1,5 @@
 import React from 'react';
+import { Target } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFinance } from '../../context/FinanceContext';
 import { formatAmount } from '../../constants';
@@ -88,7 +89,7 @@ export default function GoalsCard({ onViewAll }) {
                         fontSize: '20px',
                         marginBottom: '12px'
                     }}>
-                        🎯
+                        <Target size={20} strokeWidth={1.8} aria-hidden="true" />
                     </div>
                     <div style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-primary)', marginBottom: '4px' }}>
                         No Goals Configured

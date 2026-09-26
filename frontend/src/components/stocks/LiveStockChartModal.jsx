@@ -249,7 +249,7 @@ export default function LiveStockChartModal({ stock, onClose }) {
                                         color: '#10b981',
                                         fontWeight: '700'
                                     }}>
-                                        🕌 Halal
+                                         Halal
                                     </span>
                                 )}
                             </div>
@@ -385,7 +385,7 @@ export default function LiveStockChartModal({ stock, onClose }) {
                                 }}
                                 title="Area Graph"
                             >
-                                📈 Area
+                                 Area
                             </button>
                             <button
                                 type="button"
@@ -401,7 +401,7 @@ export default function LiveStockChartModal({ stock, onClose }) {
                                 }}
                                 title="Candlestick Chart"
                             >
-                                🕯️ Candles
+                                 Candles
                             </button>
                         </div>
                     </div>

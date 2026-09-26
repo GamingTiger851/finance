@@ -34,7 +34,7 @@ export default function DashboardView({ onNavigate }) {
             <div className="dashboard-executive-header">
                 <div>
                     <h1 className="executive-greeting">
-                        {greetingTime}, {firstName}! <span className="wave-hand">👋</span>
+                        {greetingTime}, {firstName}
                     </h1>
                     <p className="executive-subtitle">
                         Here's your financial overview for this month.

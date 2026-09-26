@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Building2, CarFront, ChartNoAxesCombined, CreditCard, GraduationCap, House, Lightbulb, Settings2, UserRound, CalendarDays } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { CURRENCY_LOCALES } from '../../constants';
 
@@ -7,7 +8,7 @@ const LOAN_TYPES = [
     {
         id: 'home',
         name: 'Home Loan',
-        icon: '🏠',
+        icon: House,
         desc: 'Purchase or construct property',
         defaultRate: 8.5,
         defaultTenure: 20,
@@ -22,7 +23,7 @@ const LOAN_TYPES = [
     {
         id: 'personal',
         name: 'Personal Loan',
-        icon: '👤',
+        icon: UserRound,
         desc: 'Unsecured instant funds',
         defaultRate: 11.5,
         defaultTenure: 5,
@@ -37,7 +38,7 @@ const LOAN_TYPES = [
     {
         id: 'car',
         name: 'Car / Vehicle',
-        icon: '🚗',
+        icon: CarFront,
         desc: 'New or used vehicle finance',
         defaultRate: 8.9,
         defaultTenure: 5,
@@ -52,7 +53,7 @@ const LOAN_TYPES = [
     {
         id: 'education',
         name: 'Education Loan',
-        icon: '🎓',
+        icon: GraduationCap,
         desc: 'Higher studies & living expenses',
         defaultRate: 9.2,
         defaultTenure: 10,
@@ -67,7 +68,7 @@ const LOAN_TYPES = [
     {
         id: 'business',
         name: 'Business Loan',
-        icon: '🏢',
+        icon: Building2,
         desc: 'Working capital & enterprise expansion',
         defaultRate: 13.0,
         defaultTenure: 5,
@@ -300,7 +301,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <span style={{ fontSize: '24px' }}>💳</span>
+                                <CreditCard size={24} strokeWidth={1.8} aria-hidden="true" />
                                 <h1 className="page-title" style={{ margin: 0, fontSize: '26px', fontWeight: '800', color: '#0F172A', letterSpacing: '-0.02em' }}>
                                     Loan &amp; EMI Calculator
                                 </h1>
@@ -364,7 +365,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                                 boxShadow: isSelected ? `0 4px 14px ${t.color}22` : '0 2px 6px rgba(0, 0, 0, 0.03)'
                             }}
                         >
-                            <span style={{ fontSize: '20px' }}>{t.icon}</span>
+                            <t.icon size={20} strokeWidth={1.8} aria-hidden="true" />
                             <div style={{ textAlign: 'left' }}>
                                 <div style={{ fontSize: '13px', lineHeight: '1.2', color: isSelected ? '#0F172A' : '#334155', fontWeight: isSelected ? '700' : '600' }}>
                                     {t.name}
@@ -437,7 +438,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                 <div className="oripio-card oripio-white-card" style={{ padding: '24px', minHeight: 'auto', display: 'flex', flexDirection: 'column', gap: '22px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #F1F5F9', paddingBottom: '14px', flexWrap: 'wrap', gap: '12px' }}>
                         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: '700', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <span>⚙️</span> Financial &amp; Loan Parameters
+                            <Settings2 size={18} aria-hidden="true" /> Financial &amp; Loan Parameters
                         </h3>
                         <span style={{ fontSize: '12px', color: '#2563EB', fontWeight: '700', background: '#EFF6FF', padding: '3px 10px', borderRadius: '6px', border: '1px solid #BFDBFE' }}>
                             {activeLoanType.name}
@@ -758,7 +759,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                     <div className="oripio-card oripio-white-card" style={{ padding: '24px', minHeight: 'auto' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                             <h4 style={{ margin: 0, fontSize: '14px', fontWeight: '700', color: '#0F172A' }}>
-                                📊 Income Allocation &amp; Debt-to-Income (DTI)
+                                <ChartNoAxesCombined size={18} aria-hidden="true" /> Income Allocation &amp; Debt-to-Income (DTI)
                             </h4>
                             <span style={{ fontSize: '12px', fontWeight: '700', color: calculations.projectedDti <= calculations.foirPct ? '#059669' : '#DC2626' }}>
                                 {calculations.projectedDti}% Total DTI
@@ -813,7 +814,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                     {/* 3. Actionable Insights to Boost Eligibility */}
                     <div className="oripio-card oripio-white-card" style={{ padding: '24px', minHeight: 'auto' }}>
                         <h4 style={{ margin: '0 0 14px', fontSize: '14px', fontWeight: '700', color: '#0F172A', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <span>💡</span> AI Financial Insights &amp; Boost Tips
+                            <Lightbulb size={18} aria-hidden="true" /> Financial Insights &amp; Boost Tips
                         </h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '13px', color: '#334155' }}>
                             {calculations.debt > 0 && (
@@ -853,7 +854,7 @@ export default function LoanEligibilityView({ embedded = false }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                     <div>
                         <h3 style={{ margin: '0 0 4px', fontSize: '16px', fontWeight: '700', color: '#0F172A' }}>
-                            📅 Annual Repayment &amp; Amortization Schedule
+                            <CalendarDays size={18} aria-hidden="true" /> Annual Repayment &amp; Amortization Schedule
                         </h3>
                         <p style={{ margin: 0, fontSize: '13px', color: '#64748B' }}>
                             Year-by-year breakdown of principal repayment, accrued interest, and loan balance.

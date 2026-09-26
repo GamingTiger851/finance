@@ -97,19 +97,19 @@ export default function AdvisorView({ initialTab = 'chatbot' }) {
                     className={`pill ${activeTab === 'chatbot' ? 'active' : ''}`}
                     onClick={() => setActiveTab('chatbot')}
                 >
-                    💬 AI Assistant Chat
+                    AI Assistant Chat
                 </button>
                 <button
                     className={`pill ${activeTab === 'investment' ? 'active' : ''}`}
                     onClick={() => setActiveTab('investment')}
                 >
-                    📈 Investment Plan
+                    Investment Plan
                 </button>
                 <button
                     className={`pill ${activeTab === 'risk' ? 'active' : ''}`}
                     onClick={() => setActiveTab('risk')}
                 >
-                    🛡️ Portfolio Risk
+                    Portfolio Risk
                 </button>
             </div>
 

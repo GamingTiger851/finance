@@ -1,11 +1,12 @@
 import React from 'react';
+import { CalendarDays, ChartNoAxesCombined, Landmark, WalletCards } from 'lucide-react';
 
 export default function QuickToolsStrip({ onSelectTool }) {
     const calcTools = [
-        { id: 'sip', name: 'SIP Calculator', desc: 'Plan your SIP investments', icon: '📈', bg: '#fff7ed', color: '#ea580c' },
-        { id: 'fd', name: 'FD Calculator', desc: 'Calculate FD returns', icon: '🏦', bg: '#eff6ff', color: '#2563eb' },
-        { id: 'rd', name: 'RD Calculator', desc: 'Plan recurring deposits', icon: '🗓️', bg: '#f0fdf4', color: '#16a34a' },
-        { id: 'swp', name: 'SWP Calculator', desc: 'Withdraw from investments', icon: '💳', bg: '#faf5ff', color: '#9333ea' },
+        { id: 'sip', name: 'SIP Calculator', desc: 'Plan your SIP investments', icon: ChartNoAxesCombined, bg: '#fff7ed', color: '#ea580c' },
+        { id: 'fd', name: 'FD Calculator', desc: 'Calculate FD returns', icon: Landmark, bg: '#eff6ff', color: '#2563eb' },
+        { id: 'rd', name: 'RD Calculator', desc: 'Plan recurring deposits', icon: CalendarDays, bg: '#f0fdf4', color: '#16a34a' },
+        { id: 'swp', name: 'SWP Calculator', desc: 'Withdraw from investments', icon: WalletCards, bg: '#faf5ff', color: '#9333ea' },
     ];
 
     return (
@@ -20,8 +21,8 @@ export default function QuickToolsStrip({ onSelectTool }) {
                             className="tool-pill-card"
                             onClick={() => onSelectTool('calculators', t.id)}
                         >
-                            <span className="tool-pill-emoji" style={{ background: t.bg }}>
-                                {t.icon}
+                            <span className="tool-pill-emoji" style={{ background: t.bg, color: t.color }}>
+                                <t.icon size={19} strokeWidth={1.8} aria-hidden="true" />
                             </span>
                             <div className="tool-pill-text">
                                 <div className="tool-pill-title">{t.name}</div>

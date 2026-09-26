@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Cloud, CloudFog, CloudRain, CloudSnow, CloudSun, Sun, Thermometer, Zap } from 'lucide-react';
 
 const DEFAULT_LOCATION = { name: 'New Delhi', latitude: 28.6139, longitude: 77.209 };
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
@@ -28,15 +29,14 @@ function getClockTimeZoneName(date, timeZone) {
 }
 
 function describeWeather(code) {
-    if (code === 0) return ['☀️', 'Clear sky'];
-    if ([1, 2].includes(code)) return ['🌤️', 'Partly cloudy'];
-    if (code === 3) return ['☁️', 'Overcast'];
-    if ([45, 48].includes(code)) return ['🌫️', 'Fog'];
-    if ([51, 53, 55, 56, 57].includes(code)) return ['🌦️', 'Drizzle'];
-    if ([61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return ['🌧️', 'Rain'];
-    if ([71, 73, 75, 77, 85, 86].includes(code)) return ['🌨️', 'Snow'];
-    if ([95, 96, 99].includes(code)) return ['⛈️', 'Thunderstorm'];
-    return ['🌡️', 'Current weather'];
+    if (code === 0) return [Sun, 'Clear sky'];
+    if ([1, 2].includes(code)) return [CloudSun, 'Partly cloudy'];
+    if (code === 3) return [Cloud, 'Overcast'];
+    if ([45, 48].includes(code)) return [CloudFog, 'Fog'];
+    if ([51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82].includes(code)) return [CloudRain, code < 60 ? 'Drizzle' : 'Rain'];
+    if ([71, 73, 75, 77, 85, 86].includes(code)) return [CloudSnow, 'Snow'];
+    if ([95, 96, 99].includes(code)) return [Zap, 'Thunderstorm'];
+    return [Thermometer, 'Current weather'];
 }
 
 export default function WeatherClock({ showToast }) {
@@ -136,7 +136,7 @@ export default function WeatherClock({ showToast }) {
         );
     };
 
-    const [weatherIcon, weatherLabel] = weather ? describeWeather(weather.code) : ['🌤️', weatherUnavailable ? 'Weather unavailable' : 'Loading weather'];
+    const [WeatherIcon, weatherLabel] = weather ? describeWeather(weather.code) : [CloudSun, weatherUnavailable ? 'Weather unavailable' : 'Loading weather'];
     const selectedClock = WORLD_CLOCKS.find(clock => clock.id === selectedClockId) || WORLD_CLOCKS[3];
     const localTime = formatClock(now, selectedClock.timeZone, {
         hour: '2-digit',
@@ -160,7 +160,7 @@ export default function WeatherClock({ showToast }) {
                 title={`Weather for ${location.name}. Click to use your current location.`}
                 aria-label={`Weather for ${location.name}: ${weather ? `${weather.temperature} degrees Celsius, ${weatherLabel}` : weatherLabel}. Click to use your current location.`}
             >
-                <span className="topbar-weather-icon" aria-hidden="true">{weatherIcon}</span>
+                <span className="topbar-weather-icon" aria-hidden="true"><WeatherIcon size={20} strokeWidth={1.8} /></span>
                 <span className="topbar-weather-copy">
                     <strong>{weather ? `${weather.temperature}°C` : '—'}</strong>
                     <span>{location.name}</span>

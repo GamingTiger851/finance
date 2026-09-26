@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { ShieldCheck, Zap, House, ChartNoAxesCombined, FileText, Plane, Target } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useFinance } from '../../context/FinanceContext';
 import { formatAmount } from '../../constants';
@@ -12,7 +13,7 @@ const GOAL_TEMPLATES = [
         initial: 50000,
         monthsAhead: 12,
         color: '#10b981',
-        icon: '🛡️',
+        icon: ShieldCheck,
         tag: 'Essential Priority',
         description: 'Build 3 to 6 months of living expenses in liquid deposits for security against shocks.'
     },
@@ -24,7 +25,7 @@ const GOAL_TEMPLATES = [
         initial: 25000,
         monthsAhead: 8,
         color: '#ef4444',
-        icon: '⚡',
+        icon: Zap,
         tag: 'High ROI',
         description: 'Pay down high-interest liabilities and credit lines to eliminate interest bleed.'
     },
@@ -36,7 +37,7 @@ const GOAL_TEMPLATES = [
         initial: 150000,
         monthsAhead: 36,
         color: '#14b8a6',
-        icon: '🏠',
+        icon: House,
         tag: 'Wealth Milestone',
         description: 'Accumulate a 20% down payment buffer to secure tier-1 home loan interest rates.'
     },
@@ -48,7 +49,7 @@ const GOAL_TEMPLATES = [
         initial: 100000,
         monthsAhead: 60,
         color: '#3b82f6',
-        icon: '📈',
+        icon: ChartNoAxesCombined,
         tag: 'Long-Term Compounding',
         description: 'Disciplined monthly mutual fund / equity SIP to build multi-year financial independence.'
     },
@@ -60,7 +61,7 @@ const GOAL_TEMPLATES = [
         initial: 30000,
         monthsAhead: 6,
         color: '#8b5cf6',
-        icon: '📑',
+        icon: FileText,
         tag: 'Annual Tax Shield',
         description: 'Systematically fund ELSS / PPF up to the 1.5 Lakh ceiling before fiscal year-end.'
     },
@@ -72,7 +73,7 @@ const GOAL_TEMPLATES = [
         initial: 50000,
         monthsAhead: 18,
         color: '#06b6d4',
-        icon: '🕋',
+        icon: Plane,
         tag: 'Spiritual Goal',
         description: 'Earmark blessed, dedicated savings for pilgrimage flights, visa, and accommodation.'
     }
@@ -182,7 +183,7 @@ export default function GoalsView() {
                         onClick={() => setShowSuggestions(!showSuggestions)}
                         style={{ fontSize: '13px' }}
                     >
-                        💡 {showSuggestions ? 'Hide Suggestions' : 'Show Suggestions'}
+                         {showSuggestions ? 'Hide Suggestions' : 'Show Suggestions'}
                     </button>
                     {goals && goals.length > 0 && (
                         <button
@@ -197,7 +198,7 @@ export default function GoalsView() {
                                 );
                             }}
                         >
-                            🗑️ Clear All Goals
+                             Clear All Goals
                         </button>
                     )}
                     <button
@@ -223,7 +224,7 @@ export default function GoalsView() {
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
                         <div>
                             <span style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#60a5fa' }}>
-                                💡 Financial Architect Recommendations
+                                 Financial Architect Recommendations
                             </span>
                             <h3 style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-primary)', margin: '4px 0 0 0' }}>
                                 Recommended Goal Blueprints &amp; Strategy
@@ -251,7 +252,7 @@ export default function GoalsView() {
                             >
                                 <div>
                                     <div className="goal-blueprint-header">
-                                        <span className="goal-blueprint-icon" aria-hidden="true">{tpl.icon}</span>
+                                        <span className="goal-blueprint-icon" aria-hidden="true"><tpl.icon size={20} strokeWidth={1.8} /></span>
                                         <div className="goal-blueprint-heading">
                                             <span className="goal-blueprint-title">{tpl.title}</span>
                                             <span className="goal-blueprint-tag" style={{ background: `${tpl.color}18`, color: tpl.color }}>
@@ -405,7 +406,7 @@ export default function GoalsView() {
                         fontSize: '26px',
                         margin: '0 auto 16px'
                     }}>
-                        🎯
+                        <Target size={26} strokeWidth={1.8} aria-hidden="true" />
                     </div>
                     <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px', color: 'var(--text-primary)' }}>
                         Goal Settings Ready &amp; Cleared

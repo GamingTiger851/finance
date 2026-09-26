@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { FileBarChart2, FileSpreadsheet, FileText } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
 
@@ -193,7 +194,7 @@ export default function ReportsView() {
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>📑</span>
+                        <FileBarChart2 size={22} strokeWidth={1.8} aria-hidden="true" />
                         <h1 className="page-title" style={{ margin: 0 }}>Reports &amp; Financial Statements</h1>
                     </div>
                     <p className="page-subtitle">
@@ -207,7 +208,7 @@ export default function ReportsView() {
                         onClick={handleExportExcel}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px' }}
                     >
-                        <span>📊</span> Download Excel (.csv)
+                        <FileSpreadsheet size={16} aria-hidden="true" /> Download Excel (.csv)
                     </button>
                     <button
                         type="button"
@@ -215,7 +216,7 @@ export default function ReportsView() {
                         onClick={handleExportPDF}
                         style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '700' }}
                     >
-                        <span>📄</span> Download Official PDF
+                        <FileText size={16} aria-hidden="true" /> Download Official PDF
                     </button>
                 </div>
             </div>

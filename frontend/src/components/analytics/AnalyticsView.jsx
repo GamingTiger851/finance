@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { AlertTriangle, CircleCheck, ReceiptText, ShoppingBag } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 
 const CATEGORY_COLORS = {
@@ -77,7 +78,7 @@ export default function AnalyticsView() {
         if (totalSpent > 0 && ((foodSpend + entertainmentSpend) / totalSpent) > 0.35) {
             list.push({
                 type: 'warning',
-                icon: '🍔',
+                icon: AlertTriangle,
                 title: 'High Discretionary Food & Dining Outflow',
                 text: `Dining and food represent ${Math.round(((foodSpend + entertainmentSpend) / totalSpent) * 100)}% of your expenses. Cooking more at home could unlock an estimated ₹4,000/mo surplus.`
             });
@@ -86,7 +87,7 @@ export default function AnalyticsView() {
         if (shoppingSpend > totalSpent * 0.25 && totalSpent > 10000) {
             list.push({
                 type: 'info',
-                icon: '🛍️',
+                icon: ShoppingBag,
                 title: 'Shopping Peaks Detected',
                 text: 'Shopping is consuming over a quarter of total expenditure. Introducing a 48-hour delay rule before non-essential purchases often reduces impulse spending by 30%.'
             });
@@ -95,7 +96,7 @@ export default function AnalyticsView() {
         if (maxSingleExpense.amount > 0) {
             list.push({
                 type: 'neutral',
-                icon: '📌',
+                icon: ReceiptText,
                 title: `Largest Outflow: ${maxSingleExpense.description}`,
                 text: `Single payment of ₹${maxSingleExpense.amount.toLocaleString('en-IN')} in ${maxSingleExpense.category}.`
             });
@@ -104,7 +105,7 @@ export default function AnalyticsView() {
         if (list.length === 0) {
             list.push({
                 type: 'success',
-                icon: '✨',
+                icon: CircleCheck,
                 title: 'Balanced Outflow Profile',
                 text: 'Your spending is well-dispersed across categories without hazardous lifestyle leaks.'
             });
@@ -119,7 +120,6 @@ export default function AnalyticsView() {
             <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>📊</span>
                         <h1 className="page-title" style={{ margin: 0 }}>Expense Categories Analytics</h1>
                     </div>
                     <p className="page-subtitle">
@@ -210,7 +210,7 @@ export default function AnalyticsView() {
 
                 {/* AI Spending Intelligence & Insights */}
                 <div className="table-card" style={{ padding: '24px' }}>
-                    <h3 style={{ margin: '0 0 16px 0', fontSize: '16px' }}>💡 AI Spend Intelligence &amp; Observations</h3>
+                    <h3 style={{ margin: '0 0 16px 0', fontSize: '16px' }}>AI Spend Intelligence &amp; Observations</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                         {insights.map((ins, i) => (
                             <div
@@ -225,7 +225,7 @@ export default function AnalyticsView() {
                                     alignItems: 'flex-start'
                                 }}
                             >
-                                <span style={{ fontSize: '22px' }}>{ins.icon}</span>
+                                <ins.icon size={20} strokeWidth={1.8} aria-hidden="true" />
                                 <div>
                                     <div style={{ fontWeight: '700', fontSize: '13.5px', color: 'var(--text-primary)' }}>
                                         {ins.title}

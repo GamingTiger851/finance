@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Bot, ChartNoAxesCombined, Newspaper } from 'lucide-react';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
 import { getAuthHeaders } from '../../services/authToken';
@@ -144,9 +145,7 @@ export default function DashboardRightRail({ onNavigate }) {
             <div className="rail-card news-insights-card">
                 <div className="rail-card-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="rail-icon-square" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6' }}>
-                            📰
-                        </span>
+                        <span className="rail-icon-square" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6' }}><Newspaper size={18} aria-hidden="true" /></span>
                         <h3 className="rail-title">News &amp; Insights</h3>
                     </div>
                     <span className="live-dot-badge">
@@ -187,9 +186,7 @@ export default function DashboardRightRail({ onNavigate }) {
             <div className="rail-card ai-assistant-widget">
                 <div className="rail-card-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="rail-icon-square" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa' }}>
-                            🤖
-                        </span>
+                        <span className="rail-icon-square" style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60a5fa' }}><Bot size={18} aria-hidden="true" /></span>
                         <h3 className="rail-title">AI Financial Assistant</h3>
                     </div>
                     <span className="beta-badge">Beta</span>
@@ -200,7 +197,7 @@ export default function DashboardRightRail({ onNavigate }) {
                     {messages.map((m, i) => (
                         <div key={i} className={`ai-mini-msg ${m.role}`}>
                             {m.role === 'assistant' && (
-                                <div className="ai-mini-avatar">🤖</div>
+                                <div className="ai-mini-avatar"><Bot size={15} aria-hidden="true" /></div>
                             )}
                             <div className="ai-mini-bubble">
                                 {m.text}
@@ -209,7 +206,7 @@ export default function DashboardRightRail({ onNavigate }) {
                     ))}
                     {isTyping && (
                         <div className="ai-mini-msg assistant">
-                            <div className="ai-mini-avatar">🤖</div>
+                            <div className="ai-mini-avatar"><Bot size={15} aria-hidden="true" /></div>
                             <div className="ai-mini-bubble ai-mini-typing">
                                 <span/><span/><span/>
                             </div>
@@ -264,9 +261,7 @@ export default function DashboardRightRail({ onNavigate }) {
             <div className="rail-card live-market-widget">
                 <div className="rail-card-header">
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span className="rail-icon-square" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}>
-                            📈
-                        </span>
+                        <span className="rail-icon-square" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981' }}><ChartNoAxesCombined size={18} aria-hidden="true" /></span>
                         <h3 className="rail-title">Live Market Data</h3>
                     </div>
                     <span className="pulse-live-badge">
