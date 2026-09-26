@@ -298,7 +298,7 @@ export default function StocksView() {
                         <h1 className="page-title" style={{ margin: 0 }}>Stocks &amp; Equities</h1>
                     </div>
                     <p className="page-subtitle">
-                        Complete 1,000-stock screener with live indices, market cap categories, valuation metrics, and bulk Excel export.
+                        Complete 1,000-stock screener with live indices, market cap categories, and valuation metrics.
                         {apiLive ? (
                             <span style={{ marginLeft: '12px', fontSize: '12px', fontWeight: 'bold', color: '#059669', background: 'rgba(16,185,129,0.1)', padding: '3px 9px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
                                 🟢 Live Data{lastUpdated ? ` · prices updated ${lastUpdated.toLocaleTimeString()}` : ' · verifying prices'}
@@ -318,15 +318,6 @@ export default function StocksView() {
                         style={{ fontSize: '13px' }}
                     >
                         {viewMode === 'grid' ? '📋 Table View' : '🗂️ Card View'}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={() => handleDownloadStocksExport(true)}
-                        style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '700' }}
-                        title="Download complete 1,000 stock database"
-                    >
-                        <span>📥</span> Export All 1,000 (Excel)
                     </button>
                 </div>
             </div>
