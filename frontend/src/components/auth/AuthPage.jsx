@@ -1,10 +1,49 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import AppFooter from '../layout/AppFooter';
 
 export default function AuthPage() {
     const { login, register } = useAuth();
     const [isFlipped, setIsFlipped] = useState(false);
+    const [installPrompt, setInstallPrompt] = useState(null);
+    const [installMessage, setInstallMessage] = useState('');
+    const [isInstalled, setIsInstalled] = useState(false);
+
+    useEffect(() => {
+        const handleInstallPrompt = (event) => {
+            event.preventDefault();
+            setInstallPrompt(event);
+        };
+        const handleInstalled = () => {
+            setIsInstalled(true);
+            setInstallPrompt(null);
+            setInstallMessage('FinTracker is installed and ready to use.');
+        };
+
+        setIsInstalled(window.matchMedia?.('(display-mode: standalone)').matches || window.navigator.standalone === true);
+        window.addEventListener('beforeinstallprompt', handleInstallPrompt);
+        window.addEventListener('appinstalled', handleInstalled);
+        return () => {
+            window.removeEventListener('beforeinstallprompt', handleInstallPrompt);
+            window.removeEventListener('appinstalled', handleInstalled);
+        };
+    }, []);
+
+    const handleInstall = async () => {
+        setInstallMessage('');
+        if (!installPrompt) {
+            const isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+            setInstallMessage(isIOS
+                ? 'To install, tap Share in Safari, then choose “Add to Home Screen”.'
+                : 'To install, open your browser menu and choose “Install app” or “Add to Home screen”.');
+            return;
+        }
+
+        installPrompt.prompt();
+        const { outcome } = await installPrompt.userChoice;
+        if (outcome === 'dismissed') setInstallMessage('Installation was cancelled. You can install it any time from this button.');
+        setInstallPrompt(null);
+    };
     
     // Login form state
     const [loginUser, setLoginUser] = useState('');
@@ -152,9 +191,11 @@ export default function AuthPage() {
                     {/* FRONT FACE — Login */}
                     <div className="auth-face auth-face--front">
                         <div className="login-card__left">
-                            <div style={{ marginBottom: '16px' }} className="anim-stagger">
+                            <div className="auth-brand-row anim-stagger">
                                 <img src="/logo.png" alt="HAWKS Intelligence" style={{ width: '60px', height: '60px', borderRadius: '14px', objectFit: 'contain', background: '#090D16', padding: '4px', border: '1px solid rgba(255,255,255,0.2)', boxShadow: '0 4px 16px rgba(0,0,0,0.4)' }} />
+                                {!isInstalled && <button type="button" className="auth-install-button" onClick={handleInstall}>Install app</button>}
                             </div>
+                            {installMessage && <p className="auth-install-message" role="status" aria-live="polite">{installMessage}</p>}
                             <h1 className="login-card__hero anim-stagger">“Know your money.<br />Shape your future.”</h1>
                             <p className="login-card__sub anim-stagger">Track spending, plan ahead, and make confident decisions.</p>
                         </div>

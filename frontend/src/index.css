@@ -2934,6 +2934,49 @@ select:focus {
     border-right: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.auth-brand-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    margin-bottom: 30px;
+}
+
+.auth-install-button {
+    flex: 0 0 auto;
+    min-height: 42px;
+    padding: 0 16px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-radius: 10px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #34d399;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.auth-install-button:hover {
+    background: rgba(16, 185, 129, 0.18);
+    border-color: rgba(16, 185, 129, 0.6);
+    transform: translateY(-1px);
+}
+
+.auth-install-button:focus-visible {
+    outline: 3px solid rgba(52, 211, 153, 0.45);
+    outline-offset: 3px;
+}
+
+.auth-install-message {
+    width: 100%;
+    margin: -18px 0 20px;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
 .login-card__hero {
     font-family: 'Space Grotesk', 'Inter', sans-serif;
     font-size: clamp(28px, 3vw, 36px);
@@ -3231,6 +3274,10 @@ select:focus {
         border-right: none;
         border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         text-align: center;
+    }
+
+    .auth-brand-row {
+        margin-bottom: 22px;
     }
 
     .login-card__hero {
