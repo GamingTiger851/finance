@@ -257,15 +257,19 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
                     {Object.keys(TIMEFRAMES).map(tf => (
                         <button
                             key={tf}
+                            type="button"
                             onClick={() => setTimeframe(tf)}
+                            aria-pressed={timeframe === tf}
                             style={{
                                 background: timeframe === tf ? 'var(--text-primary)' : 'transparent',
                                 color: timeframe === tf ? 'var(--bg-primary)' : 'var(--text-secondary)',
                                 border: '1px solid',
                                 borderColor: timeframe === tf ? 'var(--text-primary)' : 'var(--border)',
-                                borderRadius: '4px',
-                                padding: '4px 12px',
-                                fontSize: '12px',
+                                borderRadius: 'var(--control-radius)',
+                                minWidth: '48px',
+                                minHeight: '44px',
+                                padding: '8px 12px',
+                                fontSize: 'var(--type-xs)',
                                 fontWeight: '600',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s'

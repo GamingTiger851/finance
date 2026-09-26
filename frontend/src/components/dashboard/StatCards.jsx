@@ -47,7 +47,7 @@ export default function StatCards() {
                             </svg>
                         </div>
                         <div>
-                            <h4 className="oripio-card-title">My balance</h4>
+                            <h2 className="oripio-card-title">My balance</h2>
                             <span className="oripio-card-sub">Wallet Overview & Spending</span>
                         </div>
                     </div>
@@ -74,13 +74,13 @@ export default function StatCards() {
                 <div className="oripio-card-top">
                     <div className="oripio-card-header-left">
                         <div className="oripio-white-icon-wrap">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#059669" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h1l1-3c0-1-1-2-2-2h-1c-.3-.8-.9-1.5-1.6-2l.6-.6A2 2 0 0 0 19 5z" />
                                 <circle cx="16" cy="11" r="1" />
                             </svg>
                         </div>
                         <div>
-                            <h4 className="oripio-white-title">Savings account</h4>
+                            <h2 className="oripio-white-title">Savings account</h2>
                             <span className="oripio-white-sub">Steady Growth Savings ({savingsRate}%)</span>
                         </div>
                     </div>
@@ -107,14 +107,14 @@ export default function StatCards() {
                 <div className="oripio-card-top">
                     <div className="oripio-card-header-left">
                         <div className="oripio-white-icon-wrap">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <line x1="18" y1="20" x2="18" y2="10" />
                                 <line x1="12" y1="20" x2="12" y2="4" />
                                 <line x1="6" y1="20" x2="6" y2="14" />
                             </svg>
                         </div>
                         <div>
-                            <h4 className="oripio-white-title">Investment portfolio</h4>
+                            <h2 className="oripio-white-title">Investment portfolio</h2>
                             <span className="oripio-white-sub">Track Your Wealth Growth</span>
                         </div>
                     </div>

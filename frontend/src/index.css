@@ -26,6 +26,9 @@
     --control-radius: 8px;
     --card-radius: 12px;
     --pill-radius: 999px;
+    --radius-xs: 4px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
     --accent: #059669;
     --accent-hover: #047857;
     --accent-bright: #10b981;
@@ -130,6 +133,48 @@
     mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 26px), transparent 100%);
 }
 
+#stocksPage .stocks-category-tabs .pill {
+    border-radius: var(--pill-radius) !important;
+    font-size: var(--type-sm) !important;
+}
+
+#stocksPage .stocks-filter-panel {
+    gap: 8px !important;
+}
+
+#stocksPage .stocks-filter-primary-row {
+    justify-content: flex-start !important;
+    gap: 10px !important;
+}
+
+#stocksPage .stocks-filter-primary-row > .stocks-search-box {
+    flex: 1 1 230px;
+    max-width: 340px !important;
+}
+
+#stocksPage .stocks-filter-secondary-row {
+    display: contents !important;
+}
+
+#stocksPage .stocks-filter-label {
+    color: var(--text-muted);
+    font-size: var(--type-xs);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+#stocksPage .stocks-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 #stocksPage .stocks-category-tabs::after {
     content: '›';
     position: sticky;
@@ -169,6 +214,12 @@
 #stocksPage .stock-card-actions .btn-primary {
     background: var(--accent-gradient);
     color: #fff;
+}
+
+#stocksPage .stock-card-actions .btn-secondary {
+    min-width: 0;
+    padding: 8px 6px;
+    font-size: var(--type-xs) !important;
 }
 
 #stocksPage .stock-card-actions .btn-secondary {
@@ -618,9 +669,9 @@ button:disabled {
 
 .btn {
     border: none;
-    border-radius: 8px;
+    border-radius: var(--control-radius);
     padding: 9px 16px;
-    font-size: 13.5px;
+    font-size: var(--type-sm);
     font-weight: 600;
     cursor: pointer;
     font-family: inherit;
@@ -633,6 +684,18 @@ button:disabled {
     background: var(--accent-gradient);
     color: #ffffff;
     box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+.btn-secondary {
+    background: var(--card-bg);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid transparent;
 }
 
 .btn-primary:hover {
@@ -6057,9 +6120,9 @@ input[type="range"]::-moz-range-thumb {
     background: #FFFFFF !important;
     color: #475569 !important;
     border: 1px solid #E2E8F0 !important;
-    border-radius: 10px !important;
+    border-radius: var(--control-radius) !important;
     padding: 8px 16px !important;
-    font-size: 13px !important;
+    font-size: var(--type-sm) !important;
     font-weight: 600 !important;
     cursor: pointer !important;
     transition: all 0.15s ease !important;
@@ -6239,7 +6302,7 @@ input[type="range"]::-moz-range-thumb {
         grid-column: 1 / -1;
     }
 
-    .stocks-filter-secondary-row {
+#stocksPage .stocks-filter-secondary-row {
         display: grid !important;
         grid-template-columns: minmax(0, 1fr);
         align-items: start !important;
@@ -7771,5 +7834,88 @@ input[type="range"]::-moz-range-thumb {
         letter-spacing: 0.04em;
         line-height: 1.2;
         text-transform: uppercase;
+    }
+}
+
+/* Dashboard readability and spacing refinements. */
+.chart-sub-legend {
+    font-size: var(--type-xs);
+}
+
+@media (min-width: 641px) {
+    #main-navigation > .sidebar-nav {
+        row-gap: 12px;
+    }
+
+    #main-navigation > .sidebar-nav > .side-link {
+        min-height: 42px;
+        margin-block: 0 !important;
+    }
+}
+
+.ai-widget-pills {
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.ai-widget-pill-btn {
+    background: #F8FAFC !important;
+    border-color: #E2E8F0 !important;
+    border-radius: var(--control-radius) !important;
+}
+
+.oripio-card,
+.operational-card {
+    border-radius: var(--card-radius);
+}
+
+.oripio-card-title,
+.oripio-white-title {
+    font-size: var(--type-subhead);
+}
+
+.oripio-card-sub,
+.oripio-white-sub {
+    font-size: var(--type-xs);
+}
+
+.oripio-hero-amount,
+.oripio-white-amount {
+    font-size: var(--type-display);
+}
+
+.oripio-hero-card {
+    background: var(--card-bg);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--accent);
+    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+}
+
+.oripio-hero-card .oripio-hero-icon-wrap {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: var(--control-radius);
+}
+
+.oripio-hero-card .oripio-card-title,
+.oripio-hero-card .oripio-hero-amount {
+    color: var(--text-primary);
+}
+
+.oripio-hero-card .oripio-card-sub,
+.oripio-hero-card .oripio-hero-footer {
+    color: var(--text-muted);
+}
+
+.oripio-hero-card .oripio-hero-badge {
+    background: var(--accent-bg);
+    color: var(--accent);
+    border-radius: var(--control-radius);
+}
+
+@media (max-width: 640px) {
+    .ai-widget-pills {
+        gap: 10px;
     }
 }

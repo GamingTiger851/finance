@@ -308,7 +308,7 @@ export default function DashboardCharts() {
                     </div>
                     <div className="chart-sub-legend">
                         <span className="legend-dot" style={{ backgroundColor: '#059669' }} />
-                        <span>{monthlyBarData.isEmpty ? '0 Expenses (Cleared)' : 'Expenses'}</span>
+                        <span>{monthlyBarData.isEmpty ? 'No expenses recorded' : 'Expenses'}</span>
                     </div>
                 </div>
 

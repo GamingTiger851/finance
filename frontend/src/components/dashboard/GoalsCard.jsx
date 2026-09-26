@@ -57,13 +57,15 @@ export default function GoalsCard({ onViewAll }) {
                 <div>
                     <h2 className="operational-title">Your Goals</h2>
                 </div>
-                <button
-                    type="button"
-                    className="operational-link-btn"
-                    onClick={onViewAll}
-                >
-                    {goals && goals.length > 0 ? 'View All' : '+ Set Goal'}
-                </button>
+                {goals && goals.length > 0 && (
+                    <button
+                        type="button"
+                        className="operational-link-btn"
+                        onClick={onViewAll}
+                    >
+                        View All
+                    </button>
+                )}
             </div>
 
             {(!goals || goals.length === 0) ? (
@@ -79,7 +81,7 @@ export default function GoalsCard({ onViewAll }) {
                         width: '44px',
                         height: '44px',
                         borderRadius: '50%',
-                        backgroundColor: 'rgba(59, 130, 246, 0.12)',
+                        backgroundColor: 'var(--accent-bg)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',

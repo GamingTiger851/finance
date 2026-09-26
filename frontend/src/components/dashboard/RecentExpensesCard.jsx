@@ -22,7 +22,7 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                   t.category?.includes('Transport') || t.category?.includes('Auto') || t.category?.includes('Petrol') ? '🚗' :
                   t.category?.includes('Bill') || t.category?.includes('Utilities') || t.category?.includes('Recharge') ? '⚡' :
                   t.category?.includes('Health') ? '💊' : '🏷️',
-            bg: '#F1F5F9',
+            bg: 'var(--paper)',
             color: 'var(--accent)'
         }));
 
@@ -93,7 +93,7 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                                 style={{
                                     background: 'rgba(239, 68, 68, 0.1)',
                                     border: '1px solid rgba(239, 68, 68, 0.25)',
-                                    color: '#f87171',
+                                    color: 'var(--expense)',
                                     fontSize: '11px',
                                     fontWeight: '600',
                                     padding: '4px 10px',
@@ -113,14 +113,16 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                             </button>
                         </>
                     )}
-                    <button
-                        type="button"
-                        className="operational-mini-add-btn"
-                        onClick={onOpenAddModal}
-                        title="Add New Expense"
-                    >
-                        + New
-                    </button>
+                    {userExpenses.length > 0 && (
+                        <button
+                            type="button"
+                            className="operational-mini-add-btn"
+                            onClick={onOpenAddModal}
+                            title="Add New Expense"
+                        >
+                            + New
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -156,7 +158,7 @@ export default function RecentExpensesCard({ onOpenAddModal, onViewAll }) {
                                             {item.category}
                                         </span>
                                     </td>
-                                    <td style={{ textAlign: 'right', fontWeight: '700', color: '#ef4444', fontVariantNumeric: 'tabular-nums' }}>
+                    <td style={{ textAlign: 'right', fontWeight: '700', color: 'var(--expense)', fontVariantNumeric: 'tabular-nums' }}>
                                         - {formatAmount(item.amount, currency)}
                                     </td>
                                 </tr>

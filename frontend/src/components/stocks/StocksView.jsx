@@ -380,7 +380,12 @@ export default function StocksView() {
             <FeaturedMarketChart selectedId={featuredChartId} onSelectedIdChange={setFeaturedChartId} onOpenStockModal={(stock) => setChartModalStock(stock)} />
 
             {/* Groww Category Quick Tabs */}
-            <div className="stocks-category-tabs" style={{
+            <div
+                className="stocks-category-tabs"
+                role="region"
+                aria-label="Stock categories; scroll horizontally for more options"
+                tabIndex={0}
+                style={{
                 display: 'flex',
                 gap: '8px',
                 overflowX: 'auto',
@@ -393,13 +398,7 @@ export default function StocksView() {
                         type="button"
                         className={`pill ${selectedTab === tab.id ? 'active' : ''}`}
                         onClick={() => setSelectedTab(tab.id)}
-                        style={{
-                            fontSize: '13px',
-                            padding: '8px 16px',
-                            whiteSpace: 'nowrap',
-                            borderRadius: '20px',
-                            fontWeight: selectedTab === tab.id ? '700' : '500'
-                        }}
+                        style={{ whiteSpace: 'nowrap', fontWeight: selectedTab === tab.id ? '700' : '500' }}
                     >
                         {tab.label}
                     </button>
@@ -427,7 +426,9 @@ export default function StocksView() {
                             <circle cx="11" cy="11" r="7" />
                             <path d="M16 16L21 21" strokeLinecap="round" />
                         </svg>
+                        <label className="stocks-visually-hidden" htmlFor="stocks-search">Search stocks</label>
                         <input
+                            id="stocks-search"
                             type="text"
                             placeholder="Search among 1,000 stocks (e.g. Reliance, TCS, HDFC)..."
                             value={searchQuery}
@@ -445,17 +446,16 @@ export default function StocksView() {
                     </div>
 
                     <div className="stocks-sort-controls" style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>Sort By:</span>
+                        <label className="stocks-filter-label" htmlFor="stocks-sort">Sort by</label>
                         <select
+                            id="stocks-sort"
                             value={sortBy}
                             onChange={(e) => setSortBy(e.target.value)}
                             style={{
                                 background: 'var(--card-bg)',
                                 color: 'var(--text-primary)',
                                 border: '1px solid var(--border)',
-                                borderRadius: '8px',
                                 padding: '8px 12px',
-                                fontSize: '13px',
                                 outline: 'none',
                                 cursor: 'pointer'
                             }}
@@ -472,15 +472,14 @@ export default function StocksView() {
 
                         {/* Items per page selector */}
                         <select
+                            aria-label="Stocks per page"
                             value={itemsPerPage}
                             onChange={(e) => setItemsPerPage(Number(e.target.value))}
                             style={{
                                 background: 'var(--card-bg)',
                                 color: 'var(--text-primary)',
                                 border: '1px solid var(--border)',
-                                borderRadius: '8px',
                                 padding: '8px 10px',
-                                fontSize: '13px',
                                 outline: 'none',
                                 cursor: 'pointer'
                             }}
@@ -492,27 +491,24 @@ export default function StocksView() {
                             <option value={120}>120 / page</option>
                         </select>
                     </div>
-                </div>
-
-                {/* Bottom Row: Cap and Sector Filters */}
-                <div className="stocks-filter-secondary-row" style={{
+                    <div className="stocks-filter-secondary-row" style={{
                     display: 'flex',
                     alignItems: 'center',
                     gap: '12px',
                     flexWrap: 'wrap',
-                    paddingTop: '10px',
-                    borderTop: '1px solid var(--border)'
+                    paddingTop: '0',
+                    borderTop: '0'
                 }}>
                     {/* Cap Category Filter */}
                     <div className="stocks-cap-filters" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginRight: '4px' }}>Cap:</span>
+                        <span className="stocks-filter-label">Market cap</span>
                         {['all', 'Large Cap', 'Mid Cap', 'Small Cap'].map(cap => (
                             <button
                                 key={cap}
                                 type="button"
                                 className={`pill ${selectedCap === cap ? 'active' : ''}`}
                                 onClick={() => setSelectedCap(cap)}
-                                style={{ fontSize: '12px', padding: '6px 12px' }}
+                                style={{ padding: '6px 12px' }}
                             >
                                 {cap === 'all' ? 'All Caps' : cap}
                             </button>
@@ -523,17 +519,16 @@ export default function StocksView() {
 
                     {/* Sector Dropdown */}
                     <div className="stocks-sector-filter" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '220px' }}>
-                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginRight: '4px' }}>Sector:</span>
+                        <label className="stocks-filter-label" htmlFor="stocks-sector">Sector</label>
                         <select
+                            id="stocks-sector"
                             value={selectedSector}
                             onChange={(e) => setSelectedSector(e.target.value)}
                             style={{
                                 background: 'var(--card-bg)',
                                 color: 'var(--text-primary)',
                                 border: '1px solid var(--border)',
-                                borderRadius: '8px',
                                 padding: '6px 12px',
-                                fontSize: '12.5px',
                                 outline: 'none',
                                 cursor: 'pointer',
                                 flex: 1,
@@ -565,7 +560,8 @@ export default function StocksView() {
                         </button>
                     )}
                 </div>
-            </div>
+                    </div>
+                </div>
 
             {/* Results Count Banner and Current Page Range */}
             <div style={{
@@ -755,7 +751,7 @@ export default function StocksView() {
                             <div className="stock-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                                 <button
                                     type="button"
-                                    className="btn btn-primary btn-sm"
+                                    className="btn btn-secondary btn-sm"
                                     onClick={() => setChartModalStock(stock)}
                                     style={{ fontSize: '12px', padding: '8px 6px', justifyContent: 'center', fontWeight: '700' }}
                                     title="Open Interactive Live Chart"
@@ -859,7 +855,7 @@ export default function StocksView() {
                                             <div style={{ display: 'flex', gap: '6px' }}>
                                                 <button
                                                     type="button"
-                                                    className="btn btn-primary btn-sm"
+                                                    className="btn btn-secondary btn-sm"
                                                     onClick={() => setChartModalStock(stock)}
                                                     style={{ padding: '6px 9px', fontSize: '12px' }}
                                                     title="Open Interactive Live Chart"
