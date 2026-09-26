@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
  * Multi-timeframe Selection (1D, 1W, 1M, 1Y, 5Y, ALL),
  * Area/Line Graph and Candlestick modes, Crosshair Tooltip, Volume Bars, and Market Depth.
  */
-export default function LiveStockChartModal({ stock, onClose, onDownloadBalanceSheet }) {
+export default function LiveStockChartModal({ stock, onClose }) {
     if (!stock) return null;
 
     const [timeframe, setTimeframe] = useState('1D'); // '1D', '1W', '1M', '1Y', '5Y', 'ALL'
@@ -700,15 +700,6 @@ export default function LiveStockChartModal({ stock, onClose, onDownloadBalanceS
                             onClick={onClose}
                         >
                             Close Chart
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={() => {
-                                if (onDownloadBalanceSheet) onDownloadBalanceSheet(stock);
-                            }}
-                        >
-                            📥 Download Balance Sheet
                         </button>
                     </div>
                 </div>

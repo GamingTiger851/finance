@@ -42,7 +42,7 @@ export default function QuickToolsStrip({ onSelectTool }) {
                 </div>
                 <div className="cta-card-content">
                     <div className="cta-card-title">Stocks &amp; Equities</div>
-                    <div className="cta-card-sub">Explore live prices, P/E ratios &amp; balance sheets</div>
+                    <div className="cta-card-sub">Explore live prices, P/E ratios &amp; company fundamentals</div>
                     <button
                         type="button"
                         className="cta-action-btn"

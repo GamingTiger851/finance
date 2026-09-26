@@ -6,6 +6,7 @@ const FEATURED_ITEMS = [
     { id: 'SENSEX', name: 'SENSEX', type: 'index', symbol: '^BSESN' },
     { id: 'BANKNIFTY', name: 'BANK NIFTY', type: 'index', symbol: '^NSEBANK' },
     { id: 'NIFTY IT', name: 'NIFTY IT', type: 'index', symbol: '^CNXIT' },
+    { id: 'NIFTY MID 50', name: 'NIFTY MID 50', type: 'index', symbol: '^NSEMDCP50' },
     { id: 'RELIANCE', name: 'Reliance Ind.', type: 'stock', symbol: 'RELIANCE.NS' },
     { id: 'TCS', name: 'Tata Consultancy', type: 'stock', symbol: 'TCS.NS' },
     { id: 'HDFCBANK', name: 'HDFC Bank', type: 'stock', symbol: 'HDFCBANK.NS' },
@@ -44,8 +45,10 @@ function normalizeCandles(result) {
     }).filter(candle => Number.isFinite(candle.c));
 }
 
-export default function FeaturedMarketChart() {
-    const [selectedId, setSelectedId] = useState(FEATURED_ITEMS[0].id);
+export default function FeaturedMarketChart({ selectedId: controlledSelectedId, onSelectedIdChange }) {
+    const [internalSelectedId, setInternalSelectedId] = useState(FEATURED_ITEMS[0].id);
+    const selectedId = controlledSelectedId || internalSelectedId;
+    const setSelectedId = onSelectedIdChange || setInternalSelectedId;
     const [timeframe, setTimeframe] = useState('1D');
     const [quote, setQuote] = useState(null);
     const [candles, setCandles] = useState([]);
@@ -178,7 +181,7 @@ export default function FeaturedMarketChart() {
             <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
                 <div style={{ padding: '20px', flex: 1 }}>
                     <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }} onWheel={handleWheel}>
-                        {FEATURED_ITEMS.map(item => (
+                        {FEATURED_ITEMS.filter(item => item.type === 'stock').map(item => (
                             <button
                                 key={item.id}
                                 onClick={() => setSelectedId(item.id)}

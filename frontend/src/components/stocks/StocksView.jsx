@@ -7,6 +7,14 @@ import FeaturedMarketChart from './FeaturedMarketChart';
 import { fetchIndices, fetchLtpBatch, mergeWithStaticData } from '../../services/growwService';
 import { checkUpstoxStatus, fetchLtp, getInstrumentKey, getQuoteForInstrument } from '../../services/upstoxService';
 
+const FEATURED_INDEX_IDS = {
+    'NIFTY 50': 'NIFTY50',
+    SENSEX: 'SENSEX',
+    'BANK NIFTY': 'BANKNIFTY',
+    'NIFTY IT': 'NIFTY IT',
+    'NIFTY MID 50': 'NIFTY MID 50',
+};
+
 export default function StocksView() {
     const { showToast } = useFinance();
     const [searchQuery, setSearchQuery] = useState('');
@@ -19,6 +27,7 @@ export default function StocksView() {
     const [itemsPerPage, setItemsPerPage] = useState(48);
     const [detailStock, setDetailStock] = useState(null);
     const [chartModalStock, setChartModalStock] = useState(null);
+    const [featuredChartId, setFeaturedChartId] = useState('NIFTY50');
 
     // ── Groww Live Data State ─────────────────────────────────────────────────
     const [liveIndices, setLiveIndices] = useState(null);   // null = not loaded yet
@@ -207,49 +216,6 @@ export default function StocksView() {
         return () => clearInterval(liveIntervalRef.current);
     }, [startIndex, endIndex, filteredAndSortedStocks, refreshLivePrices]);
 
-    // Download individual stock balance sheet
-    const handleDownloadBalanceSheet = (stock) => {
-        const bs = stock.balanceSheet;
-        const csvContent = [
-            `"COMPANY BALANCE SHEET STATEMENT - ${stock.name.toUpperCase()} (${stock.symbol})"`,
-            `"Exchange: National Stock Exchange of India (NSE) / BSE"`,
-            `"Sector: ${stock.sector}"`,
-            `"Market Cap Category: ${stock.capCategory}"`,
-            `"Current Market Price: ${stock.livePriceUnavailable || !Number.isFinite(stock.price) ? 'Unavailable (no Upstox quote)' : `₹${stock.price.toFixed(2)}`}"`,
-            `"Market Capitalization: ${stock.marketCap}"`,
-            `"Generated via: FinTracker Stocks Platform (Groww-Style Telemetry)"`,
-            `"Date: ${new Date().toLocaleDateString('en-GB')}"`,
-            `""`,
-            `"FINANCIAL METRIC","STATEMENT VALUE"`,
-            `"================== ASSETS & LIABILITIES ==================",""`,
-            `"Total Consolidated Assets","${bs.assets}"`,
-            `"Total Consolidated Liabilities","${bs.liabilities}"`,
-            `"Total Net Worth / Equity","${bs.equity}"`,
-            `"Net Working Capital","${bs.workingCapital}"`,
-            `"Debt-to-Equity Ratio","${bs.debtToEquity}"`,
-            `"Current Liquidity Ratio","${bs.currentRatio}"`,
-            `""`,
-            `"================== VALUATION & FUNDAMENTALS ==================",""`,
-            `"Price-to-Earnings (P/E) Ratio","${stock.peRatio}"`,
-            `"Price-to-Book (P/B) Ratio","${stock.pbRatio}"`,
-            `"Dividend Yield","${stock.divYield}"`,
-            `"52-Week High","₹${stock.high52.toFixed(2)}"`,
-            `"52-Week Low","₹${stock.low52.toFixed(2)}"`,
-            `"Shariah Compliance Status","${stock.isHalal ? 'Verified Halal (Passes AAOIFI)' : 'Conventional (Non-Compliant)'}"`
-        ].join('\r\n');
-
-        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', `${stock.symbol}_BalanceSheet_2026.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
-        showToast(`Balance sheet for ${stock.symbol} downloaded in Excel format!`);
-    };
-
     // Download Excel export (all stocks or filtered list)
     const handleDownloadStocksExport = (exportAll = true) => {
         const dataset = exportAll ? ALL_STOCKS_1000 : filteredAndSortedStocks;
@@ -266,10 +232,6 @@ export default function StocksView() {
             'Dividend Yield',
             '52W High (INR)',
             '52W Low (INR)',
-            'Total Assets',
-            'Total Liabilities',
-            'Shareholders Equity',
-            'Debt to Equity',
             'Shariah Status'
         ];
 
@@ -286,10 +248,6 @@ export default function StocksView() {
             `"${s.divYield}"`,
             `"${s.high52.toFixed(2)}"`,
             `"${s.low52.toFixed(2)}"`,
-            `"${s.balanceSheet.assets}"`,
-            `"${s.balanceSheet.liabilities}"`,
-            `"${s.balanceSheet.equity}"`,
-            `"${s.balanceSheet.debtToEquity}"`,
             `"${s.isHalal ? 'Halal (AAOIFI)' : 'Conventional'}"`
         ]);
 
@@ -338,13 +296,13 @@ export default function StocksView() {
                         <h1 className="page-title" style={{ margin: 0 }}>Stocks &amp; Equities</h1>
                     </div>
                     <p className="page-subtitle">
-                        Complete 1,000-stock screener with live indices, market cap categories, valuation multiples, balance sheets, and bulk Excel export.
+                        Complete 1,000-stock screener with live indices, market cap categories, valuation metrics, and bulk Excel export.
                         {apiLive ? (
-                            <span style={{ marginLeft: '12px', fontSize: '11px', fontWeight: 'bold', color: '#10b981', background: 'rgba(16,185,129,0.1)', padding: '2px 8px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
+                            <span style={{ marginLeft: '12px', fontSize: '12px', fontWeight: 'bold', color: '#059669', background: 'rgba(16,185,129,0.1)', padding: '3px 9px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
                                 🟢 Live Data{lastUpdated ? ` · prices updated ${lastUpdated.toLocaleTimeString()}` : ' · verifying prices'}
                             </span>
                         ) : (
-                            <span style={{ marginLeft: '12px', fontSize: '11px', fontWeight: 'bold', color: '#f59e0b', background: 'rgba(245,158,11,0.1)', padding: '2px 8px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.2)' }}>
+                            <span style={{ marginLeft: '12px', fontSize: '12px', fontWeight: 'bold', color: '#b45309', background: 'rgba(245,158,11,0.1)', padding: '3px 9px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.2)' }}>
                                 🟡 Fetching live prices...
                             </span>
                         )}
@@ -384,16 +342,23 @@ export default function StocksView() {
                     const display = idx || staticIdx;
                     const isLive = idx && idx.live;
                     return (
-                        <div
+                        <button
+                            type="button"
                             key={display.name}
-                            className="table-card"
+                            className={`table-card stocks-index-card${featuredChartId === FEATURED_INDEX_IDS[display.name] ? ' active' : ''}`}
+                            onClick={() => FEATURED_INDEX_IDS[display.name] && setFeaturedChartId(FEATURED_INDEX_IDS[display.name])}
+                            aria-pressed={featuredChartId === FEATURED_INDEX_IDS[display.name]}
                             style={{
                                 padding: '14px 16px',
                                 background: 'var(--card-bg)',
                                 border: `1px solid ${isLive ? 'rgba(16,185,129,0.35)' : 'var(--border)'}`,
-                                borderRadius: '10px',
+                                borderRadius: '12px',
                                 position: 'relative',
-                                transition: 'border-color 0.4s'
+                                transition: 'border-color 0.2s, box-shadow 0.2s',
+                                color: 'inherit',
+                                textAlign: 'left',
+                                font: 'inherit',
+                                cursor: 'pointer'
                             }}
                         >
                             {isLive && (
@@ -406,13 +371,13 @@ export default function StocksView() {
                                 }}>● LIVE</span>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '4px' }}><div><div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '600' }}>{display.name}</div><div style={{ fontSize: '17px', fontWeight: '800', color: 'var(--text-primary)', marginTop: '4px' }}>{display.value}</div><div style={{ fontSize: '12px', fontWeight: '700', color: display.isUp ? '#10b981' : '#ef4444', marginTop: '2px' }}>{display.change} ({display.percent})</div></div><div><StockMiniSparkline symbol={display.name} price={parseFloat(display.value?.replace(/,/g, '')) || 100} isUp={display.isUp} width={70} height={30} /></div></div>
-                        </div>
+                        </button>
                     );
                 })}
             </div>
 
             {/* Featured Live Equities & Benchmark Graph */}
-            <FeaturedMarketChart onOpenStockModal={(stock) => setChartModalStock(stock)} />
+            <FeaturedMarketChart selectedId={featuredChartId} onSelectedIdChange={setFeaturedChartId} onOpenStockModal={(stock) => setChartModalStock(stock)} />
 
             {/* Groww Category Quick Tabs */}
             <div className="stocks-category-tabs" style={{
@@ -540,14 +505,14 @@ export default function StocksView() {
                 }}>
                     {/* Cap Category Filter */}
                     <div className="stocks-cap-filters" style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>Cap:</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginRight: '4px' }}>Cap:</span>
                         {['all', 'Large Cap', 'Mid Cap', 'Small Cap'].map(cap => (
                             <button
                                 key={cap}
                                 type="button"
                                 className={`pill ${selectedCap === cap ? 'active' : ''}`}
                                 onClick={() => setSelectedCap(cap)}
-                                style={{ fontSize: '11.5px', padding: '4px 10px' }}
+                                style={{ fontSize: '12px', padding: '6px 12px' }}
                             >
                                 {cap === 'all' ? 'All Caps' : cap}
                             </button>
@@ -558,7 +523,7 @@ export default function StocksView() {
 
                     {/* Sector Dropdown */}
                     <div className="stocks-sector-filter" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '220px' }}>
-                        <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase' }}>Sector:</span>
+                        <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginRight: '4px' }}>Sector:</span>
                         <select
                             value={selectedSector}
                             onChange={(e) => setSelectedSector(e.target.value)}
@@ -620,13 +585,13 @@ export default function StocksView() {
                 </span>
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                     {apiLive && lastUpdated && (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#10b981', fontWeight: '600' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: '#059669', fontWeight: '600' }}>
                             <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', display: 'inline-block', animation: 'pulse 2s infinite' }} />
-                            LIVE · {lastUpdated.toLocaleTimeString()}
+                            Live · {lastUpdated.toLocaleTimeString()}
                         </span>
                     )}
                     {!apiLive && (
-                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: 'var(--text-muted)' }} title="Register your server IP on groww.in/trade-api/api-keys to enable live prices">
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', color: 'var(--text-muted)' }} title="Register your server IP on groww.in/trade-api/api-keys to enable live prices">
                             ⚠ Static prices
                         </span>
                     )}
@@ -683,8 +648,8 @@ export default function StocksView() {
                         >
                             <div>
                                 {/* Header: Icon, Symbol, Price */}
-                                <div className="stock-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                    <div className="stock-card-identity" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div className="stock-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px', gap: '8px' }}>
+                                    <div className="stock-card-identity" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
                                         <div style={{
                                             width: '42px',
                                             height: '42px',
@@ -726,7 +691,7 @@ export default function StocksView() {
                                     {/* Mini Live Sparkline Chart */}
                                     {!stock.livePriceUnavailable && <div
                                         className="stock-card-sparkline"
-                                        style={{ cursor: 'pointer' }}
+                                        style={{ cursor: 'pointer', flexShrink: 0 }}
                                         onClick={() => setChartModalStock(stock)}
                                         title="Click to expand interactive Live Chart"
                                     >
@@ -741,7 +706,7 @@ export default function StocksView() {
                                     </div>}
 
                                     {/* Price and Day Change */}
-                                    <div className="stock-card-quote" style={{ textAlign: 'right' }}>
+                                    <div className="stock-card-quote" style={{ textAlign: 'right', flexShrink: 0 }}>
                                         <div style={{ fontSize: stock.livePriceUnavailable ? '12px' : '17px', fontWeight: '800', color: stock.livePriceUnavailable ? 'var(--text-muted)' : 'var(--text-primary)' }}>
                                             {stock.livePriceUnavailable ? 'Waiting for Upstox quote' : `₹${stock.price.toFixed(2)}`}
                                         </div>
@@ -753,7 +718,7 @@ export default function StocksView() {
 
                                 {/* Sector & Cap Badge Strip */}
                                 <div className="stock-card-meta" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 10px', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', fontSize: '11.5px', marginBottom: '14px' }}>
-                                    <span style={{ color: 'var(--text-muted)' }}>{stock.sector}</span>
+                            <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>{stock.sector}</span>
                                     <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                                         <span style={{
                                             fontSize: '10px',
@@ -787,20 +752,12 @@ export default function StocksView() {
                             </div>
 
                             {/* Actions with Live Chart */}
-                            <div className="stock-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1.2fr', gap: '6px' }}>
+                            <div className="stock-card-actions" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
                                 <button
                                     type="button"
-                                    className="btn btn-secondary btn-sm"
+                                    className="btn btn-primary btn-sm"
                                     onClick={() => setChartModalStock(stock)}
-                                    style={{
-                                        fontSize: '11px',
-                                        padding: '7px 6px',
-                                        justifyContent: 'center',
-                                        fontWeight: '700',
-                                        color: '#ADFF41',
-                                        borderColor: 'rgba(173, 255, 65, 0.35)',
-                                        background: 'rgba(173, 255, 65, 0.05)'
-                                    }}
+                                    style={{ fontSize: '12px', padding: '8px 6px', justifyContent: 'center', fontWeight: '700' }}
                                     title="Open Interactive Live Chart"
                                 >
                                     📈 Live Chart
@@ -812,14 +769,6 @@ export default function StocksView() {
                                     style={{ fontSize: '11px', padding: '7px 4px', justifyContent: 'center' }}
                                 >
                                     👁️ Info
-                                </button>
-                                <button
-                                    type="button"
-                                    className="btn btn-primary btn-sm"
-                                    onClick={() => handleDownloadBalanceSheet(stock)}
-                                    style={{ fontSize: '11px', padding: '7px 6px', justifyContent: 'center', fontWeight: '700' }}
-                                >
-                                    📥 Sheet
                                 </button>
                             </div>
                         </div>
@@ -910,9 +859,9 @@ export default function StocksView() {
                                             <div style={{ display: 'flex', gap: '6px' }}>
                                                 <button
                                                     type="button"
-                                                    className="btn btn-secondary btn-sm"
+                                                    className="btn btn-primary btn-sm"
                                                     onClick={() => setChartModalStock(stock)}
-                                                    style={{ padding: '4px 7px', fontSize: '11px', color: '#ADFF41', borderColor: 'rgba(173, 255, 65, 0.3)' }}
+                                                    style={{ padding: '6px 9px', fontSize: '12px' }}
                                                     title="Open Interactive Live Chart"
                                                 >
                                                     📈 Chart
@@ -924,14 +873,6 @@ export default function StocksView() {
                                                     style={{ padding: '4px 7px', fontSize: '11px' }}
                                                 >
                                                     View
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className="btn btn-primary btn-sm"
-                                                    onClick={() => handleDownloadBalanceSheet(stock)}
-                                                    style={{ padding: '4px 7px', fontSize: '11px' }}
-                                                >
-                                                    📥 Sheet
                                                 </button>
                                             </div>
                                         </td>
@@ -1034,7 +975,7 @@ export default function StocksView() {
                 </div>
             )}
 
-            {/* Fundamentals & Balance Sheet Inspector Modal */}
+            {/* Stock fundamentals modal */}
             {detailStock && (
                 <div className="modal-overlay" onClick={() => setDetailStock(null)}>
                     <div className="modal-box" onClick={e => e.stopPropagation()} style={{ maxWidth: '580px', maxHeight: '90vh', overflowY: 'auto' }}>
@@ -1072,20 +1013,6 @@ export default function StocksView() {
                                 </div>
                             </div>
 
-                            {/* Balance Sheet Summary */}
-                            <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.2)', borderRadius: '8px', padding: '14px', marginBottom: '16px' }}>
-                                <div style={{ fontSize: '12px', fontWeight: '700', textTransform: 'uppercase', color: '#38bdf8', marginBottom: '10px' }}>
-                                    Consolidated Balance Sheet Summary
-                                </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    <div>Total Assets: <strong>{detailStock.balanceSheet.assets}</strong></div>
-                                    <div>Total Liabilities: <strong>{detailStock.balanceSheet.liabilities}</strong></div>
-                                    <div>Total Equity: <strong>{detailStock.balanceSheet.equity}</strong></div>
-                                    <div>Working Capital: <strong>{detailStock.balanceSheet.workingCapital}</strong></div>
-                                    <div>Debt-to-Equity: <strong>{detailStock.balanceSheet.debtToEquity}</strong></div>
-                                    <div>Current Ratio: <strong>{detailStock.balanceSheet.currentRatio}</strong></div>
-                                </div>
-                            </div>
                         </div>
 
                         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px', flexWrap: 'wrap' }}>
@@ -1104,16 +1031,6 @@ export default function StocksView() {
                             <button type="button" className="btn btn-secondary" onClick={() => setDetailStock(null)}>
                                 Close
                             </button>
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={() => {
-                                    handleDownloadBalanceSheet(detailStock);
-                                    setDetailStock(null);
-                                }}
-                            >
-                                📥 Download Excel Balance Sheet
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -1124,7 +1041,6 @@ export default function StocksView() {
                 <LiveStockChartModal
                     stock={chartModalStock}
                     onClose={() => setChartModalStock(null)}
-                    onDownloadBalanceSheet={handleDownloadBalanceSheet}
                 />
             )}
         </div>

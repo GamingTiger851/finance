@@ -12,6 +12,20 @@
    ========================================================= */
 
 :root {
+    --type-xs: 12px;
+    --type-sm: 13px;
+    --type-body: 14px;
+    --type-subhead: 16px;
+    --type-heading: 20px;
+    --type-display: 24px;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --text-muted: #64748B;
+    --text-positive: #059669;
+    --text-negative: #DC2626;
+    --control-radius: 8px;
+    --card-radius: 12px;
+    --pill-radius: 999px;
     --accent: #059669;
     --accent-hover: #047857;
     --accent-bright: #10b981;
@@ -54,6 +68,145 @@
     --brass-bg: var(--accent-bg);
     --vault: var(--chrome-bg);
     --ink: var(--accent);
+}
+
+/* Shared tokens and focused usability refinements for the stock screener. */
+#stocksPage {
+    --stocks-control-height: 42px;
+    --stocks-radius: var(--control-radius);
+    color: var(--text-primary);
+}
+
+#stocksPage .stocks-search-box input,
+#stocksPage .stocks-sort-controls select,
+#stocksPage .stocks-sector-filter select {
+    min-height: var(--stocks-control-height);
+    height: var(--stocks-control-height);
+    border-radius: var(--stocks-radius);
+    font-size: var(--type-body);
+}
+
+#stocksPage .stocks-search-box input {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#stocksPage .stocks-sort-controls select,
+#stocksPage .stocks-sector-filter select {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#stocksPage .stocks-page-header .page-subtitle,
+#stocksPage .stock-card-meta,
+#stocksPage .stock-card-meta > span {
+    font-size: var(--type-sm);
+}
+
+#stocksPage .stocks-index-card {
+    min-width: 0;
+    border-radius: var(--card-radius) !important;
+    color: var(--text-primary);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    scroll-snap-align: start;
+}
+
+#stocksPage .stocks-index-card:disabled {
+    cursor: default;
+}
+
+#stocksPage .stocks-index-card:not(:disabled):hover,
+#stocksPage .stocks-index-card.active {
+    border-color: var(--accent) !important;
+    box-shadow: 0 0 0 2px var(--accent-bg);
+}
+
+#stocksPage .stocks-category-tabs {
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 transparent;
+    mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 26px), transparent 100%);
+}
+
+#stocksPage .stocks-category-tabs::after {
+    content: '›';
+    position: sticky;
+    right: 0;
+    flex: 0 0 24px;
+    display: grid;
+    place-items: center;
+    margin-left: -24px;
+    color: var(--text-muted);
+    font-size: 22px;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, var(--paper) 65%);
+}
+
+#stocksPage .stocks-cap-filters,
+#stocksPage .stocks-sector-filter {
+    gap: 10px !important;
+}
+
+#stocksPage .stocks-cap-filters .pill {
+    min-height: 36px;
+    border-radius: var(--pill-radius);
+}
+
+#stocksPage .btn {
+    border-radius: var(--control-radius);
+    font-family: inherit;
+    font-weight: 600;
+}
+
+#stocksPage .stock-card-actions .btn {
+    min-height: 38px;
+    border-radius: var(--control-radius);
+    font-size: var(--type-xs) !important;
+}
+
+#stocksPage .stock-card-actions .btn-primary {
+    background: var(--accent-gradient);
+    color: #fff;
+}
+
+#stocksPage .stock-card-actions .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+}
+
+#stocksPage .stocks-sort-controls select,
+#stocksPage .stocks-sector-filter select,
+#stocksPage .stocks-search-box input {
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+@media (max-width: 640px) {
+    #stocksPage .stocks-market-indices {
+        display: flex !important;
+        gap: 10px !important;
+        overflow-x: auto;
+        padding: 4px 0 8px !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        mask-image: linear-gradient(to right, #000 0%, #000 calc(100% - 28px), transparent 100%);
+    }
+
+    #stocksPage .stocks-market-indices > .stocks-index-card {
+        flex: 0 0 min(78vw, 260px);
+    }
+
+    #stocksPage .stocks-category-tabs::after {
+        content: '›';
+    }
+
+    #stocksPage .stocks-sort-controls select {
+        width: 100%;
+    }
 }
 
 /* Clean White Neo-Bank Base Theme - Universal across all environments */
