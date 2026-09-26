@@ -1,5 +1,6 @@
 const router = require('express').Router(); const { z } = require('zod'); const validate = require('../middleware/validate'); const validateParams = validate.params; const { authenticate, requireAdmin } = require('../middleware/auth'); const auth=require('../controllers/auth'); const c=require('../controllers/crud'); const adminCtrl=require('../controllers/admin'); const upstoxCtrl=require('../controllers/upstox'); const growwCtrl=require('../controllers/groww'); const liveMarket=require('../controllers/liveMarket');
 const aiCtrl = require('../controllers/ai');
+const newsCtrl = require('../controllers/news');
 const credentials=validate(z.object({body:z.object({email:z.string().email(),password:z.string().min(8),name:z.string().optional()}),params:z.object({}),query:z.object({})}));
 const refreshCredentials=validate(z.object({body:z.object({refreshToken:z.string().min(20)}),params:z.object({}),query:z.object({})}));
 const body = schema => validate(z.object({ body: schema, params: z.record(z.string()), query: z.record(z.string()) }));
@@ -23,6 +24,7 @@ router.get('/live/quote/:symbol', liveMarket.quote);
 router.post('/live/batch', liveMarket.batch);
 router.get('/live/candles/:symbol', liveMarket.candles);
 router.get('/live/movers', liveMarket.movers);
+router.get('/news', newsCtrl.getNews);
 
 router.use(authenticate);
 

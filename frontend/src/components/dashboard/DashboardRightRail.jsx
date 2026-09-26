@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useFinance } from '../../context/FinanceContext';
 import { useAuth } from '../../context/AuthContext';
 import { getAuthHeaders } from '../../services/authToken';
@@ -15,6 +15,47 @@ export default function DashboardRightRail({ onNavigate }) {
         }
     ]);
     const [isTyping, setIsTyping] = useState(false);
+    const [newsFeed, setNewsFeed] = useState({ articles: [], loading: true, configured: null, error: false, updatedAt: null });
+
+    useEffect(() => {
+        let active = true;
+        const loadNews = async () => {
+            try {
+                const response = await fetch('/api/news');
+                if (!response.ok) throw new Error('News request failed');
+                const data = await response.json();
+                if (!active) return;
+                setNewsFeed({
+                    articles: Array.isArray(data.articles) ? data.articles : [],
+                    loading: false,
+                    configured: data.configured !== false,
+                    error: false,
+                    updatedAt: data.updatedAt || null,
+                });
+            } catch {
+                if (!active) return;
+                setNewsFeed(previous => ({ ...previous, loading: false, error: true }));
+            }
+        };
+
+        loadNews();
+        const refreshTimer = window.setInterval(loadNews, 15 * 60 * 1000);
+        return () => {
+            active = false;
+            window.clearInterval(refreshTimer);
+        };
+    }, []);
+
+    const formatNewsAge = (publishedAt) => {
+        const publishedTime = Date.parse(publishedAt || '');
+        if (!Number.isFinite(publishedTime)) return 'Recently';
+        const minutes = Math.max(0, Math.floor((Date.now() - publishedTime) / 60000));
+        if (minutes < 1) return 'Just now';
+        if (minutes < 60) return `${minutes}m ago`;
+        const hours = Math.floor(minutes / 60);
+        if (hours < 24) return `${hours}h ago`;
+        return new Date(publishedTime).toLocaleDateString();
+    };
 
     const quickPills = [
         'How can I reduce my expenses?',
@@ -108,22 +149,37 @@ export default function DashboardRightRail({ onNavigate }) {
                         </span>
                         <h3 className="rail-title">News &amp; Insights</h3>
                     </div>
-                    <span className="live-dot-badge">Today</span>
+                    <span className="live-dot-badge">
+                        {newsFeed.updatedAt
+                            ? `Updated ${new Date(newsFeed.updatedAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}`
+                            : 'Market news'}
+                    </span>
                 </div>
 
-                <div className="news-items-list">
-                    <div className="news-bullet">
-                        <div className="news-headline">
-                            Retail inflation drops to 3.6%, market sentiment rallies
+                <div className="news-items-list" aria-live="polite" aria-busy={newsFeed.loading}>
+                    {newsFeed.articles.map(article => (
+                        <article className="news-bullet" key={article.id}>
+                            <a className="news-headline" href={article.url} target="_blank" rel="noopener noreferrer">
+                                {article.title}
+                            </a>
+                            <div className="news-meta">
+                                {article.source} · {formatNewsAge(article.publishedAt)}
+                                {article.symbols.length > 0 ? ` · ${article.symbols.join(', ')}` : ''}
+                            </div>
+                        </article>
+                    ))}
+                    {newsFeed.loading && newsFeed.articles.length === 0 && (
+                        <div className="news-feed-message">Loading latest market headlines…</div>
+                    )}
+                    {!newsFeed.loading && newsFeed.articles.length === 0 && (
+                        <div className="news-feed-message">
+                            {newsFeed.configured === false
+                                ? 'Live headlines are not configured yet.'
+                                : newsFeed.error
+                                    ? 'Headlines are temporarily unavailable. Please try again later.'
+                                    : 'No recent India market headlines found.'}
                         </div>
-                        <div className="news-meta">Consumer Price Index • 2h ago</div>
-                    </div>
-                    <div className="news-bullet">
-                        <div className="news-headline">
-                            RBI maintains repo rate; favorable window for Fixed Deposits
-                        </div>
-                        <div className="news-meta">Monetary Policy • 4h ago</div>
-                    </div>
+                    )}
                 </div>
             </div>
 
