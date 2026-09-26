@@ -8806,3 +8806,165 @@ input[type="range"]::-moz-range-thumb {
     #stocksPage .stock-action-desktop { display: none; }
     #stocksPage .stock-action-mobile { display: inline; }
 }
+
+/* Keep the header usable on narrow phones by giving search and live info
+   their own row instead of squeezing every control into one line. */
+@media (max-width: 640px) {
+    .fintrack-topbar {
+        display: grid !important;
+        grid-template-columns: 36px minmax(0, 1fr) minmax(112px, auto);
+        grid-template-rows: 38px 36px;
+        column-gap: 8px !important;
+        row-gap: 6px;
+        height: 94px !important;
+        min-height: 94px;
+        padding: 8px 10px !important;
+        align-content: center;
+        justify-content: stretch !important;
+    }
+
+    .mobile-menu-toggle {
+        grid-column: 1;
+        grid-row: 1;
+        width: 36px;
+        height: 36px;
+        flex-basis: 36px;
+    }
+
+    .topbar-brand {
+        grid-column: 2;
+        grid-row: 1;
+        min-width: 0 !important;
+        overflow: hidden;
+        gap: 6px !important;
+    }
+
+    .topbar-brand .brand-logo-icon {
+        width: 32px !important;
+        height: 32px !important;
+        flex: 0 0 32px;
+    }
+
+    .brand-logo-text {
+        display: block !important;
+        overflow: hidden;
+        font-size: 12px !important;
+        line-height: 1.15;
+        letter-spacing: -0.035em;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .topbar-brand > div:last-child {
+        display: none !important;
+    }
+
+    .topbar-search-form {
+        grid-column: 1 / 3;
+        grid-row: 2;
+        width: 100%;
+        min-width: 0;
+        margin: 0 !important;
+    }
+
+    .topbar-search-input-wrap,
+    .topbar-search-input {
+        height: 36px;
+        min-width: 0;
+    }
+
+    .topbar-search-input {
+        padding: 7px 10px 7px 34px !important;
+        font-size: 12px !important;
+    }
+
+    .topbar-live-info {
+        grid-column: 3;
+        grid-row: 2;
+        min-width: 0;
+        justify-content: flex-end;
+        margin: 0 !important;
+        gap: 3px !important;
+    }
+
+    .topbar-weather {
+        gap: 2px !important;
+        padding: 3px 1px !important;
+    }
+
+    .topbar-weather-icon {
+        font-size: 15px !important;
+    }
+
+    .topbar-weather-copy strong,
+    .topbar-india-time strong {
+        font-size: 9px !important;
+    }
+
+    .topbar-timezone {
+        font-size: 8px !important;
+    }
+
+    .topbar-actions {
+        grid-column: 3;
+        grid-row: 1;
+        justify-content: flex-end;
+        gap: 4px !important;
+        min-width: 0;
+    }
+
+    .topbar-icon-btn {
+        width: 30px;
+        height: 34px;
+        padding: 5px !important;
+    }
+
+    .topbar-user-profile {
+        gap: 3px !important;
+        padding-left: 4px !important;
+        border-left: 0 !important;
+    }
+
+    .topbar-user-profile .user-avatar-circle {
+        width: 32px;
+        height: 32px;
+    }
+
+    .topbar-user-profile > svg {
+        width: 12px;
+        margin-left: 0 !important;
+    }
+
+    .main-area {
+        margin-top: 94px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .fintrack-topbar {
+        grid-template-columns: 34px minmax(0, 1fr) 108px;
+        column-gap: 6px !important;
+        padding-right: 8px !important;
+        padding-left: 8px !important;
+    }
+
+    .mobile-menu-toggle {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+    }
+
+    .topbar-brand {
+        gap: 4px !important;
+    }
+
+    .brand-logo-text {
+        font-size: 11px !important;
+        white-space: normal;
+        text-overflow: clip;
+    }
+
+    .topbar-timezone {
+        display: none !important;
+    }
+}

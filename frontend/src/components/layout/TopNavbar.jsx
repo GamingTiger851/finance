@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useFinance } from '../../context/FinanceContext';
 import WeatherClock from './WeatherClock';
@@ -9,6 +9,28 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
     const [searchQuery, setSearchQuery] = useState('');
     const [hasUnreadNotifications, setHasUnreadNotifications] = useState(true);
     const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+    const profileMenuRef = useRef(null);
+
+    useEffect(() => {
+        if (!isProfileMenuOpen) return undefined;
+
+        const closeOnOutsidePointer = (event) => {
+            if (!profileMenuRef.current?.contains(event.target)) setIsProfileMenuOpen(false);
+        };
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                setIsProfileMenuOpen(false);
+                profileMenuRef.current?.querySelector('[aria-haspopup="menu"]')?.focus();
+            }
+        };
+
+        document.addEventListener('pointerdown', closeOnOutsidePointer);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('pointerdown', closeOnOutsidePointer);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [isProfileMenuOpen]);
 
     const displayName = userProfile.fullName || currentUser || 'Amit Sharma';
     const firstInitial = displayName.charAt(0).toUpperCase();
@@ -66,7 +88,7 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
             <div 
                 className="topbar-brand" 
                 onClick={() => onNavigate && onNavigate('dashboard')} 
-                title="FinTracker AI - HAWKS Intelligence"
+                title="FinTracker & Investment - HAWKS Intelligence"
                 style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <div className="brand-logo-icon" style={{
@@ -90,7 +112,7 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                     />
                 </div>
                 <div className="brand-logo-text">
-                    <span className="logo-main">FinTracker</span><span className="logo-ai">AI</span>
+                    <span className="logo-main">FinTracker &amp; Investment</span>
                 </div>
                 <div style={{
                     fontSize: '10px',
@@ -205,8 +227,23 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
 
                 {/* User Profile Pill / Login Button */}
                 {currentUser ? (
-                    <div style={{ position: 'relative' }}>
-                        <div className="topbar-user-profile" onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)} style={{ cursor: 'pointer' }}>
+                    <div ref={profileMenuRef} style={{ position: 'relative' }}>
+                        <div
+                            className="topbar-user-profile"
+                            role="button"
+                            tabIndex={0}
+                            aria-haspopup="menu"
+                            aria-expanded={isProfileMenuOpen}
+                            aria-controls="profile-dropdown-menu"
+                            onClick={() => setIsProfileMenuOpen(open => !open)}
+                            onKeyDown={(event) => {
+                                if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault();
+                                    setIsProfileMenuOpen(open => !open);
+                                }
+                            }}
+                            style={{ cursor: 'pointer' }}
+                        >
                             <div className="user-avatar-circle">
                                 {firstInitial}
                             </div>
@@ -220,8 +257,8 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                         </div>
 
                         {isProfileMenuOpen && (
-                            <div className="profile-dropdown-menu">
-                                <button className="profile-dropdown-item" onClick={() => { setIsProfileMenuOpen(false); if (onNavigate) onNavigate('settings'); }}>
+                            <div className="profile-dropdown-menu" id="profile-dropdown-menu" role="menu" aria-label="Account menu">
+                                <button className="profile-dropdown-item" role="menuitem" onClick={() => { setIsProfileMenuOpen(false); if (onNavigate) onNavigate('settings'); }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
                                         <circle cx="12" cy="12" r="3"></circle>
                                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -229,14 +266,14 @@ export default function TopNavbar({ onSearch, onNavigate, onMenuToggle, isMobile
                                     Settings
                                 </button>
                                 {userRole === 'admin' && (
-                                    <button className="profile-dropdown-item" onClick={() => { setIsProfileMenuOpen(false); if (onNavigate) onNavigate('admin'); }} style={{ color: '#3b82f6' }}>
+                                    <button className="profile-dropdown-item" role="menuitem" onClick={() => { setIsProfileMenuOpen(false); if (onNavigate) onNavigate('admin'); }} style={{ color: '#3b82f6' }}>
                                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
                                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                                         </svg>
                                         Admin Dashboard
                                     </button>
                                 )}
-                                <button className="profile-dropdown-item" onClick={() => { setIsProfileMenuOpen(false); logout(); }} style={{ color: '#ef4444' }}>
+                                <button className="profile-dropdown-item" role="menuitem" onClick={() => { setIsProfileMenuOpen(false); logout(); }} style={{ color: '#ef4444' }}>
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ marginRight: '8px' }}>
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                         <polyline points="16 17 21 12 16 7" />

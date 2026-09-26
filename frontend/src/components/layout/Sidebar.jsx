@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
-import { useAuth } from '../../context/AuthContext';
 
 export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = false, onMobileClose }) {
-    const { currentUser, userProfile } = useAuth();
-    const displayName = userProfile?.fullName || currentUser || 'User';
-    const firstInitial = displayName.charAt(0).toUpperCase();
-
     const closeMobileMenu = useCallback(() => {
         if (isMobileOpen && window.innerWidth <= 640) {
             document.querySelector('.mobile-menu-toggle')?.focus({ preventScroll: true });
@@ -222,31 +217,6 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                 </button>
             </nav>
 
-            {/* User Session Footer */}
-            <div className="sidebar-user-footer">
-                <div className="user-avatar-circle" style={{ width: '34px', height: '34px', fontSize: '13px', flexShrink: 0 }}>
-                    {firstInitial}
-                </div>
-                <div className="sidebar-user-meta">
-                    <span className="sidebar-user-name">{displayName}</span>
-                    <span className="sidebar-user-role">Free Member</span>
-                </div>
-                <button 
-                    type="button" 
-                    className="sidebar-user-dots-btn"
-                    onClick={() => {
-                        setCurrentPage('settings');
-                        closeMobileMenu();
-                    }}
-                    title="Account Settings"
-                >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="12" cy="5" r="1"></circle>
-                        <circle cx="12" cy="19" r="1"></circle>
-                    </svg>
-                </button>
-            </div>
         </aside>
         </>
     );
