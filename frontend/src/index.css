@@ -2731,10 +2731,92 @@ select:focus {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: #080808;
+    background:
+        radial-gradient(ellipse at 16% 18%, rgba(16, 185, 129, 0.13), transparent 42%),
+        radial-gradient(ellipse at 86% 78%, rgba(5, 150, 105, 0.12), transparent 38%),
+        #07110e;
     position: relative;
     overflow: hidden;
     padding: 24px;
+}
+
+.login-ambient {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.login-ambient::before,
+.login-ambient::after {
+    position: absolute;
+    content: '';
+    pointer-events: none;
+}
+
+.login-ambient::before {
+    inset: -15%;
+    background-image:
+        linear-gradient(rgba(110, 231, 183, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110, 231, 183, 0.055) 1px, transparent 1px);
+    background-size: 72px 72px;
+    mask-image: radial-gradient(ellipse at center, #000 15%, transparent 76%);
+    animation: login-grid-drift 36s linear infinite;
+}
+
+.login-ambient::after {
+    top: -52%;
+    left: -24%;
+    width: 148%;
+    height: 200%;
+    border: 1px solid rgba(52, 211, 153, 0.1);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 48px rgba(52, 211, 153, 0.025),
+        0 0 0 96px rgba(52, 211, 153, 0.02);
+    transform: rotate(-18deg);
+    animation: login-orbit-drift 28s ease-in-out infinite alternate;
+}
+
+.login-ambient-orb {
+    position: absolute;
+    display: block;
+    width: clamp(180px, 28vw, 380px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    filter: blur(48px);
+    opacity: 0.26;
+}
+
+.login-ambient-orb--one {
+    top: 8%;
+    right: 8%;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.42), transparent 70%);
+    animation: login-orb-float 17s ease-in-out infinite alternate;
+}
+
+.login-ambient-orb--two {
+    bottom: 2%;
+    left: 5%;
+    width: clamp(150px, 22vw, 300px);
+    background: radial-gradient(circle, rgba(20, 184, 166, 0.32), transparent 72%);
+    animation: login-orb-float 22s ease-in-out -6s infinite alternate-reverse;
+}
+
+@keyframes login-grid-drift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(36px, 24px, 0); }
+}
+
+@keyframes login-orbit-drift {
+    from { transform: rotate(-18deg) translate3d(-1%, 0, 0); }
+    to { transform: rotate(-12deg) translate3d(1%, 1%, 0); }
+}
+
+@keyframes login-orb-float {
+    from { transform: translate3d(-10px, 6px, 0) scale(0.96); }
+    to { transform: translate3d(18px, -14px, 0) scale(1.08); }
 }
 
 /* animated ambient glow orbs behind card */
@@ -4242,9 +4324,18 @@ button {
     .topbar-info-divider,
     .topbar-weather-copy span,
     .topbar-india-time-label,
-    .topbar-timezone,
     .topbar-time-full {
         display: none;
+    }
+
+    .topbar-india-time {
+        column-gap: 3px;
+    }
+
+    .topbar-timezone {
+        display: inline;
+        font-size: 8px;
+        letter-spacing: 0;
     }
 
     .topbar-time-compact {
@@ -8296,6 +8387,12 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (prefers-reduced-motion: reduce) {
+    #loginPage .login-ambient::before,
+    #loginPage .login-ambient::after,
+    #loginPage .login-ambient-orb {
+        animation: none !important;
+    }
+
     #appWrap .page,
     #appWrap .main-area .table-card,
     #appWrap .main-area .stat-card,
@@ -8306,4 +8403,237 @@ input[type="range"]::-moz-range-thumb {
         transform: none !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* Keep the wide stock screener readable instead of compressing every column. */
+#stocksPage .stocks-table-card {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+#stocksPage .stocks-data-table {
+    width: 100%;
+    min-width: 1478px;
+    table-layout: fixed;
+}
+
+#stocksPage .stocks-data-table th,
+#stocksPage .stocks-data-table td {
+    padding: 13px 8px;
+    vertical-align: middle;
+}
+
+#stocksPage .stocks-data-table th:nth-child(1),
+#stocksPage .stocks-data-table td:nth-child(1) { width: 210px; }
+#stocksPage .stocks-data-table th:nth-child(2),
+#stocksPage .stocks-data-table td:nth-child(2) { width: 145px; }
+#stocksPage .stocks-data-table th:nth-child(3),
+#stocksPage .stocks-data-table td:nth-child(3) { width: 98px; }
+#stocksPage .stocks-data-table th:nth-child(4),
+#stocksPage .stocks-data-table td:nth-child(4) { width: 105px; }
+#stocksPage .stocks-data-table th:nth-child(5),
+#stocksPage .stocks-data-table td:nth-child(5) { width: 100px; }
+#stocksPage .stocks-data-table th:nth-child(6),
+#stocksPage .stocks-data-table td:nth-child(6) { width: 105px; }
+#stocksPage .stocks-data-table th:nth-child(7),
+#stocksPage .stocks-data-table td:nth-child(7) { width: 120px; }
+#stocksPage .stocks-data-table th:nth-child(8),
+#stocksPage .stocks-data-table td:nth-child(8) { width: 70px; }
+#stocksPage .stocks-data-table th:nth-child(9),
+#stocksPage .stocks-data-table td:nth-child(9) { width: 140px; }
+#stocksPage .stocks-data-table th:nth-child(10),
+#stocksPage .stocks-data-table td:nth-child(10) { width: 135px; }
+#stocksPage .stocks-data-table th:nth-child(11),
+#stocksPage .stocks-data-table td:nth-child(11) { width: 250px; }
+
+#stocksPage .stocks-data-table td:nth-child(4),
+#stocksPage .stocks-data-table td:nth-child(5),
+#stocksPage .stocks-data-table td:nth-child(7),
+#stocksPage .stocks-data-table td:nth-child(8),
+#stocksPage .stocks-data-table td:nth-child(9),
+#stocksPage .stocks-data-table td:nth-child(10) {
+    white-space: nowrap;
+}
+
+#stocksPage .stocks-data-table td:nth-child(3) span {
+    white-space: normal;
+}
+
+#stocksPage .stocks-table-actions {
+    align-items: center;
+    gap: 5px !important;
+    white-space: nowrap;
+}
+
+#stocksPage .stocks-table-actions > * {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+#stocksPage .stocks-table-actions .btn {
+    min-height: 38px;
+    padding: 6px 8px !important;
+    line-height: 1.15;
+}
+
+.stock-table-sector,
+.stock-mobile-change,
+.stock-action-mobile {
+    display: none;
+}
+
+@media (max-width: 640px) {
+    #stocksPage .table-responsive {
+        overflow: visible;
+    }
+
+    #stocksPage .stocks-table-card {
+        padding: 8px !important;
+    }
+
+    #stocksPage .stocks-data-table {
+        display: block;
+        width: 100%;
+        min-width: 0;
+        table-layout: auto;
+    }
+
+    #stocksPage .stocks-data-table thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    #stocksPage .stocks-data-table tbody {
+        display: grid;
+        gap: 9px;
+        width: 100%;
+    }
+
+    #stocksPage .stocks-data-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "company price"
+            "actions actions";
+        align-items: center;
+        gap: 10px 8px;
+        width: 100%;
+        padding: 12px;
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.035);
+    }
+
+    #stocksPage .stocks-data-table tbody td {
+        display: block;
+        width: auto !important;
+        min-width: 0;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+    }
+
+    #stocksPage .stocks-data-table td:nth-child(1) { grid-area: company; }
+    #stocksPage .stocks-data-table td:nth-child(4) {
+        grid-area: price;
+        text-align: right;
+        white-space: normal;
+    }
+    #stocksPage .stocks-data-table td:nth-child(11) { grid-area: actions; }
+
+    #stocksPage .stocks-data-table td:nth-child(2),
+    #stocksPage .stocks-data-table td:nth-child(3),
+    #stocksPage .stocks-data-table td:nth-child(5),
+    #stocksPage .stocks-data-table td:nth-child(6),
+    #stocksPage .stocks-data-table td:nth-child(7),
+    #stocksPage .stocks-data-table td:nth-child(8),
+    #stocksPage .stocks-data-table td:nth-child(9),
+    #stocksPage .stocks-data-table td:nth-child(10) {
+        display: none;
+    }
+
+    #stocksPage .stock-table-company > div {
+        gap: 8px !important;
+        min-width: 0;
+    }
+
+    #stocksPage .stock-table-company > div > div:first-child {
+        width: 34px !important;
+        height: 34px !important;
+        flex: 0 0 34px;
+    }
+
+    #stocksPage .stock-table-company > div > div:last-child {
+        min-width: 0;
+    }
+
+    #stocksPage .stock-table-company > div > div:last-child > div:nth-child(2) {
+        overflow: hidden;
+        color: #64748b !important;
+        font-size: 11px !important;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #stocksPage .stock-table-sector {
+        display: block;
+        overflow: hidden;
+        margin-top: 2px;
+        color: #64748b;
+        font-size: 10px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #stocksPage .stock-table-price::before {
+        display: block;
+        margin-bottom: 3px;
+        color: #64748b;
+        content: 'MARKET PRICE';
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+
+    #stocksPage .stock-table-price-value {
+        font-size: 15px;
+        white-space: nowrap;
+    }
+
+    #stocksPage .stock-mobile-change {
+        display: block;
+        margin-top: 3px;
+        font-size: 10px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    #stocksPage .stocks-table-actions {
+        display: grid !important;
+        grid-template-columns: 1.2fr 0.8fr 1fr 1fr;
+        gap: 7px !important;
+        width: 100%;
+    }
+
+    #stocksPage .stocks-table-actions .btn {
+        display: inline-flex;
+        width: 100%;
+        min-width: 0;
+        min-height: 42px;
+        align-items: center;
+        justify-content: center;
+        padding: 6px 4px !important;
+        font-size: 11px !important;
+    }
+
+    #stocksPage .stock-action-desktop { display: none; }
+    #stocksPage .stock-action-mobile { display: inline; }
 }

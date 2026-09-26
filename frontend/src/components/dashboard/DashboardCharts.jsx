@@ -19,6 +19,55 @@ const CATEGORY_COLOR_MAP = {
 
 const DEFAULT_PALETTE = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444', '#06b6d4', '#ec4899', '#14b8a6'];
 
+function createBalanceGlowPlugin() {
+    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
+
+    return {
+        id: 'balanceTrendGlow',
+        beforeDatasetDraw(chart, args) {
+            if (args.index !== 0) return;
+            const ctx = chart.ctx;
+            const pulse = reducedMotion ? 3 : 4 + (Math.sin(performance.now() / 850) + 1) * 1.5;
+            ctx.save();
+            ctx.shadowColor = 'rgba(5, 150, 105, 0.42)';
+            ctx.shadowBlur = pulse;
+        },
+        afterDatasetDraw(chart, args) {
+            if (args.index !== 0) return;
+            chart.ctx.restore();
+
+            const points = chart.getDatasetMeta(0).data;
+            const latestPoint = points[points.length - 1];
+            if (!latestPoint) return;
+
+            const { x, y } = latestPoint.getProps(['x', 'y'], true);
+            const radius = reducedMotion ? 8 : 7 + (Math.sin(performance.now() / 850) + 1) * 2;
+            const glow = chart.ctx.createRadialGradient(x, y, 1, x, y, radius);
+            glow.addColorStop(0, 'rgba(5, 150, 105, 0.24)');
+            glow.addColorStop(0.45, 'rgba(5, 150, 105, 0.13)');
+            glow.addColorStop(1, 'rgba(5, 150, 105, 0)');
+
+            chart.ctx.save();
+            chart.ctx.fillStyle = glow;
+            chart.ctx.beginPath();
+            chart.ctx.arc(x, y, radius, 0, Math.PI * 2);
+            chart.ctx.fill();
+            chart.ctx.restore();
+        },
+        afterDraw(chart) {
+            if (reducedMotion || chart.$balanceGlowFrame) return;
+            chart.$balanceGlowFrame = requestAnimationFrame(() => {
+                chart.$balanceGlowFrame = null;
+                if (!chart._destroyed) chart.draw();
+            });
+        },
+        beforeDestroy(chart) {
+            if (chart.$balanceGlowFrame) cancelAnimationFrame(chart.$balanceGlowFrame);
+            chart.$balanceGlowFrame = null;
+        }
+    };
+}
+
 export default function DashboardCharts() {
     const { transactions } = useFinance();
     const { darkMode } = useAuth();
@@ -223,15 +272,23 @@ export default function DashboardCharts() {
                         label: 'Balance',
                         data: balanceTrendData.data,
                         borderColor: '#059669',
-                        backgroundColor: 'rgba(5, 150, 105, 0.10)',
+                        backgroundColor: (context) => {
+                            const { chart } = context;
+                            const { ctx, chartArea } = chart;
+                            if (!chartArea) return 'rgba(5, 150, 105, 0.10)';
+                            const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                            gradient.addColorStop(0, 'rgba(5, 150, 105, 0.16)');
+                            gradient.addColorStop(1, 'rgba(5, 150, 105, 0)');
+                            return gradient;
+                        },
                         borderWidth: 2.5,
                         fill: true,
                         tension: 0.35,
                         pointBackgroundColor: '#059669',
                         pointBorderColor: '#ffffff',
                         pointBorderWidth: 2,
-                        pointRadius: 4,
-                        pointHoverRadius: 6
+                        pointRadius: (context) => context.dataIndex === context.dataset.data.length - 1 ? 4 : 0,
+                        pointHoverRadius: (context) => context.dataIndex === context.dataset.data.length - 1 ? 6 : 3
                     }]
                 },
                 options: {
@@ -260,7 +317,8 @@ export default function DashboardCharts() {
                             suggestedMax: balanceTrendData.isEmpty ? 10 : undefined
                         }
                     }
-                }
+                },
+                plugins: [createBalanceGlowPlugin()]
             });
         }
 

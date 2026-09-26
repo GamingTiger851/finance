@@ -139,6 +139,10 @@ export default function AuthPage() {
 
     return (
         <div id="loginPage" className="login-wrap">
+            <div className="login-ambient" aria-hidden="true">
+                <span className="login-ambient-orb login-ambient-orb--one" />
+                <span className="login-ambient-orb login-ambient-orb--two" />
+            </div>
             {/* Success ripple transition overlay */}
             <div className={`auth-ripple ${rippleActive ? 'is-active' : ''}`} id="authRipple" />
 

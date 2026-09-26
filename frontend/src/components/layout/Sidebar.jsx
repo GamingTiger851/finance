@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = false, onMobileClose }) {
@@ -6,14 +6,21 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
     const displayName = userProfile?.fullName || currentUser || 'User';
     const firstInitial = displayName.charAt(0).toUpperCase();
 
+    const closeMobileMenu = useCallback(() => {
+        if (isMobileOpen && window.innerWidth <= 640) {
+            document.querySelector('.mobile-menu-toggle')?.focus({ preventScroll: true });
+        }
+        onMobileClose?.();
+    }, [isMobileOpen, onMobileClose]);
+
     useEffect(() => {
         if (!isMobileOpen) return undefined;
         const handleKeyDown = (event) => {
-            if (event.key === 'Escape') onMobileClose?.();
+            if (event.key === 'Escape') closeMobileMenu();
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isMobileOpen, onMobileClose]);
+    }, [isMobileOpen, closeMobileMenu]);
 
     return (
         <>
@@ -22,7 +29,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                 type="button"
                 className="mobile-menu-backdrop"
                 aria-label="Close navigation menu"
-                onClick={onMobileClose}
+                onClick={closeMobileMenu}
             />
         )}
         <aside
@@ -33,7 +40,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
             inert={window.innerWidth <= 640 && !isMobileOpen}
         >
             <div className="mobile-menu-heading">
-                <button type="button" className="mobile-menu-close" onClick={onMobileClose}>
+                <button type="button" className="mobile-menu-close" onClick={closeMobileMenu}>
                     <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
                         <path d="m18 6-12 12M6 6l12 12" />
                     </svg>
@@ -45,7 +52,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                 className="sidebar-nav"
                 style={{ flex: 1, overflowY: 'auto', paddingRight: '4px' }}
                 onClick={(event) => {
-                    if (event.target.closest('.side-link')) onMobileClose?.();
+                    if (event.target.closest('.side-link')) closeMobileMenu();
                 }}
             >
                 {/* Section 1: MAIN MENU */}
@@ -216,7 +223,7 @@ export default function Sidebar({ currentPage, setCurrentPage, isMobileOpen = fa
                     className="sidebar-user-dots-btn"
                     onClick={() => {
                         setCurrentPage('settings');
-                        onMobileClose?.();
+                        closeMobileMenu();
                     }}
                     title="Account Settings"
                 >

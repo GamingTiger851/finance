@@ -290,26 +290,9 @@ export default function StocksView() {
 
     return (
         <div id="stocksPage" className="page-view">
-            {/* Header with Title and Global Actions */}
+            {/* Keep the page heading available to assistive technology while omitting the visual intro. */}
             <div className="page-header stocks-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
-                <div className="stocks-page-heading">
-                    <div className="stocks-page-title-row" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <span style={{ fontSize: '24px' }}>📈</span>
-                        <h1 className="page-title" style={{ margin: 0 }}>Stocks &amp; Equities</h1>
-                    </div>
-                    <p className="page-subtitle">
-                        Complete 1,000-stock screener with live indices, market cap categories, and valuation metrics.
-                        {apiLive ? (
-                            <span style={{ marginLeft: '12px', fontSize: '12px', fontWeight: 'bold', color: '#059669', background: 'rgba(16,185,129,0.1)', padding: '3px 9px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.2)' }}>
-                                🟢 Live Data{lastUpdated ? ` · prices updated ${lastUpdated.toLocaleTimeString()}` : ' · verifying prices'}
-                            </span>
-                        ) : (
-                            <span style={{ marginLeft: '12px', fontSize: '12px', fontWeight: 'bold', color: '#b45309', background: 'rgba(245,158,11,0.1)', padding: '3px 9px', borderRadius: '12px', border: '1px solid rgba(245,158,11,0.2)' }}>
-                                🟡 Fetching live prices...
-                            </span>
-                        )}
-                    </p>
-                </div>
+                <h1 className="stocks-visually-hidden">Stocks</h1>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                     <button
                         type="button"
@@ -787,9 +770,9 @@ export default function StocksView() {
 
             {/* View Mode: Classic Table View */}
             {viewMode === 'table' && displayedStocks.length > 0 && (
-                <div className="table-card" style={{ marginTop: '16px' }}>
+                <div className="table-card stocks-table-card" style={{ marginTop: '16px' }}>
                     <div className="table-responsive">
-                        <table>
+                        <table className="stocks-data-table" aria-label="Stocks">
                             <thead>
                                 <tr>
                                     <th>Company</th>
@@ -808,7 +791,7 @@ export default function StocksView() {
                             <tbody>
                                 {displayedStocks.map(stock => (
                                     <tr key={stock.symbol}>
-                                        <td>
+                                        <td className="stock-table-company">
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                 <div style={{ width: '32px', height: '32px', borderRadius: '6px', background: stock.logoBg, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', fontSize: '11px' }}>
                                                     {stock.symbol.slice(0, 3)}
@@ -816,6 +799,7 @@ export default function StocksView() {
                                                 <div>
                                                     <div style={{ fontWeight: '700', color: 'var(--text-primary)' }}>{stock.symbol}</div>
                                                     <div style={{ fontSize: '11.5px', color: 'var(--text-muted)' }}>{stock.name}</div>
+                                                    <div className="stock-table-sector">{stock.sector}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -832,7 +816,12 @@ export default function StocksView() {
                                                 {stock.capCategory}
                                             </span>
                                         </td>
-                                        <td style={{ fontWeight: '800' }}>{stock.livePriceUnavailable ? 'Waiting for Upstox quote' : `₹${stock.price.toFixed(2)}`}</td>
+                                        <td className="stock-table-price" style={{ fontWeight: '800' }}>
+                                            <span className="stock-table-price-value">{stock.livePriceUnavailable ? 'Waiting for Upstox quote' : `₹${stock.price.toFixed(2)}`}</span>
+                                            <span className="stock-mobile-change" style={{ color: stock.isUp ? '#059669' : '#dc2626' }}>
+                                                {stock.livePriceUnavailable || stock.changePercent == null ? 'Quote pending' : `${stock.isUp ? '+' : ''}${stock.changePercent.toFixed(2)}% today`}
+                                            </span>
+                                        </td>
                                         <td style={{ fontWeight: '700', color: stock.isUp ? '#10b981' : '#ef4444' }}>
                                             {stock.livePriceUnavailable || stock.changePercent == null ? '—' : `${stock.isUp ? '+' : ''}${stock.changePercent.toFixed(2)}%`}
                                         </td>
@@ -865,23 +854,27 @@ export default function StocksView() {
                                             )}
                                         </td>
                                         <td>
-                                            <div style={{ display: 'flex', gap: '6px' }}>
+                                            <div className="stocks-table-actions" style={{ display: 'flex', gap: '6px' }}>
                                                 <button
                                                     type="button"
                                                     className="btn btn-secondary btn-sm"
                                                     onClick={() => setChartModalStock(stock)}
                                                     style={{ padding: '6px 9px', fontSize: '12px' }}
                                                     title="Open Interactive Live Chart"
+                                                    aria-label={`Open chart for ${stock.symbol}`}
                                                 >
-                                                    📈 Chart
+                                                    <span className="stock-action-desktop">📈 Chart</span>
+                                                    <span className="stock-action-mobile" aria-hidden="true">📈</span>
                                                 </button>
                                                 <button
                                                     type="button"
                                                     className="btn btn-secondary btn-sm"
                                                     onClick={() => setDetailStock(stock)}
                                                     style={{ padding: '4px 7px', fontSize: '11px' }}
+                                                    aria-label={`View details for ${stock.symbol}`}
                                                 >
-                                                    View
+                                                    <span className="stock-action-desktop">View</span>
+                                                    <span className="stock-action-mobile" aria-hidden="true">ⓘ</span>
                                                 </button>
                                                 <a
                                                     className="btn btn-trade-link btn-trade-buy"
@@ -891,7 +884,8 @@ export default function StocksView() {
                                                     aria-label={`Buy ${stock.symbol} on Upstox Pro Web`}
                                                     title={`Open official Upstox Pro Web to buy ${stock.symbol}`}
                                                 >
-                                                    Buy
+                                                    <span className="stock-action-desktop">Buy</span>
+                                                    <span className="stock-action-mobile" aria-hidden="true">Buy</span>
                                                 </a>
                                                 <a
                                                     className="btn btn-trade-link btn-trade-sell"
@@ -901,7 +895,8 @@ export default function StocksView() {
                                                     aria-label={`Sell ${stock.symbol} on Upstox Pro Web`}
                                                     title={`Open official Upstox Pro Web to sell ${stock.symbol}`}
                                                 >
-                                                    Sell
+                                                    <span className="stock-action-desktop">Sell</span>
+                                                    <span className="stock-action-mobile" aria-hidden="true">Sell</span>
                                                 </a>
                                             </div>
                                         </td>
