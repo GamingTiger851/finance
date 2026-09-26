@@ -143,17 +143,51 @@
 }
 
 #stocksPage .stocks-filter-primary-row {
-    justify-content: flex-start !important;
-    gap: 10px !important;
+    display: grid !important;
+    grid-template-columns: minmax(280px, 380px) minmax(0, 1fr);
+    align-items: center !important;
+    gap: 12px !important;
 }
 
 #stocksPage .stocks-filter-primary-row > .stocks-search-box {
-    flex: 1 1 230px;
-    max-width: 340px !important;
+    width: 100% !important;
+    max-width: none !important;
 }
 
 #stocksPage .stocks-filter-secondary-row {
-    display: contents !important;
+    display: flex !important;
+    grid-column: 1 / -1;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+#stocksPage .stocks-sort-controls {
+    display: grid !important;
+    grid-template-columns: max-content minmax(0, 1fr) 132px;
+    align-items: center !important;
+    gap: 8px !important;
+    min-width: 0;
+}
+
+#stocksPage .stocks-sort-controls select {
+    width: 100%;
+    min-width: 0;
+}
+
+#stocksPage .stocks-sector-filter {
+    flex: 1 1 280px;
+    min-width: 280px;
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+    #stocksPage .stocks-filter-primary-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #stocksPage .stocks-filter-secondary-row {
+        grid-column: auto;
+    }
 }
 
 #stocksPage .stocks-filter-label {
@@ -337,6 +371,18 @@
 
     #stocksPage .stocks-sort-controls select {
         width: 100%;
+    }
+
+    #stocksPage .stocks-filter-primary-row {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    #stocksPage .stocks-sort-controls {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    #stocksPage .stocks-sort-controls > .stocks-filter-label {
+        grid-column: 1 / -1;
     }
 }
 
