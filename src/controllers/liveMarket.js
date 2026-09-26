@@ -1,8 +1,8 @@
 /**
- * liveMarket.js — Real-time Indian stock market data via Yahoo Finance
+ * liveMarket.js — Indian stock market quotes and history via Yahoo Finance
  *
  * No API key required. No IP restrictions. Works instantly.
- * Data is ~15 min delayed during market hours, real-time after close.
+ * Yahoo Finance quotes can be delayed by around 15 minutes during market hours.
  *
  * Yahoo Finance symbols for NSE: SYMBOL.NS  (e.g. RELIANCE.NS)
  * Yahoo Finance symbols for BSE: SYMBOL.BO  (e.g. RELIANCE.BO)
@@ -194,14 +194,24 @@ exports.batch = async (req, res) => {
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/market/indices
-// Live data for NIFTY 50, SENSEX, BANK NIFTY, NIFTY IT, NIFTY MIDCAP
+// Live benchmark and NSE sector-index data
 // ─────────────────────────────────────────────────────────────────────────────
 const INDICES = [
-    { id: '^NSEI',     name: 'NIFTY 50',    exchange: 'NSI' },
-    { id: '^BSESN',    name: 'SENSEX',      exchange: 'BSE' },
-    { id: '^NSEBANK',  name: 'BANK NIFTY',  exchange: 'NSI' },
-    { id: '^CNXIT',    name: 'NIFTY IT',    exchange: 'NSI' },
-    { id: '^NSEMDCP50',name: 'NIFTY MID 50',exchange: 'NSI' },
+    { id: '^NSEI', name: 'NIFTY 50', group: 'Benchmark' },
+    { id: '^BSESN', name: 'SENSEX', group: 'Benchmark' },
+    { id: '^NSEBANK', name: 'BANK NIFTY', group: 'Benchmark' },
+    { id: '^CNXIT', name: 'NIFTY IT', group: 'Technology' },
+    { id: '^NSEMDCP50', name: 'NIFTY MID 50', group: 'Benchmark' },
+    { id: '^CNXAUTO', name: 'NIFTY AUTO', group: 'Automobiles' },
+    { id: '^CNXENERGY', name: 'NIFTY ENERGY', group: 'Energy' },
+    { id: '^CNXFINANCE', name: 'NIFTY FIN SERVICE', group: 'Financials' },
+    { id: '^CNXFMCG', name: 'NIFTY FMCG', group: 'Consumer goods' },
+    { id: '^CNXINFRA', name: 'NIFTY INFRA', group: 'Infrastructure' },
+    { id: '^CNXMEDIA', name: 'NIFTY MEDIA', group: 'Media' },
+    { id: '^CNXMETAL', name: 'NIFTY METAL', group: 'Metals' },
+    { id: '^CNXPHARMA', name: 'NIFTY PHARMA', group: 'Healthcare' },
+    { id: '^CNXPSUBANK', name: 'NIFTY PSU BANK', group: 'Financials' },
+    { id: '^CNXREALTY', name: 'NIFTY REALTY', group: 'Real estate' },
 ];
 
 exports.indices = async (req, res) => {
@@ -227,10 +237,17 @@ exports.indices = async (req, res) => {
         const isUp = change >= 0;
         return {
             name: idx.name,
+            symbol: idx.id.replace(/^\^/, ''),
+            group: idx.group,
             value: ltp.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
             rawValue: ltp,
             change: (isUp ? '+' : '') + change.toFixed(2),
             percent: (isUp ? '+' : '') + pct.toFixed(2) + '%',
+            previousClose: meta.chartPreviousClose ?? meta.previousClose ?? null,
+            open: meta.regularMarketOpen ?? null,
+            high: meta.regularMarketDayHigh ?? null,
+            low: meta.regularMarketDayLow ?? null,
+            volume: meta.regularMarketVolume ?? null,
             isUp,
             live: true,
             ts: Date.now(),

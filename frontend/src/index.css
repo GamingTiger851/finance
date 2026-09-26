@@ -4440,11 +4440,28 @@ button {
 }
 
 .topbar-india-time {
+    position: relative;
     display: grid;
     grid-template-columns: auto auto;
     align-items: center;
     column-gap: 5px;
     line-height: 1.2;
+    padding: 5px 7px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-align: left;
+}
+
+.topbar-india-time:hover {
+    background: #f1f5f9;
+}
+
+.topbar-india-time:focus-visible {
+    outline: 2px solid rgba(5, 150, 105, 0.5);
+    outline-offset: 2px;
 }
 
 .topbar-india-time-label {
@@ -4457,6 +4474,64 @@ button {
 
 .topbar-time-compact {
     display: none;
+}
+
+.topbar-clock-picker {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.world-clock-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 1300;
+    width: min(280px, calc(100vw - 24px));
+    max-height: min(420px, 65vh);
+    overflow-y: auto;
+    padding: 6px;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 14px 34px rgba(15, 23, 42, 0.18);
+}
+
+.world-clock-option {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 3px;
+    padding: 10px 11px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #0f172a;
+    cursor: pointer;
+    text-align: left;
+}
+
+.world-clock-option:hover,
+.world-clock-option[aria-checked="true"] {
+    background: #ecfdf5;
+}
+
+.world-clock-option[aria-checked="true"] .world-clock-country::after {
+    content: 'Selected';
+    float: right;
+    color: #059669;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.world-clock-country {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.world-clock-city-time {
+    color: #64748b;
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
 }
 
 @media (max-width: 1100px) {
@@ -8966,5 +9041,417 @@ input[type="range"]::-moz-range-thumb {
 
     .topbar-timezone {
         display: none !important;
+    }
+}
+
+/* Binance public spot market view */
+.crypto-market-page {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+}
+
+.crypto-market-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.crypto-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 7px;
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .09em;
+}
+
+.crypto-eyebrow-mark {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    border-radius: 50%;
+    background: #f3ba2f;
+    color: #111827;
+    font-size: 15px;
+    letter-spacing: 0;
+}
+
+.crypto-connection {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface, #fff);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.crypto-connection-live { color: var(--text-positive, #059669); }
+.crypto-connection-live svg { filter: drop-shadow(0 0 4px rgba(5, 150, 105, .3)); }
+.crypto-connection-offline { color: var(--text-negative, #dc2626); }
+
+.crypto-market-notice {
+    padding: 12px 15px;
+    border: 1px solid rgba(245, 158, 11, .35);
+    border-radius: 10px;
+    background: rgba(245, 158, 11, .08);
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.crypto-featured-card,
+.crypto-market-toolbar,
+.crypto-table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius, 14px);
+    background: var(--surface, #fff);
+    box-shadow: var(--shadow, 0 4px 18px rgba(15, 23, 42, .04));
+}
+
+.crypto-featured-card { overflow: hidden; }
+
+.crypto-featured-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 22px 12px;
+}
+
+.crypto-featured-identity,
+.crypto-asset-select {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.crypto-coin-mark {
+    display: inline-grid;
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--coin-color) 13%, white);
+    color: var(--coin-color);
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.crypto-coin-mark-large { flex-basis: 48px; width: 48px; height: 48px; font-size: 26px; }
+
+.crypto-featured-identity > div,
+.crypto-asset-select > span:last-child { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+
+.crypto-symbol { color: var(--text-primary); font-size: 19px; font-weight: 800; }
+.crypto-symbol > span { color: var(--text-muted); font-size: 14px; font-weight: 600; }
+.crypto-asset-name { color: var(--text-muted); font-size: 13px; }
+
+.crypto-featured-quote { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
+.crypto-featured-quote > strong { color: var(--text-primary); font-size: clamp(22px, 3vw, 30px); font-variant-numeric: tabular-nums; letter-spacing: -.04em; }
+.crypto-featured-quote > span { display: inline-flex; align-items: center; gap: 3px; font-size: 13px; font-weight: 700; }
+.crypto-positive { color: #059669; }
+.crypto-negative { color: #dc2626; }
+
+.crypto-chart-area { display: grid; min-height: 130px; place-items: center; padding: 0 22px; }
+.crypto-sparkline { display: block; width: 100%; height: 130px; overflow: visible; }
+.crypto-chart-area > .crypto-sparkline { justify-self: stretch; }
+.crypto-chart-endpoint-halo { transform-box: fill-box; transform-origin: center; animation: crypto-chart-pulse 1.9s ease-out infinite; }
+.crypto-chart-endpoint { filter: drop-shadow(0 0 5px currentColor); }
+@keyframes crypto-chart-pulse {
+    0%, 100% { opacity: .15; transform: scale(.85); }
+    50% { opacity: .34; transform: scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .crypto-chart-endpoint-halo { animation: none; }
+}
+.crypto-chart-loading,
+.crypto-chart-empty { color: var(--text-muted); font-size: 12px; }
+
+.crypto-featured-stats {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 4vw, 52px);
+    flex-wrap: wrap;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+}
+
+.crypto-featured-stats > div { display: flex; flex-direction: column; gap: 4px; }
+.crypto-featured-stats > div > span { color: var(--text-muted); font-size: 11px; }
+.crypto-featured-stats > div > strong { color: var(--text-primary); font-size: 13px; font-variant-numeric: tabular-nums; }
+.crypto-open-binance { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; color: var(--accent, #059669); font-size: 13px; font-weight: 700; text-decoration: none; }
+.crypto-open-binance:hover { text-decoration: underline; }
+
+.crypto-market-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 12px;
+}
+
+.crypto-search {
+    display: flex;
+    flex: 1 1 240px;
+    align-items: center;
+    gap: 9px;
+    min-height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text-muted);
+}
+
+.crypto-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text-primary); font: inherit; font-size: 13px; }
+.crypto-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.crypto-market-filters { display: flex; gap: 6px; }
+.crypto-filter { min-height: 38px; padding: 0 12px; border: 1px solid var(--border); border-radius: 8px; background: transparent; color: var(--text-secondary); font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
+.crypto-filter:hover { border-color: var(--accent); }
+.crypto-filter.active { border-color: var(--chrome-active-bg); background: var(--chrome-active-bg); color: var(--chrome-active-text); }
+.crypto-sort-label { display: flex; align-items: center; gap: 7px; color: var(--text-muted); font-size: 12px; white-space: nowrap; }
+.crypto-sort-label select { min-height: 38px; padding: 0 30px 0 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface, #fff); color: var(--text-primary); font: inherit; font-size: 12px; }
+
+.crypto-table-wrap { overflow: hidden; }
+.crypto-market-table { width: 100%; border-collapse: collapse; text-align: left; }
+.crypto-market-table th { padding: 13px 16px; background: var(--chrome-bg-soft, #f8fafc); color: var(--text-muted); font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.crypto-market-table td { padding: 12px 16px; border-top: 1px solid var(--border); color: var(--text-primary); font-size: 13px; vertical-align: middle; }
+.crypto-market-table tbody tr { transition: background .15s ease; }
+.crypto-market-table tbody tr:hover,
+.crypto-market-table tbody tr.selected { background: color-mix(in srgb, var(--accent-bg) 55%, transparent); }
+.crypto-asset-select { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.crypto-asset-select strong { color: var(--text-primary); font-size: 13px; }
+.crypto-asset-select small { color: var(--text-muted); font-size: 11px; }
+.crypto-price-cell,.crypto-volume-cell { font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.crypto-change-pill { display: inline-flex; padding: 5px 8px; border-radius: 999px; font-size: 11px; font-weight: 750; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.crypto-change-pill.up { background: rgba(5, 150, 105, .1); color: #059669; }
+.crypto-change-pill.down { background: rgba(220, 38, 38, .1); color: #dc2626; }
+.crypto-range { display: flex; flex-direction: column; gap: 3px; font-variant-numeric: tabular-nums; }
+.crypto-range strong { font-size: 12px; font-weight: 650; }
+.crypto-range small { color: var(--text-muted); font-size: 11px; }
+.crypto-trade-actions { display: flex; gap: 6px; }
+.crypto-trade-actions a { display: inline-flex; min-width: 48px; min-height: 34px; align-items: center; justify-content: center; padding: 0 10px; border: 1px solid; border-radius: 7px; font-size: 12px; font-weight: 750; text-decoration: none; transition: transform .15s ease, filter .15s ease; }
+.crypto-trade-actions a:hover { transform: translateY(-1px); filter: brightness(.96); }
+.crypto-trade-buy { border-color: rgba(5, 150, 105, .28) !important; background: rgba(5, 150, 105, .09); color: #047857; }
+.crypto-trade-sell { border-color: rgba(220, 38, 38, .25) !important; background: rgba(220, 38, 38, .07); color: #dc2626; }
+.crypto-no-results { padding: 32px !important; color: var(--text-muted) !important; text-align: center; }
+.crypto-market-disclaimer { margin: -7px 2px 0; color: var(--text-muted); font-size: 11px; line-height: 1.55; }
+.crypto-sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
+
+@media (max-width: 900px) {
+    .crypto-market-table th,.crypto-market-table td { padding-right: 10px; padding-left: 10px; }
+    .crypto-market-table th:nth-child(4),.crypto-market-table td:nth-child(4) { display: none; }
+}
+
+@media (max-width: 640px) {
+    .crypto-market-page { gap: 13px; }
+    .crypto-market-header { align-items: flex-start; flex-direction: column; }
+    .crypto-featured-top { align-items: flex-start; padding: 16px 15px 10px; }
+    .crypto-featured-quote > strong { font-size: 20px; }
+    .crypto-featured-quote > span { font-size: 11px; }
+    .crypto-chart-area { min-height: 105px; padding: 0 14px; }
+    .crypto-sparkline { height: 105px; }
+    .crypto-featured-stats { gap: 12px 20px; padding: 12px 15px; }
+    .crypto-featured-stats > div { min-width: calc(50% - 12px); }
+    .crypto-open-binance { margin-left: 0; }
+    .crypto-market-toolbar { align-items: stretch; padding: 10px; }
+    .crypto-search { flex-basis: 100%; }
+    .crypto-market-filters { flex: 1; }
+    .crypto-filter { flex: 1; padding: 0 8px; }
+    .crypto-sort-label { flex: 1 0 100%; justify-content: space-between; }
+    .crypto-sort-label select { flex: 1; }
+    .crypto-market-table thead { display: none; }
+    .crypto-market-table,.crypto-market-table tbody { display: block; width: 100%; }
+    .crypto-market-table tbody { padding: 8px; }
+    .crypto-market-table tbody tr { display: grid; grid-template-columns: 1fr 1fr; gap: 0 10px; margin-bottom: 9px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 11px; }
+    .crypto-market-table tbody tr:last-child { margin-bottom: 0; }
+    .crypto-market-table td,.crypto-market-table td:nth-child(4) { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 0; border: 0; }
+    .crypto-market-table td::before { content: attr(data-label); color: var(--text-muted); font-size: 10px; font-weight: 700; }
+    .crypto-market-table td:first-child { grid-column: 1 / -1; justify-content: flex-start; border-bottom: 1px solid var(--border); }
+    .crypto-market-table td:first-child::before { content: none; }
+    .crypto-market-table td:last-child { grid-column: 1 / -1; border-top: 1px solid var(--border); }
+    .crypto-market-table td:last-child::before { content: 'Trade on Binance'; }
+    .crypto-market-table .crypto-range { align-items: flex-end; text-align: right; }
+    .crypto-market-table .crypto-volume-cell { font-size: 12px; }
+    .crypto-trade-actions { flex: 0 0 auto; }
+    .crypto-no-results { display: block !important; }
+}
+
+/* Equity market replacement for the former Forex screen. */
+.equity-market-page { display: flex; min-width: 0; flex-direction: column; gap: 20px; }
+.equity-market-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
+.equity-eyebrow { display: block; margin-bottom: 5px; color: var(--accent, #059669); font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+.equity-feed-status { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(5,150,105,.2); border-radius: 999px; background: rgba(5,150,105,.07); color: #059669; font-size: 12px; font-weight: 750; }
+.equity-feed-status.is-error { border-color: rgba(220,38,38,.2); background: rgba(220,38,38,.06); color: #dc2626; }
+.equity-status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 13%, transparent); }
+.equity-feed-notice { padding: 13px 16px; border: 1px solid rgba(245,158,11,.34); border-radius: 11px; background: rgba(245,158,11,.07); color: var(--text-secondary); font-size: 13px; }
+.equity-watchlist,.equity-sector-section { min-width: 0; padding: 20px; border: 1px solid var(--border); border-radius: 15px; background: var(--card-bg, var(--surface, #fff)); box-shadow: var(--shadow, 0 4px 18px rgba(15,23,42,.04)); }
+.equity-section-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.equity-section-heading h2 { margin: 0; color: var(--text-primary); font-size: 19px; }
+.equity-section-heading p { margin: 4px 0 0; color: var(--text-muted); font-size: 12px; }
+.equity-section-heading > span { color: var(--text-muted); font-size: 11px; white-space: nowrap; }
+.equity-benchmark-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 205px), 1fr)); gap: 11px; }
+.equity-benchmark-card { min-width: 0; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface, #fff); }
+.equity-benchmark-top,.equity-benchmark-main { display: flex; align-items: center; justify-content: space-between; gap: 9px; }
+.equity-benchmark-top > strong { color: var(--text-secondary); font-size: 12px; }
+.equity-live-badge { padding: 2px 6px; border: 1px solid rgba(5,150,105,.25); border-radius: 5px; background: rgba(5,150,105,.08); color: #059669; font-size: 9px; font-weight: 800; white-space: nowrap; }
+.equity-benchmark-main { margin-top: 10px; }
+.equity-benchmark-main > div:first-child { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.equity-benchmark-main > div:first-child strong { color: var(--text-primary); font-size: 18px; font-variant-numeric: tabular-nums; }
+.equity-benchmark-main > div:first-child span { font-size: 11px; font-weight: 750; }
+.equity-trend { display: block; width: 82px; height: 32px; overflow: visible; }
+.equity-trend-dot { filter: drop-shadow(0 0 3px currentColor); }
+.equity-trend-pending { color: var(--text-muted); font-size: 10px; }
+.equity-table-heading { align-items: flex-end; }
+.equity-search { display: flex; width: min(100%, 250px); min-height: 40px; align-items: center; padding: 0 12px; border: 1px solid var(--border); border-radius: 9px; background: var(--surface, #fff); }
+.equity-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.equity-search input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--text-primary); font: inherit; font-size: 13px; }
+.equity-filters { display: flex; gap: 7px; margin-bottom: 13px; overflow-x: auto; padding-bottom: 2px; }
+.equity-filters button { flex: 0 0 auto; padding: 7px 11px; border: 1px solid var(--border); border-radius: 999px; background: var(--surface, #fff); color: var(--text-secondary); font: inherit; font-size: 11px; font-weight: 650; cursor: pointer; }
+.equity-filters button.active { border-color: var(--accent); background: var(--accent); color: #fff; }
+.equity-table-wrap { overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+.equity-table { width: 100%; min-width: 900px; border-collapse: collapse; text-align: left; }
+.equity-table th,.equity-table td { padding: 12px 11px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.equity-table th { position: sticky; top: 0; z-index: 1; background: var(--surface, #f8fafc); color: var(--text-muted); font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.equity-table td { color: var(--text-secondary); font-size: 12px; }
+.equity-table tbody tr:last-child td { border-bottom: 0; }
+.equity-table tbody tr:hover { background: var(--hover-bg, rgba(15,23,42,.025)); }
+.equity-symbol { display: flex; min-width: 150px; flex-direction: column; gap: 2px; }
+.equity-symbol strong { color: var(--text-primary); font-size: 12px; }
+.equity-symbol span { color: var(--text-muted); font-size: 10px; }
+.equity-number { font-variant-numeric: tabular-nums; }
+.equity-number strong { color: var(--text-primary); }
+.equity-positive { color: #059669 !important; font-weight: 750; }
+.equity-negative { color: #dc2626 !important; font-weight: 750; }
+.equity-empty { padding: 24px 16px; color: var(--text-muted); font-size: 13px; text-align: center; }
+.equity-disclaimer { margin: -8px 2px 0; color: var(--text-muted); font-size: 11px; line-height: 1.55; }
+.equity-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+@media (max-width: 700px) {
+    .equity-market-page { gap: 14px; }
+    .equity-market-header { align-items: flex-start; flex-direction: column; }
+    .equity-watchlist,.equity-sector-section { padding: 14px; }
+    .equity-section-heading,.equity-table-heading { align-items: stretch; flex-direction: column; }
+    .equity-search { width: 100%; }
+    .equity-benchmark-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    .equity-benchmark-card { padding: 11px; }
+    .equity-benchmark-main > div:first-child strong { font-size: 15px; }
+    .equity-benchmark-main .equity-trend { width: 54px; }
+    .equity-table { min-width: 660px; }
+    .equity-table th,.equity-table td { padding: 10px 8px; }
+    .equity-trend { width: 60px; }
+}
+@media (prefers-reduced-motion: reduce) { .equity-market-page * { scroll-behavior: auto !important; } }
+
+@media (max-width: 640px) {
+    #stocksPage .featured-market-chart {
+        width: 100%;
+        min-width: 0;
+    }
+
+    #stocksPage .featured-market-chart-header {
+        min-width: 0;
+        padding: 14px 14px 12px !important;
+    }
+
+    #stocksPage .featured-market-chart-tabs {
+        gap: 8px !important;
+        max-width: 100%;
+        margin: 0 -2px;
+        padding: 0 2px 8px !important;
+        overscroll-behavior-x: contain;
+        scrollbar-width: thin;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #stocksPage .featured-market-chart-tab {
+        flex: 0 0 auto;
+        padding: 7px 9px !important;
+        font-size: 12px;
+        border: 1px solid var(--border) !important;
+        border-radius: 999px !important;
+    }
+
+    #stocksPage .featured-market-quote-header {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: center !important;
+        gap: 10px;
+        margin-top: 8px !important;
+    }
+
+    #stocksPage .featured-market-identity {
+        min-width: 0;
+    }
+
+    #stocksPage .featured-market-identity h2 {
+        overflow-wrap: anywhere;
+        font-size: 20px !important;
+    }
+
+    #stocksPage .featured-market-identity > div {
+        font-size: 11px !important;
+        line-height: 1.35;
+    }
+
+    #stocksPage .featured-market-quote {
+        min-width: 0;
+        white-space: nowrap;
+    }
+
+    #stocksPage .featured-market-quote > div:first-child {
+        font-size: clamp(16px, 4.8vw, 20px) !important;
+        letter-spacing: -0.7px !important;
+    }
+
+    #stocksPage .featured-market-quote > div:last-child {
+        font-size: 11px !important;
+        line-height: 1.35;
+    }
+
+    #stocksPage .featured-market-chart-plot {
+        height: 240px !important;
+        padding: 0 12px !important;
+    }
+
+    #stocksPage .featured-market-chart-footer {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 14px !important;
+    }
+
+    #stocksPage .featured-market-chart-footer > div:last-child {
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        font-size: 10px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    #stocksPage .featured-market-chart-header {
+        padding-right: 11px !important;
+        padding-left: 11px !important;
+    }
+
+    #stocksPage .featured-market-quote-header {
+        gap: 6px;
+    }
+
+    #stocksPage .featured-market-identity h2 {
+        font-size: 18px !important;
+    }
+
+    #stocksPage .featured-market-quote > div:first-child {
+        font-size: 16px !important;
     }
 }

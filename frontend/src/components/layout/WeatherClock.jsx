@@ -1,7 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 const DEFAULT_LOCATION = { name: 'New Delhi', latitude: 28.6139, longitude: 77.209 };
 const WEATHER_REFRESH_MS = 15 * 60 * 1000;
+const WORLD_CLOCKS = [
+    { id: 'USD', country: 'United States', city: 'New York', timeZone: 'America/New_York' },
+    { id: 'EUR', country: 'European Union', city: 'Paris', timeZone: 'Europe/Paris' },
+    { id: 'GBP', country: 'United Kingdom', city: 'London', timeZone: 'Europe/London' },
+    { id: 'INR', country: 'India', city: 'New Delhi', timeZone: 'Asia/Kolkata' },
+    { id: 'CAD', country: 'Canada', city: 'Toronto', timeZone: 'America/Toronto' },
+    { id: 'AUD', country: 'Australia', city: 'Sydney', timeZone: 'Australia/Sydney' },
+    { id: 'JPY', country: 'Japan', city: 'Tokyo', timeZone: 'Asia/Tokyo' },
+    { id: 'CHF', country: 'Switzerland', city: 'Zurich', timeZone: 'Europe/Zurich' },
+    { id: 'CNY', country: 'China', city: 'Shanghai', timeZone: 'Asia/Shanghai' },
+    { id: 'SAR', country: 'Saudi Arabia', city: 'Riyadh', timeZone: 'Asia/Riyadh' },
+    { id: 'AED', country: 'United Arab Emirates', city: 'Dubai', timeZone: 'Asia/Dubai' },
+    { id: 'PKR', country: 'Pakistan', city: 'Karachi', timeZone: 'Asia/Karachi' },
+];
+
+function formatClock(date, timeZone, options) {
+    return new Intl.DateTimeFormat('en', { timeZone, ...options }).format(date);
+}
+
+function getClockTimeZoneName(date, timeZone) {
+    return new Intl.DateTimeFormat('en', { timeZone, timeZoneName: 'short' })
+        .formatToParts(date)
+        .find(part => part.type === 'timeZoneName')?.value || '';
+}
 
 function describeWeather(code) {
     if (code === 0) return ['☀️', 'Clear sky'];
@@ -20,6 +44,43 @@ export default function WeatherClock({ showToast }) {
     const [location, setLocation] = useState(DEFAULT_LOCATION);
     const [weather, setWeather] = useState(null);
     const [weatherUnavailable, setWeatherUnavailable] = useState(false);
+    const [selectedClockId, setSelectedClockId] = useState(() => {
+        try {
+            const savedClock = window.localStorage.getItem('fintracker-world-clock');
+            return WORLD_CLOCKS.some(clock => clock.id === savedClock) ? savedClock : 'INR';
+        } catch {
+            return 'INR';
+        }
+    });
+    const [isClockMenuOpen, setIsClockMenuOpen] = useState(false);
+    const clockPickerRef = useRef(null);
+
+    useEffect(() => {
+        if (!isClockMenuOpen) return undefined;
+        const closeOnOutsidePointer = (event) => {
+            if (!clockPickerRef.current?.contains(event.target)) setIsClockMenuOpen(false);
+        };
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                setIsClockMenuOpen(false);
+                clockPickerRef.current?.querySelector('button')?.focus();
+            }
+        };
+        document.addEventListener('pointerdown', closeOnOutsidePointer);
+        document.addEventListener('keydown', closeOnEscape);
+        return () => {
+            document.removeEventListener('pointerdown', closeOnOutsidePointer);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [isClockMenuOpen]);
+
+    useEffect(() => {
+        try {
+            window.localStorage.setItem('fintracker-world-clock', selectedClockId);
+        } catch {
+            // The selected clock remains available for this session when storage is disabled.
+        }
+    }, [selectedClockId]);
 
     useEffect(() => {
         const timer = window.setInterval(() => setNow(new Date()), 1000);
@@ -76,19 +137,19 @@ export default function WeatherClock({ showToast }) {
     };
 
     const [weatherIcon, weatherLabel] = weather ? describeWeather(weather.code) : ['🌤️', weatherUnavailable ? 'Weather unavailable' : 'Loading weather'];
-    const indiaTime = new Intl.DateTimeFormat('en-IN', {
-        timeZone: 'Asia/Kolkata',
+    const selectedClock = WORLD_CLOCKS.find(clock => clock.id === selectedClockId) || WORLD_CLOCKS[3];
+    const localTime = formatClock(now, selectedClock.timeZone, {
         hour: '2-digit',
         minute: '2-digit',
         second: '2-digit',
         hour12: true
-    }).format(now);
-    const compactIndiaTime = new Intl.DateTimeFormat('en-IN', {
-        timeZone: 'Asia/Kolkata',
+    });
+    const compactLocalTime = formatClock(now, selectedClock.timeZone, {
         hour: '2-digit',
         minute: '2-digit',
         hour12: false
-    }).format(now);
+    });
+    const timeZoneName = getClockTimeZoneName(now, selectedClock.timeZone);
 
     return (
         <div className="topbar-live-info" aria-label="Live weather and India time">
@@ -106,11 +167,44 @@ export default function WeatherClock({ showToast }) {
                 </span>
             </button>
             <span className="topbar-info-divider" aria-hidden="true" />
-            <div className="topbar-india-time" aria-label={`India time ${indiaTime}`}>
-                <span className="topbar-india-time-label">INDIA</span>
-                <strong className="topbar-time-full">{indiaTime}</strong>
-                <strong className="topbar-time-compact">{compactIndiaTime}</strong>
-                <span className="topbar-timezone">IST</span>
+            <div className="topbar-clock-picker" ref={clockPickerRef}>
+                <button
+                    type="button"
+                    className="topbar-india-time"
+                    aria-label={`${selectedClock.country} local time ${localTime}. Change time zone.`}
+                    aria-haspopup="menu"
+                    aria-expanded={isClockMenuOpen}
+                    aria-controls="world-clock-menu"
+                    onClick={() => setIsClockMenuOpen(open => !open)}
+                    title="Choose a country time zone"
+                >
+                    <span className="topbar-india-time-label">{selectedClock.country}</span>
+                    <strong className="topbar-time-full">{localTime}</strong>
+                    <strong className="topbar-time-compact">{compactLocalTime}</strong>
+                    <span className="topbar-timezone">{timeZoneName}</span>
+                </button>
+                {isClockMenuOpen && (
+                    <div className="world-clock-menu" id="world-clock-menu" role="menu" aria-label="Choose country time">
+                        {WORLD_CLOCKS.map(clock => (
+                            <button
+                                key={clock.id}
+                                type="button"
+                                role="menuitemradio"
+                                aria-checked={selectedClockId === clock.id}
+                                className="world-clock-option"
+                                onClick={() => {
+                                    setSelectedClockId(clock.id);
+                                    setIsClockMenuOpen(false);
+                                }}
+                            >
+                                <span className="world-clock-country">{clock.country}</span>
+                                <span className="world-clock-city-time">
+                                    {clock.city} · {formatClock(now, clock.timeZone, { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );

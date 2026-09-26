@@ -177,14 +177,18 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
     };
 
     return (
-        <div className="table-card" style={{ marginTop: '20px', overflow: 'hidden' }}>
+        <div className="table-card featured-market-chart" style={{ marginTop: '20px', overflow: 'hidden' }}>
             <div style={{ display: 'flex', borderBottom: '1px solid var(--border)' }}>
-                <div style={{ padding: '20px', flex: 1 }}>
-                    <div style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }} onWheel={handleWheel}>
+                <div className="featured-market-chart-header" style={{ padding: '20px', flex: 1 }}>
+                    <div className="featured-market-chart-tabs" role="tablist" aria-label="Featured stocks" style={{ display: 'flex', gap: '16px', overflowX: 'auto', paddingBottom: '8px' }} onWheel={handleWheel}>
                         {FEATURED_ITEMS.filter(item => item.type === 'stock').map(item => (
                             <button
                                 key={item.id}
+                                role="tab"
+                                aria-selected={selectedId === item.id}
+                                aria-controls="featured-market-chart-plot"
                                 onClick={() => setSelectedId(item.id)}
+                                className="featured-market-chart-tab"
                                 style={{
                                     background: selectedId === item.id ? 'var(--bg-secondary)' : 'transparent',
                                     border: 'none',
@@ -202,12 +206,12 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
                         ))}
                     </div>
 
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '16px' }}>
-                        <div>
+                    <div className="featured-market-quote-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginTop: '16px' }}>
+                        <div className="featured-market-identity">
                             <h2 style={{ margin: '0 0 4px 0', fontSize: '24px', fontWeight: '700' }}>{selectedItem.name}</h2>
                             <div style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>{selectedItem.type === 'index' ? 'Market Index' : 'Featured Equity'} · {selectedItem.symbol}</div>
                         </div>
-                        <div style={{ textAlign: 'right' }}>
+                        <div className="featured-market-quote" style={{ textAlign: 'right' }}>
                             {quote ? (
                                 <>
                                     <div style={{ fontSize: '28px', fontWeight: '800', fontFamily: 'monospace', letterSpacing: '-0.5px' }}>
@@ -234,7 +238,7 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
                 </div>
             </div>
 
-            <div style={{ position: 'relative', height: '280px', padding: '0 20px' }}>
+            <div id="featured-market-chart-plot" className="featured-market-chart-plot" role="tabpanel" style={{ position: 'relative', height: '280px', padding: '0 20px' }}>
                 {loading && !candles.length && (
                     <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.02)', zIndex: 10 }}>
                         <div style={{ color: 'var(--text-muted)', fontSize: '14px', fontWeight: '500' }}>Loading chart data…</div>
@@ -252,7 +256,7 @@ export default function FeaturedMarketChart({ selectedId: controlledSelectedId, 
                 </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+            <div className="featured-market-chart-footer" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px', borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
                 <div style={{ display: 'flex', gap: '8px' }}>
                     {Object.keys(TIMEFRAMES).map(tf => (
                         <button

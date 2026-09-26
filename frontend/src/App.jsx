@@ -10,6 +10,8 @@ import ExpensesView from './components/expenses/ExpensesView';
 import GoalsView from './components/goals/GoalsView';
 import StocksView from './components/stocks/StocksView';
 import BondMarketView from './components/stocks/BondMarketView';
+import CryptoMarketView from './components/stocks/CryptoMarketView';
+import EquityMarketView from './components/markets/EquityMarketView';
 import AdvisorView from './components/advisor/AdvisorView';
 import CalculatorsView from './components/calculators/CalculatorsView';
 import LoanEligibilityView from './components/loans/LoanEligibilityView';
@@ -49,6 +51,8 @@ function MainLayout() {
         else if (q.includes('report') || q.includes('summary')) setCurrentPage('reports');
         else if (q.includes('goal') || q.includes('target')) setCurrentPage('goals');
         else if (q.includes('bond') || q.includes('g-sec') || q.includes('treasury bill')) setCurrentPage('bonds');
+        else if (q.includes('crypto') || q.includes('bitcoin') || q.includes('binance')) setCurrentPage('crypto');
+        else if (q.includes('equity market') || q.includes('sector index') || q.includes('indices')) setCurrentPage('equities');
         else if (q.includes('stock') || q.includes('market') || q.includes('invest')) setCurrentPage('stocks');
         else if (q.includes('advisor') || q.includes('ai') || q.includes('chat')) setCurrentPage('advisor');
         else if (q.includes('calculator') || q.includes('calc') || q.includes('sip')) setCurrentPage('calculators');
@@ -95,6 +99,8 @@ function MainLayout() {
                 {currentPage === 'goals' && <GoalsView />}
                 {(currentPage === 'stocks' || currentPage === 'markets') && <StocksView />}
                 {currentPage === 'bonds' && <BondMarketView />}
+                {currentPage === 'crypto' && <CryptoMarketView />}
+                {currentPage === 'equities' && <EquityMarketView />}
                 {(currentPage === 'advisor' || currentPage === 'portfolio-risk') && (
                     <AdvisorView initialTab={currentPage === 'portfolio-risk' ? 'risk' : 'chatbot'} />
                 )}

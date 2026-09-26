@@ -17,7 +17,7 @@ router.post('/auth/login',credentials,auth.login);
 router.post('/auth/refresh',refreshCredentials,auth.refresh);
 router.post('/auth/forgot-password', auth.forgotPassword);
 router.post('/auth/reset-password', auth.resetPassword);
-// Yahoo Finance Live Market Routes (no IP restriction, real NSE/BSE data)
+// Yahoo Finance market quote routes (quote timing follows the provider)
 router.get('/live/status', liveMarket.status);
 router.get('/live/indices', liveMarket.indices);
 router.get('/live/quote/:symbol', liveMarket.quote);
