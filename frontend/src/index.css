@@ -5687,6 +5687,36 @@ button {
     margin-top: auto;
 }
 
+@media (min-width: 821px) {
+    .sidebar .sidebar-nav {
+        flex: 1 1 auto !important;
+        min-height: 0;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        padding-right: 8px !important;
+        overscroll-behavior: contain;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.38) transparent;
+    }
+
+    .sidebar .sidebar-nav::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .sidebar .sidebar-nav::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .sidebar .sidebar-nav::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.38);
+        border-radius: 999px;
+    }
+
+    .sidebar .sidebar-nav::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.58);
+    }
+}
+
 .sidebar-user-meta {
     display: flex;
     flex-direction: column;
