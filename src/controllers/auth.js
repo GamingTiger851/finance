@@ -34,45 +34,57 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
+  const email = typeof req.body.email === 'string' ? req.body.email.trim().toLowerCase() : '';
   if (!email) return res.status(400).json({ error: 'Email is required' });
 
-  const user = await User.findOne({ email: email.toLowerCase() });
+  const user = await User.findOne({ email });
   if (!user) {
     // We send a success response even if user doesn't exist for security reasons (prevents email enumeration)
     return res.json({ message: 'If that email address is in our database, we will send you an email to reset your password.' });
   }
 
-  const token = crypto.randomBytes(20).toString('hex');
-  user.resetPasswordToken = token;
+  const token = crypto.randomBytes(32).toString('hex');
+  // Store only a digest so a database read cannot be used to reset an account.
+  user.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
   user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
   await user.save();
 
   try {
+    const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+    const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+    if (!smtpUser || !smtpPass) {
+      throw new Error('Password reset email is not configured');
+    }
+
+    const frontendUrl = (process.env.FRONTEND_URL || process.env.APP_URL || '').trim();
+    if (!frontendUrl) {
+      throw new Error('FRONTEND_URL is not configured');
+    }
+    const resetUrl = new URL('/reset-password', frontendUrl);
+    resetUrl.searchParams.set('token', token);
+
+    const port = Number(process.env.SMTP_PORT || 465);
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
-      port: process.env.SMTP_PORT || 465,
-      secure: true, // true for 465, false for other ports
+      port,
+      secure: port === 465,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS
+        user: smtpUser,
+        pass: smtpPass
       }
     });
 
-    const resetUrl = `http://localhost:5173/reset-password?token=${token}`;
-
-    const info = await transporter.sendMail({
-      from: '"FinTracker Support" <support@fintracker.com>',
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || `FinTracker Support <${smtpUser}>`,
       to: user.email,
       subject: 'Password Reset Request',
-      text: `You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\nPlease click on the following link, or paste this into your browser to complete the process within one hour of receiving it:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`
+      text: `You requested a password reset for your FinTracker account. Use this link within one hour:\n\n${resetUrl.toString()}\n\nIf you did not request this, you can ignore this email.`,
+      html: `<p>You requested a password reset for your FinTracker account.</p><p><a href="${resetUrl.toString()}">Reset your password</a></p><p>This link expires in one hour. If you did not request this, you can ignore this email.</p>`
     });
-
-    console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
 
     res.json({ message: 'If that email address is in our database, we will send you an email to reset your password.' });
   } catch (error) {
-    console.error('Email Error:', error);
+    console.error('Password reset email failed:', error.message);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpires = undefined;
     await user.save();
@@ -85,7 +97,7 @@ exports.resetPassword = async (req, res) => {
   if (!token || !password) return res.status(400).json({ error: 'Token and password are required' });
 
   const user = await User.findOne({
-    resetPasswordToken: token,
+    resetPasswordToken: crypto.createHash('sha256').update(token).digest('hex'),
     resetPasswordExpires: { $gt: Date.now() }
   });
 
