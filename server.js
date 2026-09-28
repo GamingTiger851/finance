@@ -9,8 +9,10 @@ let server;
 
 async function start() {
   validateEnv();
-  await connect();
   server = app.listen(port, () => logger.info(`API listening on ${port}`));
+  // Keep public, database-independent routes such as market news available
+  // while MongoDB starts up (or when it is temporarily unavailable).
+  connect().catch(error => logger.error(`MongoDB connection failed: ${error.message}`));
 }
 async function shutdown(signal) {
   logger.info(`${signal}: shutting down`);

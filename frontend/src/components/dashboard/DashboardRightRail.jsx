@@ -20,6 +20,7 @@ export default function DashboardRightRail({ onNavigate }) {
 
     useEffect(() => {
         let active = true;
+        let refreshTimer;
         const loadNews = async () => {
             try {
                 const response = await fetch('/api/news');
@@ -33,17 +34,18 @@ export default function DashboardRightRail({ onNavigate }) {
                     error: false,
                     updatedAt: data.updatedAt || null,
                 });
+                refreshTimer = window.setTimeout(loadNews, 15 * 60 * 1000);
             } catch {
                 if (!active) return;
                 setNewsFeed(previous => ({ ...previous, loading: false, error: true }));
+                refreshTimer = window.setTimeout(loadNews, 30 * 1000);
             }
         };
 
         loadNews();
-        const refreshTimer = window.setInterval(loadNews, 15 * 60 * 1000);
         return () => {
             active = false;
-            window.clearInterval(refreshTimer);
+            window.clearTimeout(refreshTimer);
         };
     }, []);
 

@@ -9,7 +9,7 @@ export default function ExpensesView() {
         <div id="expensesPage" className="page-view">
             <div className="page-header">
                 <div>
-                    <h1 className="page-title">Expenses &amp; Cash Outflow</h1>
+                    <h1 className="page-title">Accounts &amp; Cash Outflow</h1>
                     <p className="page-subtitle">Search, filter, and analyze every transaction across your accounts.</p>
                 </div>
             </div>
